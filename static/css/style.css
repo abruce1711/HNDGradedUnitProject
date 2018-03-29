@@ -1,0 +1,37 @@
+html, body {
+    margin: 0;
+}
+
+.home {
+    background: url("/static/img/home.jpg") no-repeat center;
+    height: 100%;
+    background-size: cover;
+}
+.nav {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 70%;
+    float: left;
+}
+
+.nav-link {
+    color: white;
+    font-size: 20px;
+    transition: .2s all;
+}
+
+.right-links {
+    background-color: rgba(0, 0, 0, 0.2);
+    float: right;
+    width: 20%;
+    text-align: right;
+}
+
+.right-links a {
+    display: inline;
+}
+
+.login {
+    width: 200px;
+    margin-top: 50px;
+}

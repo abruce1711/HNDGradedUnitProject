@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block html %}<html class="home" lang="en">{% endblock %}
+{% block title %}Home{{ super() }}{% endblock %}
+{% block body %}
+    {{ super() }}
+    {% if current_user.is_authenticated %}
+        <h1>LOGGED IN</h1>
+    {% endif %}
+
+{% endblock %}

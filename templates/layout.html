@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% block html %}<html lang="en">{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>{% block title %} | Native Sins{% endblock %}</title>
+</head>
+<body>
+
+ <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <!-- messages is a list of tuples, containing the category, then the message.-->
+            <!-- this loops through and unpacks them -->
+            <script>
+                window.setTimeout(function() {
+                document.getElementById("notification").style.display= "none";
+                }, 2500);
+            </script>
+            {% for category, message in messages %}
+
+                <!-- this sets the notifications class to the category so we can style them different-->
+                <!-- then prints the message in the div-->
+                <div id="notification" class="notification {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+ <!--/flash messages----->
+
+{% block body %}
+<nav class="nav">
+    <a class="nav-link" href="#">Home</a>
+    <a class="nav-link" href="#">About</a>
+    <a class="nav-link" href="#">Products</a>
+    <a class="nav-link" href="#">Gigs</a>
+    <a class="nav-link" href="#">Contact</a>
+</nav>
+<div class="right-links">
+    <a class="nav-link" href="{{ url_for('login') }}">Log In</a>
+    <a class="nav-link" href="#">Register</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %}
+</body>
+</html>

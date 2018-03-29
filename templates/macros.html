@@ -1,0 +1,20 @@
+{% macro render_field(field) %}
+    {% if field.type == 'BooleanField' %}
+        <div class="checkbox mx-auto">
+            <label>
+                {{ field(class_=class_, **kwargs) }}
+                {{ field.label.text|safe }}
+            </label>
+        </div>
+    {% else %}
+        <div class="field">
+            {%  if field.errors %}
+                {% for error in field.errors %}
+                    <div class="notification error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+            <!--Creates a text box hint with the same value as our label is forms.py-->
+            {{ field(placeholder=field.label.text) }}
+        </div>
+    {% endif %}
+{% endmacro %}

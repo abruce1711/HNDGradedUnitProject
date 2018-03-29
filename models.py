@@ -7,7 +7,7 @@ from flask_bcrypt import generate_password_hash
 db = SqliteDatabase('nativesins.db')
 
 
-class User(Model):
+class User(UserMixin, Model):
     first_name = CharField()
     last_name = CharField()
     email_address = CharField(unique=True)
@@ -27,8 +27,8 @@ class User(Model):
                 password=generate_password_hash(password),
                 user_role=user_role
             )
-        except IntegrityError as i:
-            raise ValueError(i)
+        except IntegrityError:
+            raise ValueError("User already exists")
 
 
 def initialize():

@@ -2,33 +2,34 @@ html, body {
     margin: 0;
 }
 
-.home {
+/*.home {
     background: url("/static/img/home.jpg") no-repeat center;
     height: 100%;
     background-size: cover;
-}
+}*/
 .nav {
     position: relative;
-    background-color: rgba(0, 0, 0, 0.2);
-    width: 70%;
-    float: left;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: inline-block;
+    height: 50px;
 }
 
 .nav-link {
     color: white;
     font-size: 20px;
     transition: .2s all;
-}
-
-.right-links {
-    background-color: rgba(0, 0, 0, 0.2);
-    float: right;
-    width: 20%;
-    text-align: right;
-}
-
-.right-links a {
     display: inline;
+}
+
+.left-nav {
+    float: left;
+    width: 70%;
+}
+
+.right-nav {
+    float: right;
+    width: 30%;
+    text-align: right;
 }
 
 .login {

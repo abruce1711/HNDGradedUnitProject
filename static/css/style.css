@@ -1,17 +1,17 @@
 html, body {
     margin: 0;
-}
-
-/*.home {
     background: url("/static/img/home.jpg") no-repeat center;
     height: 100%;
     background-size: cover;
-}*/
+
+}
+
 .nav {
     position: relative;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.2);
     display: inline-block;
     height: 50px;
+    padding-top: 10px;
 }
 
 .nav-link {
@@ -33,6 +33,18 @@ html, body {
 }
 
 .login {
+    overflow: hidden;
     width: 200px;
-    margin-top: 50px;
+    border: 1px solid white;
+    background-color: cornflowerblue;
 }
+
+.form {
+    display: block;
+}
+
+.field {
+    display: block;
+    margin-left: auto;
+}
+

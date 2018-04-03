@@ -77,9 +77,38 @@ def logout():
     flash("Logged out", "success")
     return redirect(url_for('login'))
 
+
+@app.route('/create_user', methods=('GET', 'POST'))
+@login_required
+def create_user():
+    form = forms.CreateUser()
+    if current_user.user_role != "admin":
+        abort(404)
+    else:
+        if form.validate_on_submit():
+            if form.user_role.data == "blank":
+                flash("Must select user role", "error")
+            else:
+                models.User.create_user(
+                    first_name=form.first_name.data,
+                    last_name=form.last_name.data,
+                    email_address=form.email.data,
+                    password=form.password.data,
+                    user_role=form.user_role.data
+                )
+                flash("User created", "success")
+                return redirect(url_for('create_user'))
+        return render_template('create_user.html', form=form)
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html')
 
 
 if __name__ == '__main__':

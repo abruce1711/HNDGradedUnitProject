@@ -57,3 +57,11 @@ class RegisterForm(Form):
         'Re-enter Password',
         validators=[DataRequired()]
     )
+
+
+class CreateUser(RegisterForm, Form):
+    user_role = SelectField(
+        choices=[
+            ('blank', 'Please select user role'), ('customer', 'Customer'), ('staff', 'Staff'), ('admin', 'Admin')
+        ]
+    )

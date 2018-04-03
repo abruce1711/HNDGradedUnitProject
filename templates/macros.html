@@ -14,7 +14,7 @@
                 {% endfor %}
             {% endif %}
             <!--Creates a text box hint with the same value as our label is forms.py-->
-            {{ field(placeholder=field.label.text) }}
+            {{ field(placeholder=field.label.text, class="field") }}
         </div>
     {% endif %}
 {% endmacro %}

@@ -3,6 +3,7 @@ html, body {
     background: url("/static/img/home.jpg") no-repeat center;
     height: 100%;
     background-size: cover;
+    overflow: hidden;
 
 }
 
@@ -32,19 +33,51 @@ html, body {
     text-align: right;
 }
 
+.notification {
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+  color: #fff;
+  transition: .5s all;
+}
+.success {
+  background: #70DA8B;
+  color: #343a40;
+}
+.error {
+  background: #fc5555;
+  color: #343a40;
+}
+
 .login {
-    overflow: hidden;
-    width: 200px;
-    border: 1px solid white;
-    background-color: cornflowerblue;
+    float: right;
+    margin: 5% 15%;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
 }
 
-.form {
-    display: block;
+.login .field {
+    width: 100%;
+    margin-top: 3px;
+    border: none;
 }
 
-.field {
+.login button {
+    background-color: #70DA8B;
+    width:80%;
     display: block;
-    margin-left: auto;
+    margin: 20px auto;
+    border-radius: 2px;
+    border: none;
+}
+
+.login .error {
+    padding: 0;
+    color: white;
+}
+
+.login-items {
+    margin-top: 10%;
 }
 

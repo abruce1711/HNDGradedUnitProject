@@ -50,8 +50,24 @@ def login():
                 flash("Log in successful", "success")
                 return redirect(url_for('index'))
             else:
-                flash("Email or pasword incorrect", "error")
+                flash("Email or password incorrect", "error")
     return render_template('login.html', form=form)
+
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    form = forms.RegisterForm()
+    if form.validate_on_submit():
+        models.User.create_user(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            email_address=form.email.data,
+            password=form.password.data,
+            user_role="customer"
+        )
+        flash("Account Created", "success")
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
 
 @app.route('/logout')

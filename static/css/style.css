@@ -4,7 +4,6 @@ html, body {
     height: 100%;
     background-size: cover;
     overflow: hidden;
-
 }
 
 .nav {
@@ -17,7 +16,7 @@ html, body {
 
 .nav-link {
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     transition: .2s all;
     display: inline;
 }

@@ -7,15 +7,18 @@ from flask_bcrypt import generate_password_hash
 db = SqliteDatabase('nativesins.db')
 
 
-class User(UserMixin, Model):
+class BaseModel(Model):
+    class Meta:
+        database=db
+
+
+class User(UserMixin, BaseModel):
+    id = PrimaryKeyField()
     first_name = CharField()
     last_name = CharField()
     email_address = CharField(unique=True)
     password = CharField(max_length=100)
     user_role = CharField(default='customer')
-
-    class Meta:
-        database = db
 
     @classmethod
     def create_user(cls, first_name, last_name, email_address, password, user_role):
@@ -31,8 +34,33 @@ class User(UserMixin, Model):
             raise ValueError("User already exists")
 
 
+class Product(BaseModel):
+    id = PrimaryKeyField()
+    product_name = CharField()
+    product_category = CharField()
+    product_price = DecimalField()
+    product_description = CharField()
+    product_image_path = CharField()
+    product_stock_level = IntegerField()
+
+    @classmethod
+    def create_product(cls, name, category, size, price, description, image, stock):
+        try:
+            cls.create(
+                product_name=name,
+                product_category=category,
+                product_size=size,
+                product_price=price,
+                product_description=description,
+                product_image_path=image,
+                product_stock_level=stock
+            )
+        except IntegrityError:
+            raise ValueError("Product with that name already exists")
+
+
 def initialize():
     db.connect()
-    db.create_tables([User], safe=True)
+    db.create_tables([User, Product], safe=True)
     db.close()
 

@@ -139,8 +139,8 @@ def create_user():
                 flash("Must select user role", "error")
             else:
                 models.User.create_user(
-                    first_name=form.first_name.data,
-                    last_name=form.last_name.data,
+                    first_name=form.first_name.data.title(),
+                    last_name=form.last_name.data.title(),
                     email_address=form.email.data,
                     password=form.password.data,
                     user_role=form.user_role.data
@@ -148,6 +148,28 @@ def create_user():
                 flash("User created", "success")
                 return redirect(url_for('create_user'))
         return render_template('create_user.html', form=form)
+
+
+@app.route('/create_product', methods=('GET', 'POST'))
+@login_required
+def create_product():
+    form = forms.CreateProduct()
+
+    if current_user.user_role == "customer":
+        abort(404)
+    else:
+        if form.validate_on_submit():
+            models.Product.create_product(
+                name=form.product_name.data,
+                category=form.product_category.data,
+                size=form.product_size.data,
+                price=form.product_size.data,
+                description=form.product_description.data,
+                stock=form.product_stock_level.data
+            )
+            flash("Product Created", "success")
+            return redirect(url_for('create_product'))
+        return render_template('create_product.html', form=form)
 
 
 @app.route('/')

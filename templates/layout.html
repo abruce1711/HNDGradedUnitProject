@@ -39,17 +39,19 @@
     </nav>
     <nav class="nav right-nav">
     {% if current_user.is_authenticated %}
-
-       {% if current_user.user_role == "staff" or current_user.user_role == "admin" %}
-            <div class="dropdown nav-link">
-                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin Menu</button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                   {% if current_user.user_role == "admin" %}<a class="dropdown-item" href="{{ url_for('create_user') }}">Create User</a>{% endif %}
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
+        <div class="dropdown nav-link">
+            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ current_user.first_name }}'s Menu</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+               {% if current_user.user_role != "customer" %}
+                   <a class="dropdown-item" href="{{ url_for('create_product') }}">Create Product</a>
+               {% endif %}
+               {% if current_user.user_role == "admin" %}
+                   <a class="dropdown-item" href="{{ url_for('create_user') }}">Create User</a>
+               {% endif %}
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
             </div>
-       {% endif %}
+        </div>
         <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
     {% else %}
         <a class="nav-link" href="{{ url_for('login') }}">Log In</a>

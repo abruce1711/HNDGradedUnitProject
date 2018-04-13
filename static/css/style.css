@@ -48,21 +48,19 @@ html, body {
   color: #343a40;
 }
 
-.login {
-    float: right;
-    margin: 5% 15%;
+.forms {
     padding: 15px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 5px;
 }
 
-.login .field {
+.forms .field {
     width: 100%;
     margin-top: 3px;
     border: none;
 }
 
-.login button {
+.forms button {
     background-color: #70DA8B;
     width:80%;
     display: block;
@@ -71,13 +69,22 @@ html, body {
     border: none;
 }
 
-.login .error {
+.forms .error {
     padding: 0;
     color: white;
 }
 
-.login-items {
+.form-content {
     margin-top: 10%;
+}
+
+.login, .register {
+    float: right;
+    margin: 5% 15%;
+}
+
+.create_product, .create_user {
+    margin: 5% auto;
 }
 
 .dropdown-toggle {

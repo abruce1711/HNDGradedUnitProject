@@ -4,9 +4,9 @@
 {% block title %}Login{{ super() }}{% endblock %}
 {% block body %}
     {{ super() }}
-    <form class="login col-md-3" method="POST" action="">
+    <form class="forms login col-md-3" method="POST" action="">
         {{ form.hidden_tag() }}
-        <div class="login-items">
+        <div class="form-content">
             {% for field in form %}
             {{ render_field(field) }}
             {% endfor %}

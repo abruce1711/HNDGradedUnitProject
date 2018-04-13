@@ -40,11 +40,11 @@ class Product(BaseModel):
     product_category = CharField()
     product_price = DecimalField()
     product_description = CharField()
-    product_image_path = CharField()
     product_stock_level = IntegerField()
+    # create attribute to contain uploaded image location
 
     @classmethod
-    def create_product(cls, name, category, size, price, description, image, stock):
+    def create_product(cls, name, category, size, price, description, stock):
         try:
             cls.create(
                 product_name=name,
@@ -52,11 +52,10 @@ class Product(BaseModel):
                 product_size=size,
                 product_price=price,
                 product_description=description,
-                product_image_path=image,
                 product_stock_level=stock
             )
-        except IntegrityError:
-            raise ValueError("Product with that name already exists")
+        except IntegrityError as e:
+            raise ValueError(e)
 
 
 def initialize():

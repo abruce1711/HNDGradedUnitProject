@@ -81,4 +81,28 @@ class CreateProduct(Form):
         ]
     )
 
-   # product_category = #RadioField
+    product_category = RadioField(
+        'Category',
+        validators=[DataRequired()],
+        choices=[('tshirt', 'T-Shirt'), ('hat', 'Hat'), ('cd', 'CD')]
+    )
+
+    product_size = SelectField(
+        'Size',
+        choices=[('', 'Size (Leave blank if CD'), ('s', 'Small'), ('m', 'Medium'), ('l', 'Large')]
+    )
+
+    product_price = DecimalField(
+        'Price',
+        validators=[DataRequired()]
+    )
+
+    product_description = TextAreaField(
+        'Description',
+        validators=[DataRequired()]
+    )
+
+    product_stock_level = IntegerField(
+        'Stock',
+        validators=[DataRequired()]
+    )

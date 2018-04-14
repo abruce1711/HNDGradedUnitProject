@@ -89,7 +89,7 @@ class CreateProduct(Form):
 
     product_size = SelectField(
         'Size',
-        choices=[('', 'Size (Leave blank if CD'), ('s', 'Small'), ('m', 'Medium'), ('l', 'Large')]
+        choices=[('no_size', 'no_size'), ('', 'Size'), ('s', 'Small'), ('m', 'Medium'), ('l', 'Large')]
     )
 
     product_price = DecimalField(

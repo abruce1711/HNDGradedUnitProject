@@ -159,16 +159,19 @@ def create_product():
         abort(404)
     else:
         if form.validate_on_submit():
-            models.Product.create_product(
-                name=form.product_name.data,
-                category=form.product_category.data,
-                size=form.product_size.data,
-                price=form.product_size.data,
-                description=form.product_description.data,
-                stock=form.product_stock_level.data
-            )
-            flash("Product Created", "success")
-            return redirect(url_for('create_product'))
+            if form.product_size.data == '':
+                flash("Must select size", "error")
+            else:
+                models.Product.create_product(
+                    name=form.product_name.data,
+                    category=form.product_category.data,
+                    size=form.product_size.data,
+                    price=form.product_size.data,
+                    description=form.product_description.data,
+                    stock=form.product_stock_level.data
+                )
+                flash("Product Created", "success")
+                return redirect(url_for('create_product'))
         return render_template('create_product.html', form=form)
 
 

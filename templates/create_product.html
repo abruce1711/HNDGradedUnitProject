@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% from 'macros.html' import render_field %}
 {% block html %}<html class="home" lang="en">{% endblock %}
-{% block title %}Login{{ super() }}{% endblock %}
+{% block title %}Add Product{{ super() }}{% endblock %}
 {% block body %}
     {{ super() }}
     <form class="forms create_product col-md-3" method="POST" action="">
@@ -9,9 +9,15 @@
         <div class="form-content">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 {% for field in form.product_category %}
-                    <label class="btn btn-secondary">
-                        {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
-                    </label>
+                    {% if field.label.text == "T-Shirt" %}
+                        <label class="btn btn-secondary" onclick="showSize()">
+                            {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
+                        </label>
+                    {% else %}
+                        <label class="btn btn-secondary" onclick="hideSize()">
+                            {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
+                        </label>
+                    {% endif %}
                 {% endfor %}
             </div>
             {% for field in form %}

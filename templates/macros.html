@@ -6,6 +6,10 @@
                 {{ field.label.text|safe }}
             </label>
         </div>
+    {% elif field.type == "RadioField" %}
+        <label class="radio-inline">
+        {{ field(placeholder=field.label.text, class="radio_button") }}
+        </label>
     {% else %}
         <div class="field">
             {%  if field.errors %}

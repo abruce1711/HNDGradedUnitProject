@@ -7,8 +7,17 @@
     <form class="forms create_product col-md-3" method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="form-content">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                {% for field in form.product_category %}
+                    <label class="btn btn-secondary">
+                        {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
+                    </label>
+                {% endfor %}
+            </div>
             {% for field in form %}
-            {{ render_field(field) }}
+                {% if field.type != "RadioField" %}
+                    {{ render_field(field) }}
+                {% endif %}
             {% endfor %}
             <button type="submit" class="submit">Create Product</button>
         </div>

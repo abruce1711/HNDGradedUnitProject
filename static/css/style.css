@@ -98,3 +98,23 @@ html, body {
    outline: none !important;
    box-shadow: none;
 }
+
+.radio_button {
+    color: white;
+    list-style: none;
+}
+
+.create_product {
+    padding-top: 0;
+}
+.btn-group {
+    width: 100%;
+}
+.btn {
+    width: 33%;
+    border-radius: 2px;
+}
+
+.btn.active.focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn:active:focus, .btn:focus {
+  box-shadow: none;
+}

@@ -73,18 +73,18 @@ class CreateUser(RegisterForm, Form):
 
 
 class CreateProduct(Form):
+    product_category = RadioField(
+        'Category',
+        validators=[DataRequired()],
+        choices=[('tshirt', 'T-Shirt'), ('hat', 'Hat'), ('cd', 'CD')]
+    )
+
     product_name = StringField(
         'Name',
         validators=[
             DataRequired(),
             product_exists,
         ]
-    )
-
-    product_category = RadioField(
-        'Category',
-        validators=[DataRequired()],
-        choices=[('tshirt', 'T-Shirt'), ('hat', 'Hat'), ('cd', 'CD')]
     )
 
     product_size = SelectField(

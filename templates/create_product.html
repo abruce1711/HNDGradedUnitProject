@@ -3,14 +3,21 @@
 {% block html %}<html class="home" lang="en">{% endblock %}
 {% block title %}Add Product{{ super() }}{% endblock %}
 {% block body %}
+    <script>
+        window.onload = function() {
+            document.getElementById("T-Shirt").checked = true;
+            showSize();
+        };
+    </script>
     {{ super() }}
+    <!--to do: check t-shirt and remove no_size on page load-->
     <form class="forms create_product col-md-3" method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="form-content">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 {% for field in form.product_category %}
                     {% if field.label.text == "T-Shirt" %}
-                        <label class="btn btn-secondary" onclick="showSize()">
+                        <label class="btn btn-secondary active" onclick="showSize()">
                             {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
                         </label>
                     {% else %}

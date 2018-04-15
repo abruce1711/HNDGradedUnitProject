@@ -1,6 +1,6 @@
 function hideSize() {
     var size = document.getElementById("Size");
-    //size.style.display=("none");
+    size.style.display=("none");
     var option = document.createElement("option");
     option.text = "no_size";
     option.value = "no_size";
@@ -10,10 +10,10 @@ function hideSize() {
 
 function showSize() {
     var size = document.getElementById("Size");
-    //size.style.display=("inline");
+    size.style.display=("inline");
     var remove =  size.length-4;
     for(var i=0; i<remove;i++) {
         size.selectedIndex = 0;
         size.remove(0);
-        }
+    }
 }

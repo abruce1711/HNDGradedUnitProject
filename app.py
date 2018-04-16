@@ -153,26 +153,47 @@ def create_user():
 @app.route('/create_product', methods=('GET', 'POST'))
 @login_required
 def create_product():
+    """Route that returns the page for administrators to create products.
+
+    On this route it takes input from the create product form and
+    uses a method inside the Product class to create a product
+    in the database.
+    """
+
     form = forms.CreateProduct()
 
+    # if the user is a customer, give them a 404 page
     if current_user.user_role == "customer":
         abort(404)
     else:
+        # if the form is validated
         if form.validate_on_submit():
+            # if the staff member select T-Shirt, but doesn't select a size
             if form.product_size.data == '':
+                # give error
                 flash("Must select size", "error")
             else:
+                # use create_method under Product to create product in db
                 models.Product.create_product(
                     name=form.product_name.data,
                     category=form.product_category.data,
                     size=form.product_size.data,
-                    price=form.product_size.data,
+                    price=form.product_price.data,
                     description=form.product_description.data,
                     stock=form.product_stock_level.data
                 )
+                # give success message
                 flash("Product Created", "success")
+                # reloads the page to clear the form
                 return redirect(url_for('create_product'))
+        # returns the create_product template
         return render_template('create_product.html', form=form)
+
+
+@app.route('/products', methods=('POST', 'GET'))
+def products():
+    product_list = models.Product.select()
+    return render_template('products.html', products=product_list)
 
 
 @app.route('/')

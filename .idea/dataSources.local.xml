@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal">
-    <data-source name="nativesins.db" uuid="96057bf5-4c14-49a1-9bd1-a854a4f6c078">
+    <data-source name="nativesins.db" uuid="ee49ac9d-28cd-4b73-9b94-8c953f2e1e33">
       <database-info product="SQLite" version="3.20.1" jdbc-version="2.1" driver-name="SQLite JDBC" driver-version="3.20.1.1" />
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <secret-storage>master_key</secret-storage>

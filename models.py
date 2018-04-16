@@ -38,7 +38,8 @@ class Product(BaseModel):
     id = PrimaryKeyField()
     product_name = CharField()
     product_category = CharField()
-    product_price = DecimalField()
+    product_size = CharField()
+    product_price = DoubleField()
     product_description = CharField()
     product_stock_level = IntegerField()
     # create attribute to contain uploaded image location
@@ -54,8 +55,8 @@ class Product(BaseModel):
                 product_description=description,
                 product_stock_level=stock
             )
-        except IntegrityError as e:
-            raise ValueError(e)
+        except IntegrityError:
+            raise ValueError("Product ")
 
 
 def initialize():

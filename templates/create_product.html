@@ -6,7 +6,7 @@
     <script>
         window.onload = function() {
             document.getElementById("T-Shirt").checked = true;
-            showSize();
+            tshirt();
         };
     </script>
     {{ super() }}
@@ -17,11 +17,11 @@
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 {% for field in form.product_category %}
                     {% if field.label.text == "T-Shirt" %}
-                        <label class="btn btn-secondary active" onclick="showSize()">
+                        <label class="btn toggles btn-secondary active" onclick="tshirt()">
                             {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
                         </label>
                     {% else %}
-                        <label class="btn btn-secondary" onclick="hideSize()">
+                        <label class="btn toggles btn-secondary" onclick="other()">
                             {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
                         </label>
                     {% endif %}

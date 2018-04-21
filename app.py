@@ -168,24 +168,33 @@ def create_product():
     else:
         # if the form is validated
         if form.validate_on_submit():
-            # if the staff member select T-Shirt, but doesn't select a size
-            if form.product_size.data == '':
-                # give error
-                flash("Must select size", "error")
-            else:
-                # use create_method under Product to create product in db
-                models.Product.create_product(
-                    name=form.product_name.data,
-                    category=form.product_category.data,
-                    size=form.product_size.data,
-                    price=form.product_price.data,
-                    description=form.product_description.data,
-                    stock=form.product_stock_level.data
+            if form.product_category.data == "tshirt":
+                models.Tshirt.create(
+                    product_name=form.product_name.data,
+                    product_price=form.product_price.data,
+                    product_description=form.product_description.data,
+                    small_stock_level=form.small_stock_level.data,
+                    medium_stock_level=form.medium_stock_level.data,
+                    large_stock_level=form.large_stock_level.data
                 )
-                # give success message
-                flash("Product Created", "success")
-                # reloads the page to clear the form
-                return redirect(url_for('create_product'))
+                flash("T-Shirt created", "success")
+            elif form.product_category.data == "hat":
+                models.Hat.create(
+                    product_name=form.product_name.data,
+                    product_price=form.product_price.data,
+                    product_description=form.product_description.data,
+                    stock_level=form.product_stock_level.data
+                )
+                flash("Hat created", "success")
+            elif form.product_category.data == "cd":
+                models.CD.create(
+                    product_name=form.product_name.data,
+                    product_price=form.product_price.data,
+                    product_description=form.product_description.data,
+                    stock_level=form.product_stock_level.data
+                )
+                flash("CD created", "success")
+            return redirect(url_for('create_product'))
         # returns the create_product template
         return render_template('create_product.html', form=form)
 

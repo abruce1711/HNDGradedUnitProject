@@ -110,7 +110,7 @@ html, body {
 .btn-group {
     width: 100%;
 }
-.btn {
+.toggles {
     width: 33%;
     border-radius: 2px;
 }
@@ -124,7 +124,10 @@ html, body {
 }
 
 .product {
-    border: 1px solid white;
-    color: white;
     display: inline-block;
+}
+
+.add_to_basket {
+    background-color: #70DA8B;
+    width: 100%;
 }

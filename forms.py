@@ -12,11 +12,6 @@ def email_exists(form, field):
         raise ValidationError('User with that email already exists')
 
 
-def product_exists(form, field):
-    if Product.select().where(Product.product_name == field.data).exists():
-        raise ValidationError('Product with that name already exists')
-
-
 class LoginForm(Form):
     email_address = StringField(
         'Email',
@@ -83,13 +78,7 @@ class CreateProduct(Form):
         'Name',
         validators=[
             DataRequired(),
-            product_exists,
         ]
-    )
-
-    product_size = SelectField(
-        'Size',
-        choices=[('no_size', 'no_size'), ('', 'Size'), ('s', 'Small'), ('m', 'Medium'), ('l', 'Large')]
     )
 
     product_price = DecimalField(
@@ -102,7 +91,10 @@ class CreateProduct(Form):
         validators=[DataRequired()]
     )
 
-    product_stock_level = IntegerField(
-        'Stock',
-        validators=[DataRequired()]
-    )
+    product_stock_level = IntegerField('Stock')
+
+    small_stock_level = IntegerField('Small Stock')
+
+    medium_stock_level = IntegerField('Medium Stock')
+
+    large_stock_level = IntegerField('Large Stock')

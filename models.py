@@ -37,30 +37,66 @@ class User(UserMixin, BaseModel):
 class Product(BaseModel):
     id = PrimaryKeyField()
     product_name = CharField()
-    product_category = CharField()
-    product_size = CharField()
     product_price = DoubleField()
     product_description = CharField()
-    product_stock_level = IntegerField()
     # create attribute to contain uploaded image location
 
+
+class Tshirt(Product):
+    small_stock_level = IntegerField(default=0)
+    medium_stock_level = IntegerField(default=0)
+    large_stock_level = IntegerField(default=0)
+
     @classmethod
-    def create_product(cls, name, category, size, price, description, stock):
+    def create_tshirt(cls, product_name, product_price, product_description,
+                      small_stock_level, medium_stock_level, large_stock_level):
         try:
             cls.create(
-                product_name=name,
-                product_category=category,
-                product_size=size,
-                product_price=price,
-                product_description=description,
-                product_stock_level=stock
+                product_name=product_name,
+                product_price=product_price,
+                product_description=product_description,
+                small_stock_level=small_stock_level,
+                medium_stock_level=medium_stock_level,
+                large_stock_level=large_stock_level
             )
         except IntegrityError:
-            raise ValueError("Product ")
+            raise ValueError("T-Shirt with this name exists")
+
+
+class Hat(Product):
+    stock_level = IntegerField(default=0)
+
+    @classmethod
+    def create_hat(cls, product_name, product_price, product_description, stock_level):
+        try:
+            cls.create(
+                product_name=product_name,
+                product_price=product_price,
+                product_description=product_description,
+                stock_level=stock_level,
+            )
+        except IntegrityError:
+            raise ValueError("Hat with this name exists")
+
+
+class CD(Product):
+    stock_level = IntegerField(default=0)
+
+    @classmethod
+    def create_cd(cls, product_name, product_price, product_description, stock_level):
+        try:
+            cls.create(
+                product_name=product_name,
+                product_price=product_price,
+                product_description=product_description,
+                stock_level=stock_level,
+            )
+        except IntegrityError:
+            raise ValueError("CD with this name exists")
 
 
 def initialize():
     db.connect()
-    db.create_tables([User, Product], safe=True)
+    db.create_tables([User, Tshirt, Hat, CD], safe=True)
     db.close()
 

@@ -3,11 +3,28 @@
 {% block title %}Products{{super()}}{% endblock %}
 
 {% block body %}
-    <div class="products">
-        {% for product in products %}
-            <div class="product col-md-3">
-                <h3>{{ product.product_name }}</h3>
+    <div class="container ">
+        <div class="products">
+            {% for product in products %}
+            <div class="card product" style="width: 18rem;">
+                <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.product_name }}</h5>
+                    <p class="card-text">{{ product.product_description }}</p>
+                    <p><strong>Price: </strong>£{{ product.product_price }}</p>
+                    <p><strong>Stock: </strong>{{ product.product_stock_level }}</p>
+                    <form action="#" method="POST">
+                        <strong>Quantity: </strong>
+                        <select name="quantity" class="quantity">
+                            {% for i in range(1, product.product_stock_level+1) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select><br><br>
+                        <button type="submit" class="btn add_to_basket">Add to basket</button>
+                    </form>
+                </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

@@ -36,6 +36,7 @@ class User(UserMixin, BaseModel):
 
 class Product(BaseModel):
     id = PrimaryKeyField()
+    product_category = CharField()
     product_name = CharField()
     product_price = DoubleField()
     product_description = CharField()
@@ -48,10 +49,11 @@ class Tshirt(Product):
     large_stock_level = IntegerField(default=0)
 
     @classmethod
-    def create_tshirt(cls, product_name, product_price, product_description,
+    def create_tshirt(cls, product_category, product_name, product_price, product_description,
                       small_stock_level, medium_stock_level, large_stock_level):
         try:
             cls.create(
+                product_category=product_category,
                 product_name=product_name,
                 product_price=product_price,
                 product_description=product_description,
@@ -67,9 +69,10 @@ class Hat(Product):
     stock_level = IntegerField(default=0)
 
     @classmethod
-    def create_hat(cls, product_name, product_price, product_description, stock_level):
+    def create_hat(cls, product_category, product_name, product_price, product_description, stock_level):
         try:
             cls.create(
+                product_category=product_category,
                 product_name=product_name,
                 product_price=product_price,
                 product_description=product_description,
@@ -83,9 +86,10 @@ class CD(Product):
     stock_level = IntegerField(default=0)
 
     @classmethod
-    def create_cd(cls, product_name, product_price, product_description, stock_level):
+    def create_cd(cls, product_category, product_name, product_price, product_description, stock_level):
         try:
             cls.create(
+                product_category=product_category,
                 product_name=product_name,
                 product_price=product_price,
                 product_description=product_description,

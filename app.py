@@ -170,6 +170,7 @@ def create_product():
         if form.validate_on_submit():
             if form.product_category.data == "tshirt":
                 models.Tshirt.create(
+                    product_category=form.product_category.data,
                     product_name=form.product_name.data,
                     product_price=form.product_price.data,
                     product_description=form.product_description.data,
@@ -180,6 +181,7 @@ def create_product():
                 flash("T-Shirt created", "success")
             elif form.product_category.data == "hat":
                 models.Hat.create(
+                    product_category=form.product_category.data,
                     product_name=form.product_name.data,
                     product_price=form.product_price.data,
                     product_description=form.product_description.data,
@@ -188,6 +190,7 @@ def create_product():
                 flash("Hat created", "success")
             elif form.product_category.data == "cd":
                 models.CD.create(
+                    product_category=form.product_category.data,
                     product_name=form.product_name.data,
                     product_price=form.product_price.data,
                     product_description=form.product_description.data,
@@ -201,7 +204,11 @@ def create_product():
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
-    product_list = models.Product.select()
+    tshirts = list(models.Tshirt.select())
+    hats = list(models.Hat.select())
+    cds = list(models.CD.select())
+
+    product_list = tshirts + hats + cds
     return render_template('products.html', products=product_list)
 
 

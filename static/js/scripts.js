@@ -32,3 +32,21 @@ function other() {
     ls.value = 0;
 
 }
+
+function change_stock(sel) {
+    var selected_stock = sel.value + '_stock';
+    if(selected_stock === 'small_stock') {
+        document.getElementById('small_stock').style.display = ('inline');
+        document.getElementById('medium_stock').style.display = ('none');
+        document.getElementById('large_stock').style.display = ('none')
+    } else if (selected_stock === 'medium_stock') {
+        document.getElementById('medium_stock').style.display = ('inline');
+        document.getElementById('small_stock').style.display = ('none');
+        document.getElementById('large_stock').style.display = ('none')
+    }  else if (selected_stock === 'large_stock') {
+        document.getElementById('large_stock').style.display = ('inline');
+        document.getElementById('small_stock').style.display = ('none');
+        document.getElementById('medium_stock').style.display = ('none')
+    }
+
+}

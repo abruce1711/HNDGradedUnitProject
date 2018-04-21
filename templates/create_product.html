@@ -3,12 +3,6 @@
 {% block html %}<html class="home" lang="en">{% endblock %}
 {% block title %}Add Product{{ super() }}{% endblock %}
 {% block body %}
-    <script>
-        window.onload = function() {
-            document.getElementById("T-Shirt").checked = true;
-            tshirt();
-        };
-    </script>
     {{ super() }}
     <!--to do: check t-shirt and remove no_size on page load-->
     <form class="forms create_product col-md-3" method="POST" action="">

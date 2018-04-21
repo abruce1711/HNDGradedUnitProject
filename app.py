@@ -41,6 +41,9 @@ def before_request():
     g.db.connect()
     g.user = current_user
 
+    g.current_order = models.Order.find_current_order(current_user)
+    g.current_basket = models.Order.get_current_basket(g.current_order, current_user)
+
 
 @app.after_request
 def after_request(response):
@@ -210,6 +213,47 @@ def products():
 
     product_list = tshirts + hats + cds
     return render_template('products.html', products=product_list)
+
+
+@app.route('/add_to_order/product_category/<int:product_id>', methods=('POST', 'GET'))
+@login_required
+def add_to_order(product_id, product_category):
+    if request.method == 'POST':
+        quantity = int(request.form.get('quantity'))
+        if product_category == "tshirt":
+            size = request.form.get('size')
+        if g.current_order:
+            for line in g.current_order.order_lines:
+                if product_id == line.product_id:
+                    models.OrderLine.update_line_quantity(line.id, quantity)
+                    if product_category == "cd":
+                        models.Hat.update_stock(product_id, quantity, "reduce")
+                    elif product_category == "hat":
+                        models.CD.update_stock(product_id, quantity, "reduce")
+                    elif product_category == "tshirt":
+                        models.Tshirt.update_stock(product_id, size, quantity, "reduce")
+                    break
+            else:
+                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity)
+                if product_category == "cd":
+                    models.Hat.update_stock(product_id, quantity, "reduce")
+                elif product_category == "hat":
+                    models.CD.update_stock(product_id, quantity, "reduce")
+                elif product_category == "tshirt":
+                    models.Tshirt.update_stock(product_id, size, quantity, "reduce")
+            flash("Added to basket", "success")
+        else:
+            models.Order.create_order(current_user.id)
+            g.current_order = models.Order.find_current_order(current_user)
+            models.OrderLine.create_order_line(product_id, g.current_order.id, quantity)
+            if product_category == "cd":
+                models.Hat.update_stock(product_id, quantity, "reduce")
+            elif product_category == "hat":
+                models.CD.update_stock(product_id, quantity, "reduce")
+            elif product_category == "tshirt":
+                models.Tshirt.update_stock(product_id, size, quantity, "reduce")
+            flash("Added to basket", "success")
+    return redirect(url_for('products'))
 
 
 @app.route('/')

@@ -3,11 +3,6 @@
 {% block title %}Products{{super()}}{% endblock %}
 
 {% block body %}
-    <script>
-        window.onload = function() {
-
-        };
-    </script>
     <div class="container ">
         <div class="products">
             {% for product in products %}
@@ -28,7 +23,7 @@
 
                     {% if product.product_category == "tshirt" %}
                         <strong>Size: </strong>
-                        <select onchange="change_stock(this)">
+                        <select title="size" onchange="change_stock(this)">
                             {% if product.small_stock_level > 0 %}
                                 <option value="small">Small</option>
                             {% endif %}
@@ -41,7 +36,7 @@
                         </select><br><br>
                     {% endif %}
                     <strong>Quantity: </strong><input title="quantity" class="quantity" type="text" name="quantity"><br><br>
-                    <form action="#" method="POST">
+                    <form action="{{ url_for('add_to_order', product_id=product.id, product_category=product.product_category) }}" method="POST">
                         <button type="submit" class="btn add_to_basket">Add to basket</button>
                     </form>
                 </div>

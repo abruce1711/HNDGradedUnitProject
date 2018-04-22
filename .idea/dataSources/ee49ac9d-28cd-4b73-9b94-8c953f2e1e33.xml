@@ -74,133 +74,138 @@
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="23" parent="7" name="orderline_product_id">
+    <column id="23" parent="7" name="size">
+      <Position>5</Position>
+      <DataType>VARCHAR(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="24" parent="7" name="orderline_product_id">
       <ColNames>product_id</ColNames>
       <ColumnCollations></ColumnCollations>
     </index>
-    <index id="24" parent="7" name="orderline_order_id">
+    <index id="25" parent="7" name="orderline_order_id">
       <ColNames>order_id</ColNames>
       <ColumnCollations></ColumnCollations>
     </index>
-    <key id="25" parent="7">
+    <key id="26" parent="7">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="26" parent="7">
+    <foreign-key id="27" parent="7">
       <ColNames>product_id</ColNames>
       <RefTableName>product</RefTableName>
       <RefColNames>id</RefColNames>
     </foreign-key>
-    <foreign-key id="27" parent="7">
+    <foreign-key id="28" parent="7">
       <ColNames>order_id</ColNames>
       <RefTableName>order</RefTableName>
       <RefColNames>id</RefColNames>
     </foreign-key>
-    <column id="28" parent="8" name="id">
+    <column id="29" parent="8" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="29" parent="8" name="product_category">
+    <column id="30" parent="8" name="product_category">
       <Position>2</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="30" parent="8" name="product_name">
+    <column id="31" parent="8" name="product_name">
       <Position>3</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="31" parent="8" name="product_price">
+    <column id="32" parent="8" name="product_price">
       <Position>4</Position>
       <DataType>REAL|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="32" parent="8" name="product_description">
+    <column id="33" parent="8" name="product_description">
       <Position>5</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="33" parent="8" name="one_size_stock_level">
+    <column id="34" parent="8" name="one_size_stock">
       <Position>6</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="34" parent="8" name="small_stock_level">
+    <column id="35" parent="8" name="small_stock">
       <Position>7</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="35" parent="8" name="medium_stock_level">
+    <column id="36" parent="8" name="medium_stock">
       <Position>8</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="36" parent="8" name="large_stock_level">
+    <column id="37" parent="8" name="large_stock">
       <Position>9</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="37" parent="8">
+    <key id="38" parent="8">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="38" parent="9" name="type">
+    <column id="39" parent="9" name="type">
       <Position>1</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="39" parent="9" name="name">
+    <column id="40" parent="9" name="name">
       <Position>2</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="40" parent="9" name="tbl_name">
+    <column id="41" parent="9" name="tbl_name">
       <Position>3</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="41" parent="9" name="rootpage">
+    <column id="42" parent="9" name="rootpage">
       <Position>4</Position>
       <DataType>integer|0</DataType>
     </column>
-    <column id="42" parent="9" name="sql">
+    <column id="43" parent="9" name="sql">
       <Position>5</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="43" parent="10" name="id">
+    <column id="44" parent="10" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="44" parent="10" name="first_name">
+    <column id="45" parent="10" name="first_name">
       <Position>2</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="45" parent="10" name="last_name">
+    <column id="46" parent="10" name="last_name">
       <Position>3</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="46" parent="10" name="email_address">
+    <column id="47" parent="10" name="email_address">
       <Position>4</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="47" parent="10" name="password">
+    <column id="48" parent="10" name="password">
       <Position>5</Position>
       <DataType>VARCHAR(100)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="48" parent="10" name="user_role">
+    <column id="49" parent="10" name="user_role">
       <Position>6</Position>
       <DataType>VARCHAR(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="49" parent="10" name="user_email_address">
+    <index id="50" parent="10" name="user_email_address">
       <ColNames>email_address</ColNames>
       <ColumnCollations></ColumnCollations>
       <Unique>1</Unique>
     </index>
-    <key id="50" parent="10">
+    <key id="51" parent="10">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>

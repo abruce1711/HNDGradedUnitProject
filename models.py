@@ -104,16 +104,18 @@ class OrderLine(Model):
     product = ForeignKeyField(Product, related_name='order_line')
     order = ForeignKeyField(Order, related_name='order_lines')
     quantity = IntegerField(default=0)
+    size = CharField()
 
     class Meta:
         database = db
 
     @classmethod
-    def create_order_line(cls, product, order, quantity):
+    def create_order_line(cls, product, order, quantity, size):
         cls.create(
             product=product,
             order=order,
-            quantity=quantity
+            quantity=quantity,
+            size=size
         )
 
     @classmethod

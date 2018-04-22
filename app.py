@@ -198,6 +198,36 @@ def products():
 def add_to_order(product_id, product_category):
     if request.method == 'POST':
         quantity = int(request.form.get('quantity'))
+        size = request.form.get('size')
+        if g.current_order:
+            for line in g.current_order.order_lines:
+                if product_category == "tshirt":
+                    if product_id == line.product_id and size == line.size:
+                        models.OrderLine.update_line_quantity(line.id, quantity)
+                        # reduce stock
+                        break
+                else:
+                    if product_id == line.product_id:
+                        models.OrderLine.update_line_quantity(line.id, quantity)
+                        # reduce stock
+                        break
+            else:
+                if product_category == "tshirt":
+                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+                else:
+                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
+                # reduce stock
+            flash("Added to basket", "success")
+        else:
+            models.Order.create_order(current_user.id)
+            g.current_order = models.Order.find_current_order(current_user)
+            if product_category == "tshirt":
+                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+            else:
+                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
+            # reduce stock
+            flash("Added to basket", "success")
+    return redirect(url_for('products'))
 
 
 @app.route('/')

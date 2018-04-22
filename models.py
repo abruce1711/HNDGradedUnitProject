@@ -65,6 +65,7 @@ class Product(BaseModel):
 
 
 class Order(Model):
+    id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='orders')
     order_date = DateField(default=datetime.datetime.now)
     order_complete = BooleanField(default=False)
@@ -72,6 +73,17 @@ class Order(Model):
 
     class Meta:
         database = db
+
+    @classmethod
+    def update_order_total(cls, product_id):
+        total = 0
+        for line in OrderLine:
+            product = Product.get(Product.id == line.product_id)
+            temp = product.product_price*line.quantity
+            total += temp
+        order = Order.get(Order.id == product_id)
+        order.order_total = total
+        order.save()
 
     @classmethod
     def create_order(cls, user):
@@ -101,6 +113,7 @@ class Order(Model):
 
 
 class OrderLine(Model):
+    id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='order_line')
     order = ForeignKeyField(Order, related_name='order_lines')
     quantity = IntegerField(default=0)

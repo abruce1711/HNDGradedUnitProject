@@ -217,6 +217,7 @@ def add_to_order(product_id, product_category):
                 else:
                     models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
                 # reduce stock
+            models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
         else:
             models.Order.create_order(current_user.id)
@@ -226,6 +227,7 @@ def add_to_order(product_id, product_category):
             else:
                 models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
             # reduce stock
+            models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
     return redirect(url_for('products'))
 

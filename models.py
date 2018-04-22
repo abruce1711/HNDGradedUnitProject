@@ -9,7 +9,7 @@ db = SqliteDatabase('nativesins.db')
 
 class BaseModel(Model):
     class Meta:
-        database=db
+        database = db
 
 
 class User(UserMixin, BaseModel):
@@ -40,110 +40,28 @@ class Product(BaseModel):
     product_name = CharField()
     product_price = DoubleField()
     product_description = CharField()
+    one_size_stock = IntegerField(default=0)
+    small_stock = IntegerField(default=0)
+    medium_stock = IntegerField(default=0)
+    large_stock = IntegerField(default=0)
     # create attribute to contain uploaded image location
 
-
-class Tshirt(Product):
-    small_stock_level = IntegerField(default=0)
-    medium_stock_level = IntegerField(default=0)
-    large_stock_level = IntegerField(default=0)
-
     @classmethod
-    def create_tshirt(cls, product_category, product_name, product_price, product_description,
-                      small_stock_level, medium_stock_level, large_stock_level):
+    def create_product(cls, product_category, product_name, product_price, product_description, one_size_stock,
+                            small_stock, medium_stock, large_stock):
         try:
             cls.create(
                 product_category=product_category,
                 product_name=product_name,
                 product_price=product_price,
                 product_description=product_description,
-                small_stock_level=small_stock_level,
-                medium_stock_level=medium_stock_level,
-                large_stock_level=large_stock_level
+                one_size_stock=one_size_stock,
+                small_stock=small_stock,
+                medium_stock=medium_stock,
+                large_stock=large_stock
             )
         except IntegrityError:
             raise ValueError("T-Shirt with this name exists")
-
-    @classmethod
-    def update_stock(cls, product_id, size, quantity, add_or_reduce):
-        if add_or_reduce == "reduce":
-            if size == "small":
-                new_stock = cls.small_stock_level - quantity
-                product = cls(id=product_id, small_stock_level=new_stock)
-                product.save()
-            elif size == "medium":
-                new_stock = cls.medium_stock_level - quantity
-                product = cls(id=product_id, medium_stock_level=new_stock)
-                product.save()
-            elif size == "large":
-                new_stock = cls.large_stock_level - quantity
-                product = cls(id=product_id, large_stock_level=new_stock)
-                product.save()
-        else:
-            if size == "small":
-                new_stock = cls.small_stock_level + quantity
-                product = cls(id=product_id, small_stock_level=new_stock)
-                product.save()
-            elif size == "medium":
-                new_stock = cls.medium_stock_level + quantity
-                product = cls(id=product_id, medium_stock_level=new_stock)
-                product.save()
-            elif size == "large":
-                new_stock = cls.large_stock_level + quantity
-                product = cls(id=product_id, large_stock_level=new_stock)
-                product.save()
-
-
-class Hat(Product):
-    stock_level = IntegerField(default=0)
-
-    @classmethod
-    def create_hat(cls, product_category, product_name, product_price, product_description, stock_level):
-        try:
-            cls.create(
-                product_category=product_category,
-                product_name=product_name,
-                product_price=product_price,
-                product_description=product_description,
-                stock_level=stock_level,
-            )
-        except IntegrityError:
-            raise ValueError("Hat with this name exists")
-
-    @classmethod
-    def update_stock(cls, product_id, quantity, add_or_reduce):
-        if add_or_reduce == "reduce":
-            new_stock = cls.stock_level - quantity
-        else:
-            new_stock = cls.stock_level + quantity
-        product = cls(id=product_id, stock_level=new_stock)
-        product.save()
-
-
-class CD(Product):
-    stock_level = IntegerField(default=0)
-
-    @classmethod
-    def create_cd(cls, product_category, product_name, product_price, product_description, stock_level):
-        try:
-            cls.create(
-                product_category=product_category,
-                product_name=product_name,
-                product_price=product_price,
-                product_description=product_description,
-                stock_level=stock_level,
-            )
-        except IntegrityError:
-            raise ValueError("CD with this name exists")
-
-    @classmethod
-    def update_stock(cls, product_id, quantity, add_or_reduce):
-        if add_or_reduce == "reduce":
-            new_stock = cls.stock_level - quantity
-        else:
-            new_stock = cls.stock_level + quantity
-        product = cls(id=product_id, stock_level=new_stock)
-        product.save()
 
 
 class Order(Model):
@@ -212,6 +130,6 @@ class OrderLine(Model):
 
 def initialize():
     db.connect()
-    db.create_tables([User, Tshirt, Hat, CD, Order, OrderLine], safe=True)
+    db.create_tables([User, Product, Order, OrderLine], safe=True)
     db.close()
 

@@ -171,35 +171,17 @@ def create_product():
     else:
         # if the form is validated
         if form.validate_on_submit():
-            if form.product_category.data == "tshirt":
-                models.Tshirt.create(
-                    product_category=form.product_category.data,
-                    product_name=form.product_name.data,
-                    product_price=form.product_price.data,
-                    product_description=form.product_description.data,
-                    small_stock_level=form.small_stock_level.data,
-                    medium_stock_level=form.medium_stock_level.data,
-                    large_stock_level=form.large_stock_level.data
-                )
-                flash("T-Shirt created", "success")
-            elif form.product_category.data == "hat":
-                models.Hat.create(
-                    product_category=form.product_category.data,
-                    product_name=form.product_name.data,
-                    product_price=form.product_price.data,
-                    product_description=form.product_description.data,
-                    stock_level=form.product_stock_level.data
-                )
-                flash("Hat created", "success")
-            elif form.product_category.data == "cd":
-                models.CD.create(
-                    product_category=form.product_category.data,
-                    product_name=form.product_name.data,
-                    product_price=form.product_price.data,
-                    product_description=form.product_description.data,
-                    stock_level=form.product_stock_level.data
-                )
-                flash("CD created", "success")
+            models.Product.create(
+                product_category=form.product_category.data,
+                product_name=form.product_name.data,
+                product_price=form.product_price.data,
+                product_description=form.product_description.data,
+                one_size_stock=form.one_size_stock.data,
+                small_stock=form.small_stock.data,
+                medium_stock=form.medium_stock.data,
+                large_stock=form.large_stock.data
+            )
+            flash("Product added", "success")
             return redirect(url_for('create_product'))
         # returns the create_product template
         return render_template('create_product.html', form=form)
@@ -207,53 +189,15 @@ def create_product():
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
-    tshirts = list(models.Tshirt.select())
-    hats = list(models.Hat.select())
-    cds = list(models.CD.select())
-
-    product_list = tshirts + hats + cds
+    product_list = models.Product.select()
     return render_template('products.html', products=product_list)
 
 
-@app.route('/add_to_order/product_category/<int:product_id>', methods=('POST', 'GET'))
+@app.route('/add_to_order/<int:product_id>/<product_category>', methods=('POST', 'GET'))
 @login_required
 def add_to_order(product_id, product_category):
     if request.method == 'POST':
         quantity = int(request.form.get('quantity'))
-        if product_category == "tshirt":
-            size = request.form.get('size')
-        if g.current_order:
-            for line in g.current_order.order_lines:
-                if product_id == line.product_id:
-                    models.OrderLine.update_line_quantity(line.id, quantity)
-                    if product_category == "cd":
-                        models.Hat.update_stock(product_id, quantity, "reduce")
-                    elif product_category == "hat":
-                        models.CD.update_stock(product_id, quantity, "reduce")
-                    elif product_category == "tshirt":
-                        models.Tshirt.update_stock(product_id, size, quantity, "reduce")
-                    break
-            else:
-                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity)
-                if product_category == "cd":
-                    models.Hat.update_stock(product_id, quantity, "reduce")
-                elif product_category == "hat":
-                    models.CD.update_stock(product_id, quantity, "reduce")
-                elif product_category == "tshirt":
-                    models.Tshirt.update_stock(product_id, size, quantity, "reduce")
-            flash("Added to basket", "success")
-        else:
-            models.Order.create_order(current_user.id)
-            g.current_order = models.Order.find_current_order(current_user)
-            models.OrderLine.create_order_line(product_id, g.current_order.id, quantity)
-            if product_category == "cd":
-                models.Hat.update_stock(product_id, quantity, "reduce")
-            elif product_category == "hat":
-                models.CD.update_stock(product_id, quantity, "reduce")
-            elif product_category == "tshirt":
-                models.Tshirt.update_stock(product_id, size, quantity, "reduce")
-            flash("Added to basket", "success")
-    return redirect(url_for('products'))
 
 
 @app.route('/')

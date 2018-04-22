@@ -91,10 +91,10 @@ class CreateProduct(Form):
         validators=[DataRequired()]
     )
 
-    product_stock_level = IntegerField('Stock')
+    one_size_stock = IntegerField('Stock')
 
-    small_stock_level = IntegerField('Small Stock')
+    small_stock = IntegerField('Small Stock')
 
-    medium_stock_level = IntegerField('Medium Stock')
+    medium_stock = IntegerField('Medium Stock')
 
-    large_stock_level = IntegerField('Large Stock')
+    large_stock= IntegerField('Large Stock')

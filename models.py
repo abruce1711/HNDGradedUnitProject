@@ -63,16 +63,30 @@ class Product(BaseModel):
         except IntegrityError:
             raise ValueError("T-Shirt with this name exists")
 
+    @classmethod
+    def update_tshirt_stock(cls, product_id, quantity, size):
+        product = Product.get(Product.id == product_id)
+        if size == "small":
+            product.small_stock -= quantity
+        elif size == "medium":
+            product.medium_stock -= quantity
+        elif size == "large":
+            product.large_stock -= quantity
+        product.save()
 
-class Order(Model):
+    @classmethod
+    def update_other_stock(cls, product_id, quantity):
+        product = Product.get(Product.id == product_id)
+        product.one_size_stock -= quantity
+        product.save()
+
+
+class Order(BaseModel):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='orders')
     order_date = DateField(default=datetime.datetime.now)
     order_complete = BooleanField(default=False)
     order_total = DecimalField(default=0)
-
-    class Meta:
-        database = db
 
     @classmethod
     def update_order_total(cls, product_id):

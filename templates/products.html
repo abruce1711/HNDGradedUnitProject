@@ -5,42 +5,44 @@
 {% block body %}
     <div class="container ">
         <div class="products">
-            {% for product in products %}
-            <div class="card product" style="width: 18rem;">
-                <!--<img class="card-img-top" src="..." alt="Card image cap">-->
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.product_name }}</h5>
-                    <p class="card-text">{{ product.product_description }}</p>
-                    <p><strong>Price: </strong>£{{ product.product_price }}</p>
-                    <strong>Stock: </strong>
-                        {% if product.product_category == "tshirt" %}
-                            <div id="small_stock">{{ product.small_stock }}</div>
-                            <div id="medium_stock">{{ product.medium_stock }}</div>
-                            <div id="large_stock">{{ product.large_stock }}</div>
-                        {% else %}
-                            {{ product.one_size_stock }}
-                        {% endif %}<br><br>
-                    <form action="{{ url_for('add_to_order', product_id=product.id, product_category=product.product_category) }}" method="POST">
-                        {% if product.product_category == "tshirt" %}
-                            <strong>Size: </strong>
-                            <select title="size" name="size" onchange="change_stock(this)">
-                                {% if product.small_stock > 0 %}
-                                    <option value="small">Small</option>
-                                {% endif %}
-                                {% if product.medium_stock > 0 %}
-                                    <option value="medium">Medium</option>
-                                {% endif %}
-                                {% if product.large_stock > 0 %}
-                                    <option value="large">Large</option>
-                                {% endif %}
-                            </select><br><br>
-                        {% endif %}
-                        <strong>Quantity: </strong><input title="quantity" class="quantity" type="text" name="quantity"><br><br>
-                        <button type="submit" class="btn add_to_basket">Add to basket</button>
-                    </form>
+            <div class="row">
+                {% for product in products %}
+                <div class="card product col-md-3 col-sm-12" style="width: 18rem;">
+                    <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.product_name }}</h5>
+                        <p class="card-text">{{ product.product_description }}</p>
+                        <p><strong>Price: </strong>£{{ product.product_price }}</p>
+                        <strong>Stock: </strong>
+                            {% if product.product_category == "tshirt" %}
+                                <div id="small_stock">{{ product.small_stock }}</div>
+                                <div id="medium_stock">{{ product.medium_stock }}</div>
+                                <div id="large_stock">{{ product.large_stock }}</div>
+                            {% else %}
+                                {{ product.one_size_stock }}
+                            {% endif %}<br><br>
+                        <form action="{{ url_for('add_to_order', product_id=product.id, product_category=product.product_category) }}" method="POST">
+                            {% if product.product_category == "tshirt" %}
+                                <strong>Size: </strong>
+                                <select title="size" name="size" onchange="change_stock(this)">
+                                    {% if product.small_stock > 0 %}
+                                        <option value="small">Small</option>
+                                    {% endif %}
+                                    {% if product.medium_stock > 0 %}
+                                        <option value="medium">Medium</option>
+                                    {% endif %}
+                                    {% if product.large_stock > 0 %}
+                                        <option value="large">Large</option>
+                                    {% endif %}
+                                </select><br><br>
+                            {% endif %}
+                            <strong>Quantity: </strong><input title="quantity" class="quantity" type="text" name="quantity" required><br><br>
+                            <button type="submit" class="btn add_to_basket">Add to basket</button>
+                        </form>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
 {% endblock %}

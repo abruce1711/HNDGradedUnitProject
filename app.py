@@ -204,19 +204,20 @@ def add_to_order(product_id, product_category):
                 if product_category == "tshirt":
                     if product_id == line.product_id and size == line.size:
                         models.OrderLine.update_line_quantity(line.id, quantity)
-                        # reduce stock
+                        models.Product.update_tshirt_stock(product_id, quantity, size)
                         break
                 else:
                     if product_id == line.product_id:
                         models.OrderLine.update_line_quantity(line.id, quantity)
-                        # reduce stock
+                        models.Product.update_other_stock(product_id, quantity)
                         break
             else:
                 if product_category == "tshirt":
                     models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+                    models.Product.update_tshirt_stock(product_id, quantity, size)
                 else:
                     models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-                # reduce stock
+                    models.Product.update_other_stock(product_id, quantity)
             models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
         else:
@@ -224,9 +225,10 @@ def add_to_order(product_id, product_category):
             g.current_order = models.Order.find_current_order(current_user)
             if product_category == "tshirt":
                 models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+                models.Product.update_tshirt_stock(product_id, quantity, size)
             else:
                 models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-            # reduce stock
+                models.Product.update_other_stock(product_id, quantity)
             models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
     return redirect(url_for('products'))

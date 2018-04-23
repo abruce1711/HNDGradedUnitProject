@@ -34,6 +34,26 @@ class User(UserMixin, BaseModel):
             raise ValueError("User already exists")
 
 
+class AddressDetails(BaseModel):
+    user_id = ForeignKeyField(User, related_name='address')
+    address_line_1 = CharField()
+    address_line_2 = CharField()
+    town = CharField()
+    city = CharField()
+    postcode = CharField()
+
+    @classmethod
+    def add_address(cls, user_id, address_line_1, address_line_2, town, city, postcode):
+        cls.create(
+            user_id=user_id,
+            address_line_1=address_line_1,
+            address_line_2=address_line_2,
+            town=town,
+            city=city,
+            postcode=postcode
+        )
+
+
 class Product(BaseModel):
     id = PrimaryKeyField()
     product_category = CharField()
@@ -203,6 +223,6 @@ class OrderLine(Model):
 
 def initialize():
     db.connect()
-    db.create_tables([User, Product, Order, OrderLine], safe=True)
+    db.create_tables([User, AddressDetails, Product, Order, OrderLine], safe=True)
     db.close()
 

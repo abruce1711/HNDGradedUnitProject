@@ -46,6 +46,11 @@
             <div class="row">
                 <h3 class="order_total col-10 mx-auto">Total: £{{ current_order.order_total }}</h3>
             </div>
+            <div class="row">
+                <div class="complete_order col-10 mx-auto">
+                    <a href="#"><button type="button" class="btn complete_order_btn">Complete Order</button></a>
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

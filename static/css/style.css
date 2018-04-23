@@ -233,3 +233,11 @@ html, body {
     -webkit-text-stroke-width: 1px;
    -webkit-text-stroke-color: black;
 }
+
+.complete_order {
+    text-align: right;
+}
+
+.complete_order_btn {
+    background-color: #70DA8B;
+}

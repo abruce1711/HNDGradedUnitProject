@@ -1,5 +1,5 @@
 # all imports for the app to work
-from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request)
+from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request, session)
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
 
@@ -167,8 +167,13 @@ def add_address():
             postcode=form.postcode.data
         )
         flash("Address added", "success")
-        return redirect(url_for('add_address'))
-    return render_template('add_address.html', form=form)
+        completing_order = session['completing_order']
+        if completing_order:
+            session.pop('complete_order', None)
+            return redirect(url_for('complete_order'))
+        else:
+            return redirect(url_for('add_address'))
+    return render_template('add_address.html', form=form, current_basket=g.current_basket)
 
 
 @app.route('/create_product', methods=('GET', 'POST'))
@@ -315,8 +320,17 @@ def remove_from_basket(line_id, quantity):
         return redirect(url_for('basket'))
 
 
-#@app.route('/complete_order')
-#@login_required
+@app.route('/complete_order')
+@login_required
+def complete_order():
+    current_address = models.AddressDetails.select().where(models.AddressDetails.user_id == current_user.id)
+    if current_address.exists() and current_address is not None:
+        return render_template("complete_order.html", current_basket=g.current_basket,
+                               current_order=g.current_order)
+    else:
+        flash("Please add delivery address", "error")
+        session["completing_order"] = True
+        return redirect(url_for("add_address"))
 
 
 @app.route('/')
@@ -328,7 +342,7 @@ def index():
 @app.errorhandler(404)
 def not_found(error):
     """Route that returns a custom 404 page if the user encounters that error"""
-    return render_template('404.html')
+    return render_template('404.html', current_basket=g.current_basket, current_order=g.current_order)
 
 
 # if the app is being run directly, rather than imported

@@ -98,3 +98,29 @@ class CreateProduct(Form):
     medium_stock = IntegerField('Medium Stock')
 
     large_stock= IntegerField('Large Stock')
+
+
+class AddAddress(Form):
+    address_line_1 = StringField(
+        'Address Line 1',
+        validators=[DataRequired()]
+    )
+
+    address_line_2 = StringField(
+        'Address Line 2',
+    )
+
+    town = StringField(
+        'Town',
+        validators=[DataRequired()]
+    )
+
+    city = StringField(
+        'City',
+        validators=[DataRequired()]
+    )
+
+    postcode = StringField(
+        'Postcode',
+        validators=[DataRequired()]
+    )

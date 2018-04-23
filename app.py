@@ -150,7 +150,25 @@ def create_user():
                 )
                 flash("User created", "success")
                 return redirect(url_for('create_user'))
-        return render_template('create_user.html', form=form, current_basket=g.current_basket, user_id=current_user.id)
+        return render_template('create_user.html', form=form, current_basket=g.current_basket)
+
+
+@app.route('/add_address', methods=('POST', 'GET'))
+@login_required
+def add_address():
+    form = forms.AddAddress()
+    if form.validate_on_submit():
+        models.AddressDetails.add_address(
+            user_id=current_user.id,
+            address_line_1=form.address_line_1.data,
+            address_line_2=form.address_line_2.data,
+            town=form.town.data,
+            city=form.city.data,
+            postcode=form.postcode.data
+        )
+        flash("Address added", "success")
+        return redirect(url_for('add_address'))
+    return render_template('add_address.html', form=form)
 
 
 @app.route('/create_product', methods=('GET', 'POST'))
@@ -184,14 +202,13 @@ def create_product():
             flash("Product added", "success")
             return redirect(url_for('create_product'))
         # returns the create_product template
-        return render_template('create_product.html', form=form, current_basket=g.current_basket, user_id=current_user.id)
+        return render_template('create_product.html', form=form, current_basket=g.current_basket)
 
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
     product_list = models.Product.select()
-    return render_template('products.html', products=product_list,
-                           current_basket=g.current_basket, user_id=current_user.id)
+    return render_template('products.html', products=product_list, current_basket=g.current_basket)
 
 
 @app.route('/remove_product/<int:product_id>')
@@ -204,8 +221,7 @@ def remove_product(product_id):
         product = models.Product.get(models.Product.id == product_id)
         product.delete_instance()
         flash("Product deleted", "success")
-        return redirect(url_for('products', products=product_list,
-                                current_basket=g.current_basket, user_id=current_user.id))
+        return redirect(url_for('products', products=product_list, current_basket=g.current_basket))
 
 
 @app.route('/add_to_order/<int:product_id>/<product_category>', methods=('POST', 'GET'))
@@ -277,8 +293,7 @@ def basket(user_id):
     if current_user.id != user_id:
         abort(404)
     else:
-        return render_template('basket.html', current_basket=g.current_basket,
-                               user_id=current_user.id, current_order=g.current_order)
+        return render_template('basket.html', current_basket=g.current_basket, current_order=g.current_order)
 
 
 @app.route('/remove_from_basket/<int:line_id>/<int:quantity>')
@@ -297,7 +312,11 @@ def remove_from_basket(line_id, quantity):
         models.OrderLine.remove_order_line(line_id)
         models.Order.update_order_total(g.current_order.id)
         flash("Item removed", "success")
-        return redirect(url_for('basket', user_id=current_user.id))
+        return redirect(url_for('basket'))
+
+
+#@app.route('/complete_order')
+#@login_required
 
 
 @app.route('/')

@@ -41,6 +41,7 @@ class AddressDetails(BaseModel):
     town = CharField()
     city = CharField()
     postcode = CharField()
+    default = BooleanField(default=True)
 
     @classmethod
     def add_address(cls, user_id, address_line_1, address_line_2, town, city, postcode):

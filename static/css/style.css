@@ -49,7 +49,7 @@ html, body {
 }
 .error {
   background: #fc5555;
-  color: #343a40;
+  color: white;
 }
 
 .forms {
@@ -240,4 +240,8 @@ html, body {
 
 .complete_order_btn {
     background-color: #70DA8B;
+}
+
+.checkout {
+    margin-top: 5%;
 }

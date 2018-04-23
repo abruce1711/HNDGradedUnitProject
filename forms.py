@@ -100,6 +100,14 @@ class CreateProduct(Form):
     large_stock= IntegerField('Large Stock')
 
 
+class OrderProducts(Form):
+    order_by = SelectField(
+        'Order By',
+        choices=[
+            ('alphabet', 'Alphabetically'), ('price_lth', 'Price lowest first'), ('price_htl', 'Price highest first')
+        ]
+    )
+
 class AddAddress(Form):
     address_line_1 = StringField(
         'Address Line 1',

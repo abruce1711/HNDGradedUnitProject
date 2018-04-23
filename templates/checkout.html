@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block title %}Checkout{{ super() }}{% endblock %}
+{% block body %}
+    <div class="container checkout">
+        <table class="basket_item col-md-8">
+            <tr>
+                <td>
+                    <strong>Delivery Address:</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ default_address.address_line_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ default_address.address_line_2 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ default_address.town }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ default_address.city }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ default_address.postcode }}
+                </td>
+            </tr>
+        </table>
+
+        {% for item in current_order.order_lines %}
+            <table class="basket_item col-md-8">
+                <tr>
+                    <td>
+                        <strong>{{ item.product.product_name }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Price: £{{ item.product.product_price }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Quantity: {{ item.quantity }}
+                    </td>
+                </tr>
+            </table>
+        {% endfor %}
+    </div>
+
+{% endblock %}

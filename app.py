@@ -169,8 +169,8 @@ def add_address():
         flash("Address added", "success")
         completing_order = session['completing_order']
         if completing_order:
-            session.pop('complete_order', None)
-            return redirect(url_for('complete_order'))
+            session.pop('checking out', None)
+            return redirect(url_for('checkout'))
         else:
             return redirect(url_for('add_address'))
     return render_template('add_address.html', form=form, current_basket=g.current_basket)
@@ -212,8 +212,10 @@ def create_product():
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
+    order_form = forms.OrderProducts()
     product_list = models.Product.select()
-    return render_template('products.html', products=product_list, current_basket=g.current_basket)
+    return render_template('products.html', products=product_list,
+                           current_basket=g.current_basket, order_form=order_form)
 
 
 @app.route('/remove_product/<int:product_id>')
@@ -317,19 +319,26 @@ def remove_from_basket(line_id, quantity):
         models.OrderLine.remove_order_line(line_id)
         models.Order.update_order_total(g.current_order.id)
         flash("Item removed", "success")
-        return redirect(url_for('basket'))
+        return redirect(url_for('basket', user_id=current_user.id))
 
 
-@app.route('/complete_order')
+@app.route('/checkout')
 @login_required
-def complete_order():
-    current_address = models.AddressDetails.select().where(models.AddressDetails.user_id == current_user.id)
-    if current_address.exists() and current_address is not None:
-        return render_template("complete_order.html", current_basket=g.current_basket,
-                               current_order=g.current_order)
+def checkout():
+    address_query = models.AddressDetails.select().where(models.AddressDetails.user_id == current_user.id)
+    if g.current_order.order_lines.count() == 0:
+        flash("No items to checkout", "error")
+        return redirect(url_for('products'))
+    elif address_query.exists() and address_query is not None:
+        default_address = None
+        for address in address_query:
+            if address.default is True:
+                default_address = address
+        return render_template("checkout.html", current_basket=g.current_basket,
+                               current_order=g.current_order, default_address=default_address)
     else:
         flash("Please add delivery address", "error")
-        session["completing_order"] = True
+        session["checking out"] = True
         return redirect(url_for("add_address"))
 
 

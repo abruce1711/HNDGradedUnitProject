@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}Products{{super()}}{% endblock %}
+{% block title %}Basket{{super()}}{% endblock %}
 
 {% block body %}
     {% if current_basket == None or current_order.order_lines.count() == 0 %}
@@ -48,7 +48,7 @@
             </div>
             <div class="row">
                 <div class="complete_order col-10 mx-auto">
-                    <a href="{{ url_for('complete_order') }}"><button type="button" class="btn complete_order_btn">Complete Order</button></a>
+                    <a href="{{ url_for('checkout') }}"><button type="button" class="btn complete_order_btn">Proceed to Checkout</button></a>
                 </div>
             </div>
         </div>

@@ -131,6 +131,28 @@ html, body {
     display: inline-block;
 }
 
+.sorting_form {
+    position: absolute;
+    left: 0;
+    top: 5%;
+}
+
+.sorting_form select {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+
+.sorting_form select option {
+    color: black;
+}
+
+.sorting_form button {
+    background-color: #70DA8B;
+    border: none;
+    width: 100%;
+}
+
 .product_btngroup {
     position: absolute;
     right: 0;

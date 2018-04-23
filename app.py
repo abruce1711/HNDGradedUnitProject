@@ -212,10 +212,16 @@ def create_product():
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
-    order_form = forms.OrderProducts()
-    product_list = models.Product.select()
+    sorting_form = forms.OrderProducts()
+    product_list = models.Product.select().order_by(models.Product.product_name)
+    if sorting_form.validate_on_submit():
+        sort_by = sorting_form.order_by.data
+        if sort_by == "price_lth":
+            product_list = models.Product.select().order_by(models.Product.product_price)
+        elif sort_by == "price_htl":
+            product_list = models.Product.select().order_by(models.Product.product_price.desc())
     return render_template('products.html', products=product_list,
-                           current_basket=g.current_basket, order_form=order_form)
+                           current_basket=g.current_basket, sorting_form=sorting_form)
 
 
 @app.route('/remove_product/<int:product_id>')

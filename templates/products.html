@@ -1,8 +1,18 @@
 {% extends 'layout.html' %}
+{% from 'macros.html' import render_field %}
 
 {% block title %}Products{{super()}}{% endblock %}
 
 {% block body %}
+    <form class="sorting_form" method="POST" action="">
+        {{ sorting_form.hidden_tag() }}
+        <div class="form-content">
+            {% for field in sorting_form %}
+                {{ render_field(field) }}
+            {% endfor %}
+            <button type="submit" class="submit">Sort</button>
+        </div>
+    </form>
     <div class="container ">
         <div class="products">
             <div class="row">

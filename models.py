@@ -64,7 +64,7 @@ class Product(BaseModel):
             raise ValueError("T-Shirt with this name exists")
 
     @classmethod
-    def update_tshirt_stock(cls, product_id, quantity, size):
+    def reduce_tshirt_stock(cls, product_id, quantity, size):
         product = Product.get(Product.id == product_id)
         if size == "small":
             product.small_stock -= quantity
@@ -75,9 +75,26 @@ class Product(BaseModel):
         product.save()
 
     @classmethod
-    def update_other_stock(cls, product_id, quantity):
+    def reduce_other_stock(cls, product_id, quantity):
         product = Product.get(Product.id == product_id)
         product.one_size_stock -= quantity
+        product.save()
+
+    @classmethod
+    def increase_tshirt_stock(cls, product_id, quantity, size):
+        product = Product.get(Product.id == product_id)
+        if size == "small":
+            product.small_stock += quantity
+        elif size == "medium":
+            product.medium_stock += quantity
+        elif size == "large":
+            product.large_stock += quantity
+        product.save()
+
+    @classmethod
+    def increase_other_stock(cls, product_id, quantity):
+        product = Product.get(Product.id == product_id)
+        product.one_size_stock += quantity
         product.save()
 
 

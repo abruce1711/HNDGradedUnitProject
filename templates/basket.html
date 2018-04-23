@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block title %}Products{{super()}}{% endblock %}
+
+{% block body %}
+    {% if current_basket == None or current_order.order_lines.count() == 0 %}
+        <div class="empty_basket">
+            <h2 class="page_heading">Hi {{ current_user.first_name }}, your basket is currently empty! :(</h2>
+            <a href="{{ url_for('products') }}">Return to products</a>
+        </div>
+    {% else %}
+        <div class="container basket">
+            {% for item in current_order.order_lines %}
+                <div class="row">
+                <table class="basket_item col-10 mx-auto">
+                    <tr>
+                        <td class="name">
+                            <h3>{{ item.product.product_name }}</h3>
+                        </td>
+                        <td class="price">
+                            £{{ item.product.product_price }}
+                        </td>
+                        <td class="quantity">
+                            Quantity: {{ item.quantity }}
+                        </td>
+                        <td class="remove">
+                            <a href="{{ url_for('remove_from_basket',
+                            line_id = item.id, quantity = item.quantity) }}">Remove item</a>
+                        </td>
+                    </tr>
+                    {% if item.product.product_category == "tshirt" %}
+                        <tr>
+                            <td>
+                             {{ item.size|title }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="description">
+                            {{ item.product.product_description }}
+                        </td>
+                    </tr>
+                </table>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

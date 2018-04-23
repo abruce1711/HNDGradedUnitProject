@@ -17,7 +17,7 @@
             <script>
                 window.setTimeout(function() {
                 document.getElementById("notification").style.display= "none";
-                }, 2500);
+                }, 1500);
             </script>
             {% for category, message in messages %}
 
@@ -39,6 +39,11 @@
     </nav>
     <nav class="nav right-nav">
     {% if current_user.is_authenticated %}
+        {% if current_basket == None %}
+            <a class="nav-link" href="{{ url_for('basket', user_id = current_user.id) }}">Basket(0)</a>
+        {% else %}
+            <a class="nav-link" href="{{ url_for('basket', user_id = current_user.id) }}">Basket({{ current_basket }})</a>
+        {% endif %}
         <div class="dropdown nav-link">
             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ current_user.first_name }}'s Menu</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

@@ -37,7 +37,16 @@
                                 </select><br><br>
                             {% endif %}
                             <strong>Quantity: </strong><input title="quantity" class="quantity" type="text" name="quantity" required><br><br>
-                            <button type="submit" class="btn add_to_basket">Add to basket</button>
+                            {% if current_user.user_role != "customer" %}
+                                <div class="spacer"></div>
+                            {% endif %}
+                            <div class = "product_btngroup">
+                                <button type="submit" class="btn add_to_basket">Add to basket</button>
+                                {% if current_user.user_role != "customer" %}
+                                    <a href="#"><button type="button" class="btn alter_product">Edit</button></a>
+                                    <a href="{{ url_for('remove_product', product_id = product.id) }}"><button type="button" class="btn remove_product">Remove</button></a>
+                                {% endif %}
+                            </div>
                         </form>
                     </div>
                 </div>

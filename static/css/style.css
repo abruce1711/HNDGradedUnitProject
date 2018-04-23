@@ -21,6 +21,10 @@ html, body {
     display: inline;
 }
 
+.nav-link:hover {
+    color: cornflowerblue !important;
+}
+
 .left-nav {
     float: left;
     width: 70%;
@@ -127,13 +131,42 @@ html, body {
     display: inline-block;
 }
 
+.product_btngroup {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.spacer {
+    width: 100%;
+    height: 50px;
+}
+
 .add_to_basket {
     background-color: #70DA8B;
     width: 100%;
-    position: absolute;
-    right:    0;
-    bottom:   0;
+    transition: .2s all;
 }
+
+.add_to_basket:hover { background-color: #6ac180}
+
+.remove_product {
+    background-color: #fc5555;
+    width: 100%;
+    transition: .2s all;
+}
+
+.remove_product:hover {background-color: #e54b4b}
+
+.alter_product {
+    background-color: #f7e64f;
+    width: 100%;
+    transition: .2s all;
+    margin: 2px 0 2px;
+}
+
+.alter_product:hover {background-color: #e8d54c}
 
 #small_stock {
     display: inline;
@@ -145,5 +178,49 @@ html, body {
 
 .quantity {
     width: 15%;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
+}
+
+.basket {
+    margin-top: 5%;
+}
+
+.empty_basket {
+    color: white;
+    text-align: center;
+}
+
+.page_heading {
+    -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
+}
+
+.empty_basket a {
+    color: white;
+    text-decoration: none;
+    -webkit-text-stroke-width: 0.2px;
+   -webkit-text-stroke-color: black;
+}
+
+.empty_basket a:hover {
+    color: cornflowerblue;
+}
+
+.basket_item {
+    color: black;
+    background: #dddddd;
+    margin-top: 10px;
+}
+
+.remove a {
+    text-decoration: none;
+    transition: .2s all;
+}
+
+.price {
+    width: 10%;
+}
+
+.name {
+    width: 60%;
 }

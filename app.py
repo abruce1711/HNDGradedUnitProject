@@ -150,7 +150,7 @@ def create_user():
                 )
                 flash("User created", "success")
                 return redirect(url_for('create_user'))
-        return render_template('create_user.html', form=form)
+        return render_template('create_user.html', form=form, current_basket=g.current_basket, user_id=current_user.id)
 
 
 @app.route('/create_product', methods=('GET', 'POST'))
@@ -184,13 +184,28 @@ def create_product():
             flash("Product added", "success")
             return redirect(url_for('create_product'))
         # returns the create_product template
-        return render_template('create_product.html', form=form)
+        return render_template('create_product.html', form=form, current_basket=g.current_basket, user_id=current_user.id)
 
 
 @app.route('/products', methods=('POST', 'GET'))
 def products():
     product_list = models.Product.select()
-    return render_template('products.html', products=product_list)
+    return render_template('products.html', products=product_list,
+                           current_basket=g.current_basket, user_id=current_user.id)
+
+
+@app.route('/remove_product/<int:product_id>')
+@login_required
+def remove_product(product_id):
+    if current_user.user_role == "customer":
+        abort(404)
+    else:
+        product_list = models.Product.select()
+        product = models.Product.get(models.Product.id == product_id)
+        product.delete_instance()
+        flash("Product deleted", "success")
+        return redirect(url_for('products', products=product_list,
+                                current_basket=g.current_basket, user_id=current_user.id))
 
 
 @app.route('/add_to_order/<int:product_id>/<product_category>', methods=('POST', 'GET'))
@@ -204,20 +219,20 @@ def add_to_order(product_id, product_category):
                 if product_category == "tshirt":
                     if product_id == line.product_id and size == line.size:
                         models.OrderLine.update_line_quantity(line.id, quantity)
-                        models.Product.update_tshirt_stock(product_id, quantity, size)
+                        models.Product.reduce_tshirt_stock(product_id, quantity, size)
                         break
                 else:
                     if product_id == line.product_id:
                         models.OrderLine.update_line_quantity(line.id, quantity)
-                        models.Product.update_other_stock(product_id, quantity)
+                        models.Product.reduce_other_stock(product_id, quantity)
                         break
             else:
                 if product_category == "tshirt":
                     models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
-                    models.Product.update_tshirt_stock(product_id, quantity, size)
+                    models.Product.reduce_tshirt_stock(product_id, quantity, size)
                 else:
                     models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-                    models.Product.update_other_stock(product_id, quantity)
+                    models.Product.reduce_other_stock(product_id, quantity)
             models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
         else:
@@ -225,19 +240,47 @@ def add_to_order(product_id, product_category):
             g.current_order = models.Order.find_current_order(current_user)
             if product_category == "tshirt":
                 models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
-                models.Product.update_tshirt_stock(product_id, quantity, size)
+                models.Product.reduce_tshirt_stock(product_id, quantity, size)
             else:
                 models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-                models.Product.update_other_stock(product_id, quantity)
+                models.Product.reduce_other_stock(product_id, quantity)
             models.Order.update_order_total(g.current_order.id)
             flash("Added to basket", "success")
     return redirect(url_for('products'))
 
 
+@app.route('/basket/<int:user_id>')
+@login_required
+def basket(user_id):
+    if current_user.id != user_id:
+        abort(404)
+    else:
+        return render_template('basket.html', current_basket=g.current_basket,
+                               user_id=current_user.id, current_order=g.current_order)
+
+
+@app.route('/remove_from_basket/<int:line_id>/<int:quantity>')
+@login_required
+def remove_from_basket(line_id, quantity):
+    line = models.OrderLine.get(models.OrderLine.id == line_id)
+    product = models.Product.get(models.Product.id == line.product_id)
+    order = models.Order.get(models.Order.id == line.order_id)
+    if order.user_id != current_user.id:
+        abort(404)
+    else:
+        if product.product_category == "tshirt":
+            models.Product.increase_tshirt_stock(product.id, quantity, line.size)
+        else:
+            models.Product.increase_other_stock(product.id, quantity)
+        models.OrderLine.remove_order_line(line_id)
+        flash("Item removed", "success")
+        return redirect(url_for('basket', user_id=current_user.id))
+
+
 @app.route('/')
 def index():
     """Route that returns the index(home) page"""
-    return render_template('index.html')
+    return render_template('index.html', current_basket=g.current_basket, user=current_user)
 
 
 @app.errorhandler(404)

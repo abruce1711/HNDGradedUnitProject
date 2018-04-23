@@ -43,6 +43,9 @@
                 </table>
                 </div>
             {% endfor %}
+            <div class="row">
+                <h3 class="order_total col-10 mx-auto">Total: £{{ current_order.order_total }}</h3>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

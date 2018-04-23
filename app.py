@@ -218,34 +218,56 @@ def add_to_order(product_id, product_category):
             for line in g.current_order.order_lines:
                 if product_category == "tshirt":
                     if product_id == line.product_id and size == line.size:
-                        models.OrderLine.update_line_quantity(line.id, quantity)
-                        models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                        if models.Product.tshirt__in_stock(quantity, product_id, size):
+                            models.OrderLine.update_line_quantity(line.id, quantity)
+                            models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                            flash("Added to basket", "success")
+                        else:
+                            flash("Please enter a quantity less than the stock", "error")
                         break
                 else:
                     if product_id == line.product_id:
-                        models.OrderLine.update_line_quantity(line.id, quantity)
-                        models.Product.reduce_other_stock(product_id, quantity)
+                        if models.Product.other_in_stock(quantity, product_id):
+                            models.OrderLine.update_line_quantity(line.id, quantity)
+                            models.Product.reduce_other_stock(product_id, quantity)
+                            flash("Added to basket", "success")
+                        else:
+                            flash("Please enter a quantity less than the stock", "error")
                         break
             else:
                 if product_category == "tshirt":
-                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
-                    models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                    if models.Product.tshirt__in_stock(quantity, product_id, size):
+                        models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+                        models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                        flash("Added to basket", "success")
+                    else:
+                        flash("Please enter a quantity less than the stock", "error")
                 else:
-                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-                    models.Product.reduce_other_stock(product_id, quantity)
+                    if models.Product.other_in_stock(quantity, product_id):
+                        models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
+                        models.Product.reduce_other_stock(product_id, quantity)
+                        flash("Added to basket", "success")
+                    else:
+                        flash("Please enter a quantity less than the stock", "error")
             models.Order.update_order_total(g.current_order.id)
-            flash("Added to basket", "success")
         else:
             models.Order.create_order(current_user.id)
             g.current_order = models.Order.find_current_order(current_user)
             if product_category == "tshirt":
-                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
-                models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                if models.Product.tshirt__in_stock(quantity, product_id, size):
+                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size=size)
+                    models.Product.reduce_tshirt_stock(product_id, quantity, size)
+                    flash("Added to basket", "success")
+                else:
+                    flash("Please enter a quantity less than the stock", "error")
             else:
-                models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
-                models.Product.reduce_other_stock(product_id, quantity)
+                if models.Product.other_in_stock(quantity, product_id):
+                    models.OrderLine.create_order_line(product_id, g.current_order.id, quantity, size="one_size")
+                    models.Product.reduce_other_stock(product_id, quantity)
+                    flash("Added to basket", "success")
+                else:
+                    flash("Please enter a quantity less than the stock", "error")
             models.Order.update_order_total(g.current_order.id)
-            flash("Added to basket", "success")
     return redirect(url_for('products'))
 
 
@@ -273,6 +295,7 @@ def remove_from_basket(line_id, quantity):
         else:
             models.Product.increase_other_stock(product.id, quantity)
         models.OrderLine.remove_order_line(line_id)
+        models.Order.update_order_total(g.current_order.id)
         flash("Item removed", "success")
         return redirect(url_for('basket', user_id=current_user.id))
 

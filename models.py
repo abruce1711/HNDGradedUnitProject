@@ -38,7 +38,7 @@ class Product(BaseModel):
     id = PrimaryKeyField()
     product_category = CharField()
     product_name = CharField()
-    product_price = DoubleField()
+    product_price = DecimalField(default=0)
     product_description = CharField()
     one_size_stock = IntegerField(default=0)
     small_stock = IntegerField(default=0)
@@ -96,6 +96,33 @@ class Product(BaseModel):
         product = Product.get(Product.id == product_id)
         product.one_size_stock += quantity
         product.save()
+
+    @classmethod
+    def tshirt__in_stock(cls, quantity, product_id, size):
+        product = Product.get(Product.id == product_id)
+        if size == "small":
+            if quantity > product.small_stock:
+                return False
+            else:
+                return True
+        elif size == "medium":
+                if quantity > product.medium_stock:
+                    return False
+                else:
+                    return True
+        elif size == "large":
+                if quantity > product.large_stock:
+                    return False
+                else:
+                    return True
+
+    @classmethod
+    def other_in_stock(cls, quantity, product_id):
+        product = Product.get(Product.id == product_id)
+        if quantity > product.one_size_stock:
+            return False
+        else:
+            return True
 
 
 class Order(BaseModel):

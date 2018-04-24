@@ -155,6 +155,15 @@ def create_user():
         return render_template('create_user.html', form=form, current_basket=g.current_basket)
 
 
+@app.route('/account/<int:user_id>')
+@login_required
+def account(user_id):
+    if current_user.id != user_id:
+        abort(404)
+    else:
+        return render_template('account.html', current_basket=g.current_basket)
+
+
 @app.route('/add_address', methods=('POST', 'GET'))
 @login_required
 def add_address():
@@ -169,7 +178,7 @@ def add_address():
             postcode=form.postcode.data
         )
         flash("Address added", "success")
-        completing_order = session['completing_order']
+        completing_order = session['checking out']
         if completing_order:
             session.pop('checking out', None)
             return redirect(url_for('checkout'))
@@ -222,6 +231,8 @@ def products():
             product_list = models.Product.select().order_by(models.Product.product_price)
         elif sort_by == "price_htl":
             product_list = models.Product.select().order_by(models.Product.product_price.desc())
+        elif sort_by == 'alphabet':
+            product_list = models.Product.select().order_by(models.Product.product_name)
     return render_template('products.html', products=product_list,
                            current_basket=g.current_basket, sorting_form=sorting_form)
 

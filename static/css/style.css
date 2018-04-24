@@ -267,3 +267,20 @@ html, body {
 .checkout {
     margin-top: 5%;
 }
+
+.checkout h3 {
+    color: white;
+    -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
+}
+
+.delivery_address {
+    margin-bottom: 50px;
+}
+
+.basket_tables{
+    color: black;
+    background: #dddddd;
+    margin-top: 10px;
+    width: 100%;
+}

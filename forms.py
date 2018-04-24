@@ -104,7 +104,7 @@ class OrderProducts(Form):
     order_by = SelectField(
         'Order By',
         choices=[
-            ('', 'Sort Products'), ('price_lth', 'Price lowest first'), ('price_htl', 'Price highest first')
+            ('', 'Sort Products'), ('alphabet', 'Alphabetical Order'), ('price_lth', 'Price lowest first'), ('price_htl', 'Price highest first')
         ]
     )
 

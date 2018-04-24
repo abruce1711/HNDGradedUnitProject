@@ -2,58 +2,90 @@
 {% block title %}Checkout{{ super() }}{% endblock %}
 {% block body %}
     <div class="container checkout">
-        <table class="basket_item col-md-8">
-            <tr>
-                <td>
-                    <strong>Delivery Address:</strong>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ default_address.address_line_1 }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ default_address.address_line_2 }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ default_address.town }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ default_address.city }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ default_address.postcode }}
-                </td>
-            </tr>
-        </table>
-
-        {% for item in current_order.order_lines %}
-            <table class="basket_item col-md-8">
+        <div class="row justify-content-between">
+            <div class="delivery_address col-md-6">
+            <h3>Delivery Address</h3>
+            <table class="basket_tables">
                 <tr>
                     <td>
-                        <strong>{{ item.product.product_name }}</strong>
+                        <strong>Delivery Address:</strong>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Price: £{{ item.product.product_price }}
+                        {{ default_address.address_line_1 }}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Quantity: {{ item.quantity }}
+                        {{ default_address.address_line_2 }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ default_address.town }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ default_address.city }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ default_address.postcode }}
                     </td>
                 </tr>
             </table>
-        {% endfor %}
+            </div>
+
+        <div class="purchase col-md-4">
+            <h3>Purchase Information</h3>
+            <table class="basket_tables">
+                <tr>
+                    <td>
+                        <strong>Purchase Information</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Purchase Information
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Purchase Information
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        </div>
+
+        <div class="row">
+            <div class="order_summary col-md-6">
+            <h3>Order Summary</h3>
+                {% for item in current_order.order_lines %}
+                    <table class="basket_tables">
+                        <tr>
+                            <td>
+                                <strong>{{ item.product.product_name }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Price: £{{ item.product.product_price }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Quantity: {{ item.quantity }}
+                            </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
 {% endblock %}

@@ -106,7 +106,9 @@ def register():
             user_role="customer"
         )
         flash("Account Created", "success")
-        return redirect(url_for('login'))
+        user = models.User.get(models.User.email_address == form.email.data)
+        login_user(user)
+        return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
 

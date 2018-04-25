@@ -35,13 +35,14 @@ class User(UserMixin, BaseModel):
 
 
 class AddressDetails(BaseModel):
+    id = PrimaryKeyField()
     user_id = ForeignKeyField(User, related_name='address')
     address_line_1 = CharField()
     address_line_2 = CharField()
     town = CharField()
     city = CharField()
     postcode = CharField()
-    default = BooleanField(default=True)
+    default = BooleanField(default=False)
 
     @classmethod
     def add_address(cls, user_id, address_line_1, address_line_2, town, city, postcode):
@@ -53,6 +54,30 @@ class AddressDetails(BaseModel):
             city=city,
             postcode=postcode
         )
+        return cls.id
+
+    @classmethod
+    def get_default_address(cls, user_id):
+        default_address = None
+        address_query = cls.select().where(cls.user_id == user_id)
+        if address_query.exists() and address_query is not None:
+            for address in address_query:
+                if address.default is True:
+                    default_address = address
+        return default_address
+
+    @classmethod
+    def change_default(cls, new_default_id, user_id):
+        old_default = cls.get_default_address(user_id)
+        new_default = cls.get(cls.id == new_default_id)
+        if old_default is None:
+            new_default.default = True
+            new_default.save()
+        else:
+            old_default.default = False
+            new_default.default = True
+            old_default.save()
+            new_default.save()
 
 
 class Product(BaseModel):
@@ -149,6 +174,7 @@ class Product(BaseModel):
 class Order(BaseModel):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='orders')
+    address = ForeignKeyField(AddressDetails, related_name='address', null=True)
     order_date = DateField(default=datetime.datetime.now)
     order_complete = BooleanField(default=False)
     order_total = DecimalField(default=0)
@@ -167,6 +193,19 @@ class Order(BaseModel):
     @classmethod
     def create_order(cls, user):
         cls.create(user=user)
+
+    @classmethod
+    def create_order_with_address(cls, user, address):
+        cls.create(
+            user=user,
+            address=address
+        )
+
+    @classmethod
+    def add_address_to_order(cls, order_id, address):
+        order = cls.get(cls.id == order_id)
+        order.address = address
+        order.save()
 
     @classmethod
     def find_current_order(cls, user):

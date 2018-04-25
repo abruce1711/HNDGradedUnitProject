@@ -43,6 +43,10 @@ def before_request():
 
     g.current_order = models.Order.find_current_order(current_user)
     g.current_basket = models.Order.get_current_basket(g.current_order, current_user)
+    try:
+        g.default_address = models.AddressDetails.get_default_address(current_user.id)
+    except AttributeError:
+        g.default_address = None
 
 
 @app.after_request
@@ -177,9 +181,12 @@ def add_address():
             city=form.city.data,
             postcode=form.postcode.data
         )
+        address = models.AddressDetails.select().order_by(models.AddressDetails.id.desc()).get()
+        models.AddressDetails.change_default(address.id, current_user.id)
+        if g.current_order is not None:
+            models.Order.add_address_to_order(g.current_order.id, address.id)
         flash("Address added", "success")
-        completing_order = session['checking out']
-        if completing_order:
+        if session.get('checking out'):
             session.pop('checking out', None)
             return redirect(url_for('checkout'))
         else:
@@ -293,7 +300,10 @@ def add_to_order(product_id, product_category):
                         flash("Please enter a quantity less than the stock", "error")
             models.Order.update_order_total(g.current_order.id)
         else:
-            models.Order.create_order(current_user.id)
+            if g.default_address is not None:
+                models.Order.create_order_with_address(current_user.id, g.default_address.id)
+            else:
+                models.Order.create_order(current_user.id)
             g.current_order = models.Order.find_current_order(current_user)
             if product_category == "tshirt":
                 if models.Product.tshirt__in_stock(quantity, product_id, size):
@@ -344,17 +354,12 @@ def remove_from_basket(line_id, quantity):
 @app.route('/checkout')
 @login_required
 def checkout():
-    address_query = models.AddressDetails.select().where(models.AddressDetails.user_id == current_user.id)
     if g.current_order.order_lines.count() == 0:
         flash("No items to checkout", "error")
         return redirect(url_for('products'))
-    elif address_query.exists() and address_query is not None:
-        default_address = None
-        for address in address_query:
-            if address.default is True:
-                default_address = address
+    elif g.default_address is not None:
         return render_template("checkout.html", current_basket=g.current_basket,
-                               current_order=g.current_order, default_address=default_address)
+                               current_order=g.current_order, default_address=g.default_address)
     else:
         flash("Please add delivery address", "error")
         session["checking out"] = True

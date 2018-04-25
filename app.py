@@ -168,6 +168,8 @@ def account(user_id):
         return render_template('account.html', current_basket=g.current_basket)
 
 
+
+
 @app.route('/add_address', methods=('POST', 'GET'))
 @login_required
 def add_address():

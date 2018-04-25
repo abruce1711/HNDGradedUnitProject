@@ -212,16 +212,9 @@ html, body {
     text-align: center;
 }
 
-.page_heading {
-    -webkit-text-stroke-width: 1px;
-   -webkit-text-stroke-color: black;
-}
-
 .empty_basket a {
     color: white;
     text-decoration: none;
-    -webkit-text-stroke-width: 0.2px;
-   -webkit-text-stroke-color: black;
 }
 
 .empty_basket a:hover {
@@ -229,8 +222,8 @@ html, body {
 }
 
 .basket_item {
-    color: black;
-    background: #dddddd;
+    color: #303030;
+    background: white;
     margin-top: 10px;
 }
 
@@ -252,8 +245,6 @@ html, body {
     text-align: right;
     border-top: 1px solid white;
     color: white;
-    -webkit-text-stroke-width: 1px;
-   -webkit-text-stroke-color: black;
 }
 
 .complete_order {
@@ -270,8 +261,9 @@ html, body {
 
 .checkout h3 {
     color: white;
-    -webkit-text-stroke-width: 1px;
-   -webkit-text-stroke-color: black;
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+
 }
 
 .delivery_address {
@@ -279,8 +271,32 @@ html, body {
 }
 
 .basket_tables{
-    color: black;
-    background: #dddddd;
+    color: #303030;
+    background: white;
     margin-top: 10px;
     width: 100%;
 }
+
+.basket_tables a {
+    text-decoration: none;
+}
+
+.account {
+    margin-top: 5%;
+}
+
+.account_item_top, .account_item_bottom {
+    display: inline-block;
+    width: 48%;
+    transition: .2s all;
+    color: #303030;
+}
+
+.account_item_top:hover, .account_item_bottom:hover {
+    background-color: #90b5f4;
+}
+
+.account_item_top {
+    margin-bottom: 10px;
+}
+

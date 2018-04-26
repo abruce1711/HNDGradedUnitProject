@@ -11,7 +11,7 @@
                         {{ default_address.address_line_1 }}
                     </td>
                     <td>
-                        <a href="#">Change Default</a>
+                        <a href="{{ url_for('addresses', user_id=current_user.id) }}">Change Address</a>
                     </td>
                 </tr>
                 <tr>

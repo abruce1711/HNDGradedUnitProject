@@ -306,15 +306,21 @@ html, body {
 }
 
 .plus_button {
-    border: 1px white dashed;
-    margin-right: 10px;
-    border-radius: 20px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.7);
     transition: .2s all;
-    background-color: #70DA8B;
+}
+
+.plus_button a {
+    color: #343a40;
+}
+
+.plus_button img {
+    width: 100%;
 }
 
 .plus_button:hover {
-    background-color: #6ac180
+    background-color: white;
 }
 
 .addresses {
@@ -324,5 +330,13 @@ html, body {
 .addresses a {
     text-decoration: none;
     transition: .2s all;
+}
+
+.edit_address a {
+    text-decoration: none;
+    color: #343a40;
+}
+.cancel {
+    background-color: #fc5555 !important;
 }
 

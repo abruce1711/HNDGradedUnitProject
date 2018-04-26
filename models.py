@@ -57,6 +57,23 @@ class AddressDetails(BaseModel):
         return cls.id
 
     @classmethod
+    def edit_address(cls, address_id, address_line_1, address_line_2, town, city, postcode):
+        query = cls.update(
+            address_line_1=address_line_1,
+            address_line_2=address_line_2,
+            town=town,
+            city=city,
+            postcode=postcode
+        ).where(cls.id == address_id)
+        query.execute()
+
+
+    @classmethod
+    def delete_address(cls, address_id):
+        address = cls.get(cls.id == address_id)
+        address.delete_instance()
+
+    @classmethod
     def get_default_address(cls, user_id):
         default_address = None
         address_query = cls.select().where(cls.user_id == user_id)
@@ -180,13 +197,14 @@ class Order(BaseModel):
     order_total = DecimalField(default=0)
 
     @classmethod
-    def update_order_total(cls, product_id):
+    def update_order_total(cls, order_id):
         total = 0
-        for line in OrderLine:
+        order_lines = OrderLine.select().where(OrderLine.order == order_id)
+        for line in order_lines:
             product = Product.get(Product.id == line.product_id)
             temp = product.product_price*line.quantity
             total += temp
-        order = Order.get(Order.id == product_id)
+        order = Order.get(Order.id == order_id)
         order.order_total = total
         order.save()
 

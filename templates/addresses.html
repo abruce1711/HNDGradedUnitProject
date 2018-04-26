@@ -8,9 +8,18 @@
     {% else %}
         <div class="row">
     {% endif %}
-        <a href="{{ url_for('add_address') }}"><img class="plus_button" src="/static/img/plus-new.png"></a>
+
+        <div class="card address_item plus_button col-md-3 col-sm-12">
+            <a href="{{ url_for('add_address') }}">
+                <div class="card-body">
+                    <img  src="/static/img/plus-new.png">
+                    <h6 class="card-subtitle mb-2">Add Address</h6>
+                </div>
+            </a>
+        </div>
+
     {% for address in address_list %}
-        <div class="card address_item col-md-3">
+        <div class="card address_item col-md-3 col-sm-12">
           <div class="card-body">
             {% if address.default == True %}
                 <h6 class="card-subtitle mb-2 text-muted">Default</h6>
@@ -23,10 +32,10 @@
                 {{ address.postcode }}
             </p>
             {% if address.default == False %}
-                <a href="#">Set Default</a><br>
+                <a href="{{ url_for('set_address_default', address_id = address.id) }}">Set Default</a><br>
             {% endif %}
-            <a href="#">Edit</a><br>
-            <a href="#">Delete</a>
+            <a href="{{ url_for('edit_address', address_id = address.id) }}">Edit </a><br>
+            <a href="{{ url_for('delete_address', address_id = address.id) }}">Delete</a>
           </div>
         </div>
     {%  endfor %}

@@ -169,9 +169,16 @@ def account(user_id):
 
 
 @app.route('/addresses/<int:user_id>')
+@login_required
 def addresses(user_id):
-    address_list = models.AddressDetails.select()
-    return render_template('addresses.html', current_basket=g.current_basket, address_list=address_list)
+    if current_user.id != user_id:
+        abort(404)
+    else:
+        address_list = models.AddressDetails\
+            .select()\
+            .where(models.AddressDetails.user_id == current_user.id)\
+            .order_by(models.AddressDetails.default.desc())
+        return render_template('addresses.html', current_basket=g.current_basket, address_list=address_list)
 
 
 @app.route('/add_address', methods=('POST', 'GET'))
@@ -196,8 +203,51 @@ def add_address():
             session.pop('checking out', None)
             return redirect(url_for('checkout'))
         else:
-            return redirect(url_for('add_address'))
+            return redirect(url_for('addresses', user_id=current_user.id))
     return render_template('add_address.html', form=form, current_basket=g.current_basket)
+
+
+@app.route('/set_address_default/<int:address_id>')
+@login_required
+def set_address_default(address_id):
+    models.AddressDetails.change_default(address_id, current_user.id)
+    flash("New default set", "success")
+    return redirect(url_for('addresses', user_id=current_user.id))
+
+
+@app.route('/edit_address/<int:address_id>', methods=('POST', 'GET'))
+def edit_address(address_id):
+    form = forms.AddAddress()
+    if form.validate_on_submit():
+        models.AddressDetails.edit_address(
+            address_id=address_id,
+            address_line_1=form.address_line_1.data,
+            address_line_2=form.address_line_2.data,
+            town=form.town.data,
+            city=form.city.data,
+            postcode=form.postcode.data
+        )
+        flash("Address updated", "success")
+        return redirect(url_for('addresses', user_id=current_user.id))
+    address = models.AddressDetails.get(models.AddressDetails.id == address_id)
+    address_items = []
+    for attr, value in address.__data__.items():
+        if attr != 'id' and attr != 'user_id' and attr != 'default':
+            address_items.append(value)
+
+    return render_template('edit_address.html', address_items=address_items, form=form, current_basket=g.current_basket)
+
+
+@app.route('/delete_address/<int:address_id>')
+@login_required
+def delete_address(address_id):
+    models.AddressDetails.delete_address(address_id)
+    new_default = models.AddressDetails.select()\
+        .order_by(models.AddressDetails.id.desc())\
+        .get()
+    models.AddressDetails.change_default(new_default, current_user.id)
+    flash("Address Removed", "success")
+    return redirect(url_for('addresses', user_id=current_user.id))
 
 
 @app.route('/create_product', methods=('GET', 'POST'))

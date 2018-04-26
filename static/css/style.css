@@ -300,3 +300,29 @@ html, body {
     margin-bottom: 10px;
 }
 
+.address_item {
+    display: inline-block;
+    margin: 5px;
+}
+
+.plus_button {
+    border: 1px white dashed;
+    margin-right: 10px;
+    border-radius: 20px;
+    transition: .2s all;
+    background-color: #70DA8B;
+}
+
+.plus_button:hover {
+    background-color: #6ac180
+}
+
+.addresses {
+    margin-top: 5%;
+}
+
+.addresses a {
+    text-decoration: none;
+    transition: .2s all;
+}
+

@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block title %}Addresses{{ super() }}{% endblock %}
+
+{% block body %}
+    <div class="container addresses">
+    {% if address_list|length >= 3 %}
+        <div class="row">
+    {% else %}
+        <div class="row">
+    {% endif %}
+        <a href="{{ url_for('add_address') }}"><img class="plus_button" src="/static/img/plus-new.png"></a>
+    {% for address in address_list %}
+        <div class="card address_item col-md-3">
+          <div class="card-body">
+            {% if address.default == True %}
+                <h6 class="card-subtitle mb-2 text-muted">Default</h6>
+            {% endif %}
+            <p class="card-text">
+                {{ address.address_line_1 }}<br>
+                {{ address.address_line_2 }}<br>
+                {{ address.town }}<br>
+                {{ address.city }}<br>
+                {{ address.postcode }}
+            </p>
+            {% if address.default == False %}
+                <a href="#">Set Default</a><br>
+            {% endif %}
+            <a href="#">Edit</a><br>
+            <a href="#">Delete</a>
+          </div>
+        </div>
+    {%  endfor %}
+        </div>
+        </div>
+    </div>
+{% endblock %}

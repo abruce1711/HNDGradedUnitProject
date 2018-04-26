@@ -168,6 +168,10 @@ def account(user_id):
         return render_template('account.html', current_basket=g.current_basket)
 
 
+@app.route('/addresses/<int:user_id>')
+def addresses(user_id):
+    address_list = models.AddressDetails.select()
+    return render_template('addresses.html', current_basket=g.current_basket, address_list=address_list)
 
 
 @app.route('/add_address', methods=('POST', 'GET'))

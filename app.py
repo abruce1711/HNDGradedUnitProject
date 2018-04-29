@@ -160,20 +160,37 @@ def create_user():
 
 
 @app.route('/account/<int:user_id>')
+# redirects user to login page if they're not logged in
 @login_required
 def account(user_id):
+    """This route returns the account options for the user that requests it.
+
+    This route takes the user ID as a parameter as it needs it for the url
+    """
     if current_user.id != user_id:
+        # tests if a user is trying to access another accounts details
+        # if they are it returns a 404 error
         abort(404)
     else:
+        # renders the template
         return render_template('account.html', current_basket=g.current_basket)
 
 
 @app.route('/addresses/<int:user_id>')
+# redirects user to login page if they're not logged in
 @login_required
 def addresses(user_id):
+    """This route returns the addresses for the user that requests it.
+
+    This route takes the user ID as a parameter as it needs it for the url
+    """
     if current_user.id != user_id:
+        # tests if a user is trying to access another accounts details
+        # if they are it returns a 404 error
         abort(404)
     else:
+        # pulls all addresses of the current user out of the database and assigns them to address_list
+        # It orders them by the default attribute so the default address always appears first
         address_list = models.AddressDetails\
             .select()\
             .where(models.AddressDetails.user_id == current_user.id)\
@@ -182,10 +199,15 @@ def addresses(user_id):
 
 
 @app.route('/add_address', methods=('POST', 'GET'))
+# redirects user to login page if they're not logged in
 @login_required
 def add_address():
+    """This route returns a template to allow a user to add a new address"""
+    # assigns the add address form to the form variable
     form = forms.AddAddress()
+    # if the form is posted and valid
     if form.validate_on_submit():
+        # add address to the database
         models.AddressDetails.add_address(
             user_id=current_user.id,
             address_line_1=form.address_line_1.data,
@@ -194,60 +216,151 @@ def add_address():
             city=form.city.data,
             postcode=form.postcode.data
         )
+        # gets the last added address out of the database, which will be the one created above
         address = models.AddressDetails.select().order_by(models.AddressDetails.id.desc()).get()
+        # uses my change_default_address method to make the new address default
         models.AddressDetails.change_default(address.id, current_user.id)
+        # if there is an open order assigned to this users account
         if g.current_order is not None:
+            # uses my add_address_to_order to add the new default address to the order
             models.Order.add_address_to_order(g.current_order.id, address.id)
         flash("Address added", "success")
+        # checks for a session variable created if the user was redirected here during the checkout process
         if session.get('checking out'):
+            # deletes the session variable
             session.pop('checking out', None)
+            # return the user to the checkout
             return redirect(url_for('checkout'))
         else:
+            # otherwise it just returns them to the addresses page
             return redirect(url_for('addresses', user_id=current_user.id))
+        # renders the add address template
     return render_template('add_address.html', form=form, current_basket=g.current_basket)
 
 
 @app.route('/set_address_default/<int:address_id>')
+# redirects user to login page if they're not logged in
 @login_required
 def set_address_default(address_id):
+    """This route is used to change the default address
+
+    It is fired when the Set Default link is clicked on the address.
+    It takes the new address Id in as a parameter
+    """
+    # uses my change_default method under AddressDetails to change the default to the one passed in
     models.AddressDetails.change_default(address_id, current_user.id)
+    # success message
     flash("New default set", "success")
+
+    # redirects user back to addresses
     return redirect(url_for('addresses', user_id=current_user.id))
 
 
 @app.route('/edit_address/<int:address_id>', methods=('POST', 'GET'))
+# redirects user to login page if they're not logged in
+@login_required
 def edit_address(address_id):
+    """This route returns a template to allow a user to edit an address"""
     form = forms.AddAddress()
-    if form.validate_on_submit():
-        models.AddressDetails.edit_address(
-            address_id=address_id,
-            address_line_1=form.address_line_1.data,
-            address_line_2=form.address_line_2.data,
-            town=form.town.data,
-            city=form.city.data,
-            postcode=form.postcode.data
-        )
-        flash("Address updated", "success")
-        return redirect(url_for('addresses', user_id=current_user.id))
+    # gets address from db and assigns it to address
     address = models.AddressDetails.get(models.AddressDetails.id == address_id)
+    # creates empty list called address_items
     address_items = []
-    for attr, value in address.__data__.items():
-        if attr != 'id' and attr != 'user_id' and attr != 'default':
-            address_items.append(value)
+    # if the address bering edited does not belong to the current user
+    if address.user_id != current_user.id:
+        # give a 404 error
+        abort(404)
+    else:
+        # if the form is submitted and is valid
+        if form.validate_on_submit():
+            # call my edit_address method and pass in the form details
+            models.AddressDetails.edit_address(
+                address_id=address_id,
+                address_line_1=form.address_line_1.data,
+                address_line_2=form.address_line_2.data,
+                town=form.town.data,
+                city=form.city.data,
+                postcode=form.postcode.data
+            )
+            # success message
+            flash("Address updated", "success")
+            # redirect user to addresses
+            return redirect(url_for('addresses', user_id=current_user.id))
 
+        # when it gets the address it returns it as a dictionary, which has key (column name) and value(the data)
+        # this loops through the dictionary assigning the key to key, and the value to value
+        for key, value in address.__data__.items():
+            # if the key isn't id, user_id, and default (we don't need these)
+            if key != 'id' and key != 'user_id' and key != 'default':
+                # add the value (cell data) to the address_items list
+                address_items.append(value)
+    # render the template passing in the address_items so they can pre-populate the form
     return render_template('edit_address.html', address_items=address_items, form=form, current_basket=g.current_basket)
 
 
 @app.route('/delete_address/<int:address_id>')
+# redirects user to login page if they're not logged in
 @login_required
 def delete_address(address_id):
-    models.AddressDetails.delete_address(address_id)
-    new_default = models.AddressDetails.select()\
-        .order_by(models.AddressDetails.id.desc())\
-        .get()
-    models.AddressDetails.change_default(new_default, current_user.id)
-    flash("Address Removed", "success")
-    return redirect(url_for('addresses', user_id=current_user.id))
+    """This route removes an address
+
+    An address id is passed in from the link, it then calls methods
+    in the model to remove the address
+    """
+    # gets the address from the database based on the id passed in
+    address = models.AddressDetails.get(models.AddressDetails.id == address_id)
+    # if the address doesn't belong to the current user
+    if address.user_id == current_user.id:
+        # give 404 error
+        abort(404)
+    else:
+        # calls delete_address method and passes in the address id
+        models.AddressDetails.delete_address(address_id)
+        # gets the most recently added address
+        new_default = models.AddressDetails.select()\
+            .order_by(models.AddressDetails.id.desc())\
+            .get()
+        # uses the change_default method to set that to default
+        models.AddressDetails.change_default(new_default, current_user.id)
+        # success message
+        flash("Address Removed", "success")
+        # redirects the user to addresses
+        return redirect(url_for('addresses', user_id=current_user.id))
+
+
+@app.route('/login_details/<int:user_id>')
+@login_required
+def login_details(user_id):
+    if user_id != current_user.id:
+        abort(404)
+    else:
+        return render_template("login_details.html", current_basket=g.current_basket, user=current_user)
+
+
+@app.route('/edit_login_details/<int:user_id>', methods=('GET', 'POST'))
+def edit_login_details(user_id):
+    if user_id != current_user.id:
+        abort(404)
+    else:
+        form = forms.EditLoginDetails()
+        if form.validate_on_submit():
+            try:
+                models.User.edit_details(
+                    user_id=current_user.id,
+                    first_name=form.first_name.data,
+                    last_name=form.last_name.data,
+                    email_address=form.email_address.data
+                )
+                return redirect(url_for('login_details', user_id=current_user.id))
+            except ValueError as e:
+                e = str(e)
+                flash(e, "error")
+        detail_list = []
+        for key, value in current_user.__data__.items():
+            if key == "first_name" or key == "last_name" or key == "email_address":
+                detail_list.append(value)
+        return render_template("edit_login_details.html",
+                               current_basket=g.current_basket, detail_list=detail_list, form=form)
 
 
 @app.route('/create_product', methods=('GET', 'POST'))

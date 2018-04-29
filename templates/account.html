@@ -4,7 +4,7 @@
 {% block body %}
     <div class="container account">
         <div class="col-md-6 mx-auto">
-        <a href="#">
+        <a href="{{ url_for('login_details', user_id = current_user.id) }}">
             <div class="card account_item_top">
                 <img class="card-img-top" src="/static/img/security.png" alt="Card image cap">
                 <div class="card-body">

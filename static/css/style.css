@@ -336,7 +336,51 @@ html, body {
     text-decoration: none;
     color: #343a40;
 }
+
+.save:hover {
+    transition: .2s all;
+    background-color: #6ac180 !important;
+}
+
 .cancel {
     background-color: #fc5555 !important;
 }
 
+.cancel:hover {
+    background-color: #e54b4b !important;
+}
+
+.form-content a {
+    text-decoration: none;
+}
+
+.login_details {
+    margin-top: 8%;
+}
+
+.login_details_table{
+    color: #303030;
+    background: white;
+    width: 100%;
+}
+
+.login_details_table td {
+    border-top: 1px solid black;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.login_details_btngroup {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login_details_btngroup button {
+    border: none;
+    background-color: #70DA8B;
+    transition: .2s all;
+}
+
+.login_details_btngroup button:hover {
+    background-color: #6ac180
+}

@@ -133,3 +133,18 @@ class AddAddress(Form):
         'Postcode',
         validators=[DataRequired()]
     )
+
+
+class EditLoginDetails(Form):
+    first_name = StringField(
+        'First Name',
+        validators=[DataRequired()]
+    )
+    last_name = StringField(
+        'Last Name',
+        validators=[DataRequired()]
+    )
+    email_address = StringField(
+        'Email Address',
+        validators=[DataRequired()]
+    )

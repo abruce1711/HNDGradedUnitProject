@@ -33,6 +33,18 @@ class User(UserMixin, BaseModel):
         except IntegrityError:
             raise ValueError("User already exists")
 
+    @classmethod
+    def edit_details(cls, user_id, first_name, last_name, email_address):
+        try:
+            query = cls.update(
+                first_name=first_name,
+                last_name=last_name,
+                email_address=email_address
+            ).where(cls.id == user_id)
+            query.execute()
+        except IntegrityError:
+            raise ValueError("User with that email address already exists")
+
 
 class AddressDetails(BaseModel):
     id = PrimaryKeyField()
@@ -66,7 +78,6 @@ class AddressDetails(BaseModel):
             postcode=postcode
         ).where(cls.id == address_id)
         query.execute()
-
 
     @classmethod
     def delete_address(cls, address_id):

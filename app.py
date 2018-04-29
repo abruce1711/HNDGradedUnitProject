@@ -103,8 +103,8 @@ def register():
     if form.validate_on_submit():
         # method from the User model that creates user in db
         models.User.create_user(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
+            first_name=form.first_name.data.title(),
+            last_name=form.last_name.data.title(),
             email_address=form.email.data,
             password=form.password.data,
             user_role="customer"
@@ -256,10 +256,10 @@ def set_address_default(address_id):
     return redirect(url_for('addresses', user_id=current_user.id))
 
 
-@app.route('/edit_address/<int:address_id>', methods=('POST', 'GET'))
+@app.route('/edit_address/<int:address_id>/<int:user_id>', methods=('POST', 'GET'))
 # redirects user to login page if they're not logged in
 @login_required
-def edit_address(address_id):
+def edit_address(address_id, user_id):
     """This route returns a template to allow a user to edit an address"""
     form = forms.AddAddress()
     # gets address from db and assigns it to address
@@ -267,7 +267,7 @@ def edit_address(address_id):
     # creates empty list called address_items
     address_items = []
     # if the address bering edited does not belong to the current user
-    if address.user_id != current_user.id:
+    if user_id != current_user.id:
         # give a 404 error
         abort(404)
     else:
@@ -298,19 +298,17 @@ def edit_address(address_id):
     return render_template('edit_address.html', address_items=address_items, form=form, current_basket=g.current_basket)
 
 
-@app.route('/delete_address/<int:address_id>')
+@app.route('/delete_address/<int:address_id>/<int:user_id>')
 # redirects user to login page if they're not logged in
 @login_required
-def delete_address(address_id):
+def delete_address(address_id, user_id):
     """This route removes an address
 
     An address id is passed in from the link, it then calls methods
     in the model to remove the address
     """
-    # gets the address from the database based on the id passed in
-    address = models.AddressDetails.get(models.AddressDetails.id == address_id)
     # if the address doesn't belong to the current user
-    if address.user_id == current_user.id:
+    if user_id != current_user.id:
         # give 404 error
         abort(404)
     else:

@@ -60,16 +60,21 @@ html, body {
 
 .forms .field {
     width: 100%;
-    margin-top: 3px;
+    height: 40px;
+    margin-top: 5px;
     border: none;
+    border-radius: 2px;
+    font-size: 18px;
 }
 
 .forms button {
     background-color: #70DA8B;
+    height: 35px;
     width:80%;
     display: block;
     margin: 20px auto;
     border-radius: 2px;
+    font-size: 18px;
     border: none;
 }
 
@@ -379,6 +384,9 @@ html, body {
     border: none;
     background-color: #70DA8B;
     transition: .2s all;
+    height: 35px;
+    border-radius: 2px;
+    font-size: 18px;
 }
 
 .login_details_btngroup button:hover {

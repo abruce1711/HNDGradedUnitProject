@@ -148,3 +148,30 @@ class EditLoginDetails(Form):
         'Email Address',
         validators=[DataRequired()]
     )
+
+
+class ResetPassword(Form):
+    current_password = PasswordField(
+        'Current Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, max=100)
+        ]
+    )
+
+    new_password = PasswordField(
+        'New Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, max=100)
+        ]
+    )
+
+    reenter_password = PasswordField(
+        'Re-enter Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, max=100),
+            EqualTo('new_password', message="New passwords do not match"),
+        ]
+    )

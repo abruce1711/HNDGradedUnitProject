@@ -363,6 +363,22 @@ def edit_login_details(user_id):
                                current_basket=g.current_basket, detail_list=detail_list, form=form)
 
 
+@app.route('/reset_password/<int:user_id>', methods=('GET', 'POST'))
+def reset_password(user_id):
+    if user_id != current_user.id:
+        abort(404)
+    else:
+        form = forms.ResetPassword()
+        if form.validate_on_submit():
+            if not check_password_hash(current_user.password, form.current_password.data):
+                flash("Current Password Incorrect", "error")
+            else:
+                models.User.reset_password(current_user.id, form.new_password.data)
+                flash("Password Reset", "success")
+                return redirect(url_for('login_details', user_id=current_user.id))
+        return render_template("reset_password.html", current_basket=g.current_basket, form=form)
+
+
 @app.route('/create_product', methods=('GET', 'POST'))
 @login_required
 def create_product():

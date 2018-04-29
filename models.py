@@ -45,6 +45,13 @@ class User(UserMixin, BaseModel):
         except IntegrityError:
             raise ValueError("User with that email address already exists")
 
+    @classmethod
+    def reset_password(cls, user_id, password):
+        query = cls.update(
+            password=generate_password_hash(password)
+        ).where(cls.id == user_id)
+        query.execute()
+
 
 class AddressDetails(BaseModel):
     id = PrimaryKeyField()

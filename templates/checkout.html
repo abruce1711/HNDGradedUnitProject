@@ -1,6 +1,13 @@
 {% extends 'layout.html' %}
-{% block title %}Checkout{{ super() }}{% endblock %}
+{% block title %}Checkout
+    {{ super() }}{% endblock %}
 {% block body %}
+        <script>
+        window.onload = function() {
+            document.getElementById("first").checked = true;
+            alterTotal('first', {{ current_order.order_total }});
+        };
+    </script>
     <div class="container checkout">
         <div class="row justify-content-between">
             <div class="delivery_address col-md-6">
@@ -39,23 +46,49 @@
 
         <div class="purchase col-md-4">
             <h3>Purchase Information</h3>
-            <table class="basket_tables">
-                <tr>
-                    <td>
-                        <strong>Purchase Information</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Purchase Information
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Purchase Information
-                    </td>
-                </tr>
-            </table>
+            <form class="forms purchase_form" method="POST" action="">
+                <table class="basket_tables">
+                        <tr>
+                            <td class="first_column">
+                                <strong>Delivery Option</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first_column">
+                                First Class
+                            </td>
+                            <td class="second_column">
+                                <input title="first_class" id="first" type="radio" name="delivery" value="first_class"
+                                       onclick="alterTotal('first', {{ current_order.order_total }})">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first_column">
+                                Second Class
+                            </td>
+                            <td class="second_column">
+                                <input title="second_class" type="radio" name="delivery" value="second_class"
+                                onclick="alterTotal('second', {{ current_order.order_total }})">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first_column">
+                                Delivery Cost
+                            </td>
+                            <td id="delivery_cost" class="second_column">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first_column">
+                                Total Cost
+                            </td>
+                            <td id = "total_cost" class="second_column">
+                                £{{ current_order.order_total }}
+                            </td>
+                        </tr>
+                </table>
+            </form>
         </div>
 
         </div>

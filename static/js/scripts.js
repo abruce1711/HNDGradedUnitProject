@@ -50,3 +50,20 @@ function change_stock(sel) {
     }
 
 }
+
+function alterTotal(option, total) {
+    var delivery_cost = document.getElementById('delivery_cost');
+    var total_cost = document.getElementById('total_cost');
+    total = parseInt(total);
+
+    if (option === "first") {
+        delivery_cost.innerHTML = "£2";
+        total += 2;
+        total_cost.innerHTML = "£" + String(total);
+    }
+    else {
+        delivery_cost.innerHTML = "£1";
+        total += 1;
+        total_cost.innerHTML = "£" + String(total);
+    }
+}

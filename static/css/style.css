@@ -392,3 +392,11 @@ html, body {
 .login_details_btngroup button:hover {
     background-color: #6ac180
 }
+
+.purchase_form .first_column {
+    width: 50%;
+}
+
+.purchase_form input {
+    transition: .2s all;
+}

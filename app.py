@@ -451,7 +451,7 @@ def add_to_order(product_id, product_category):
                 if product_category == "tshirt":
                     if product_id == line.product_id and size == line.size:
                         if models.Product.tshirt__in_stock(quantity, product_id, size):
-                            models.OrderLine.update_line_quantity(line.id, quantity)
+                            models.OrderLine.increase_line_quantity(line.id, quantity)
                             models.Product.reduce_tshirt_stock(product_id, quantity, size)
                             flash("Added to basket", "success")
                         else:
@@ -460,7 +460,7 @@ def add_to_order(product_id, product_category):
                 else:
                     if product_id == line.product_id:
                         if models.Product.other_in_stock(quantity, product_id):
-                            models.OrderLine.update_line_quantity(line.id, quantity)
+                            models.OrderLine.increase_line_quantity(line.id, quantity)
                             models.Product.reduce_other_stock(product_id, quantity)
                             flash("Added to basket", "success")
                         else:
@@ -532,6 +532,16 @@ def remove_from_basket(line_id, quantity):
         models.Order.update_order_total(g.current_order.id)
         flash("Item removed", "success")
         return redirect(url_for('basket', user_id=current_user.id))
+
+
+@app.route('/edit_quantity/<int:line_id>', methods=('GET', 'POST'))
+@login_required
+def edit_quantity(line_id):
+    if request.method == "POST":
+        new_quantity = int(request.form.get('quantity'))
+        models.OrderLine.edit_line_quantity(line_id, new_quantity)
+        flash("Quantity Altered", "success")
+    return redirect(url_for('basket', user_id=current_user.id))
 
 
 @app.route('/checkout')

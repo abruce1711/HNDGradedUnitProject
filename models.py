@@ -291,8 +291,13 @@ class OrderLine(Model):
         order_line.delete_instance()
 
     @classmethod
-    def update_line_quantity(cls, order_line_id, quantity_to_add):
+    def increase_line_quantity(cls, order_line_id, quantity_to_add):
         new_quantity = cls.quantity + quantity_to_add
+        order_line = cls(id=order_line_id, quantity=new_quantity)
+        order_line.save()
+
+    @classmethod
+    def edit_line_quantity(cls, order_line_id, new_quantity):
         order_line = cls(id=order_line_id, quantity=new_quantity)
         order_line.save()
 

@@ -216,7 +216,9 @@ html, body {
     color: white;
     text-align: center;
 }
-
+.edit_quantity_input input {
+    width: 50px;
+}
 .empty_basket a {
     color: white;
     text-decoration: none;
@@ -232,17 +234,22 @@ html, body {
     margin-top: 10px;
 }
 
-.remove a {
+.remove, .change_quantity {
+    text-align: center;
+}
+
+.remove a, .change_quantity a {
     text-decoration: none;
     transition: .2s all;
 }
+
 
 .price {
     width: 10%;
 }
 
 .name {
-    width: 60%;
+    width: 50%;
 }
 
 .order_total {

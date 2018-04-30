@@ -67,3 +67,7 @@ function alterTotal(option, total) {
         total_cost.innerHTML = "£" + String(total);
     }
 }
+
+function submitQuantityForm(item_id) {
+    document.getElementById(item_id).submit();
+}

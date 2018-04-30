@@ -2,13 +2,95 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eb9db333-4b32-42df-92cf-2a6820580fbd" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ee49ac9d-28cd-4b73-9b94-8c953f2e1e33.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/ee49ac9d-28cd-4b73-9b94-8c953f2e1e33.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
       <change beforePath="$PROJECT_DIR$/models.py" afterPath="$PROJECT_DIR$/models.py" />
-      <change beforePath="$PROJECT_DIR$/nativesins.db" afterPath="$PROJECT_DIR$/nativesins.db" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" afterPath="$PROJECT_DIR$/static/css/style.css" />
-      <change beforePath="$PROJECT_DIR$/static/js/scripts.js" afterPath="$PROJECT_DIR$/static/js/scripts.js" />
-      <change beforePath="$PROJECT_DIR$/templates/basket.html" afterPath="$PROJECT_DIR$/templates/basket.html" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/DESCRIPTION.rst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/INSTALLER" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/LICENSE.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/METADATA" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/RECORD" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/WHEEL" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/metadata.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/top_level.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/DESCRIPTION.rst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/INSTALLER" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/LICENSE.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/METADATA" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/RECORD" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/WHEEL" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/metadata.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/top_level.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_requestor.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/createable_api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/deletable_api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/listable_api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/nested_resource_class_methods.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/singleton_api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/updateable_api_resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/verify_mixin.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/account.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/alipay_account.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/apple_pay_domain.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/application_fee.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/application_fee_refund.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/balance.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/balance_transaction.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bank_account.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bitcoin_receiver.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bitcoin_transaction.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/card.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/charge.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/country_spec.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/coupon.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/customer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/dispute.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/ephemeral_key.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/event.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/exchange_rate.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/file_upload.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/invoice.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/invoice_item.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/list_object.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/login_link.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/order.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/order_return.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/payout.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/plan.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/product.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/recipient.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/recipient_transfer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/refund.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/reversal.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/sku.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/source.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/source_transaction.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/subscription.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/subscription_item.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/three_d_secure.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/token.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/topup.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/transfer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/usage_record.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/data/ca-certificates.crt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/error.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/http_client.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/importer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/multipart_data_generator.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/oauth.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/oauth_error.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/resource.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/six.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/stripe_object.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/stripe_response.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/util.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/version.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/webhook.py" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,7 +100,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/NativeSinsWebapp$app.coverage" NAME="app Coverage Results" MODIFIED="1525098609559" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/NativeSinsWebapp$app.coverage" NAME="app Coverage Results" MODIFIED="1525129087498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/NativeSinsWebapp$NativeSinsWebapp.coverage" NAME="NativeSinsWebapp Coverage Results" MODIFIED="1522194372032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="DatabaseView">
@@ -51,31 +133,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="542" column="44" lean-forward="true" selection-start-line="542" selection-start-column="44" selection-end-line="542" selection-end-column="44" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="products.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/products.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="40" column="69" lean-forward="true" selection-start-line="40" selection-start-column="69" selection-end-line="40" selection-end-column="69" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="basket.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/basket.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="24" column="30" lean-forward="false" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="39" />
+            <state relative-caret-position="-377">
+              <caret line="559" column="0" lean-forward="false" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -84,8 +146,28 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="301" column="0" lean-forward="false" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
+            <state relative-caret-position="158">
+              <caret line="258" column="20" lean-forward="false" selection-start-line="258" selection-start-column="20" selection-end-line="258" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="checkout.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/checkout.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="355">
+              <caret line="68" column="62" lean-forward="false" selection-start-line="68" selection-start-column="62" selection-end-line="68" selection-end-column="62" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="basket.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/basket.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="620">
+              <caret line="42" column="32" lean-forward="false" selection-start-line="42" selection-start-column="32" selection-end-line="42" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -94,7 +176,7 @@
       <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/forms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="633">
+            <state relative-caret-position="722">
               <caret line="174" column="50" lean-forward="false" selection-start-line="174" selection-start-column="50" selection-end-line="174" selection-end-column="50" />
               <folding />
             </state>
@@ -104,8 +186,8 @@
       <file leaf-file-name="scripts.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/scripts.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="71" column="35" lean-forward="false" selection-start-line="71" selection-start-column="35" selection-end-line="71" selection-end-column="35" />
+            <state relative-caret-position="753">
+              <caret line="75" column="54" lean-forward="false" selection-start-line="75" selection-start-column="54" selection-end-line="75" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -114,8 +196,8 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="219" column="12" lean-forward="false" selection-start-line="219" selection-start-column="12" selection-end-line="219" selection-end-column="12" />
+            <state relative-caret-position="447">
+              <caret line="284" column="11" lean-forward="false" selection-start-line="284" selection-start-column="11" selection-end-line="284" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -227,7 +309,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -267,6 +348,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -360,30 +442,44 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32173914" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19829424" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2217484" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39673913" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.322691" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32839224" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1895811" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22180451" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39680728" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39680728" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -718,8 +814,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/checkout.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="60" column="58" lean-forward="false" selection-start-line="60" selection-start-column="58" selection-end-line="60" selection-end-column="58" />
+        <state relative-caret-position="355">
+          <caret line="68" column="62" lean-forward="false" selection-start-line="68" selection-start-column="62" selection-end-line="68" selection-end-column="62" />
           <folding />
         </state>
       </provider>
@@ -733,7 +829,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/forms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="633">
+        <state relative-caret-position="722">
           <caret line="174" column="50" lean-forward="false" selection-start-line="174" selection-start-column="50" selection-end-line="174" selection-end-column="50" />
           <folding />
         </state>
@@ -741,8 +837,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="301" column="0" lean-forward="false" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
+        <state relative-caret-position="158">
+          <caret line="258" column="20" lean-forward="false" selection-start-line="258" selection-start-column="20" selection-end-line="258" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -764,32 +860,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/scripts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="71" column="35" lean-forward="false" selection-start-line="71" selection-start-column="35" selection-end-line="71" selection-end-column="35" />
+        <state relative-caret-position="753">
+          <caret line="75" column="54" lean-forward="false" selection-start-line="75" selection-start-column="54" selection-end-line="75" selection-end-column="54" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/basket.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="24" column="30" lean-forward="false" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="39" />
+        <state relative-caret-position="620">
+          <caret line="42" column="32" lean-forward="false" selection-start-line="42" selection-start-column="32" selection-end-line="42" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="219" column="12" lean-forward="false" selection-start-line="219" selection-start-column="12" selection-end-line="219" selection-end-column="12" />
+        <state relative-caret-position="447">
+          <caret line="284" column="11" lean-forward="false" selection-start-line="284" selection-start-column="11" selection-end-line="284" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="542" column="44" lean-forward="true" selection-start-line="542" selection-start-column="44" selection-end-line="542" selection-end-column="44" />
+        <state relative-caret-position="-377">
+          <caret line="559" column="0" lean-forward="false" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
           <folding />
         </state>
       </provider>

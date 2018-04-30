@@ -24,18 +24,18 @@
                             <form id="{{ item.id }}" class="edit_quantity_input" action="{{ url_for('edit_quantity', line_id = item.id) }}" method="POST">
                               Quantity:
                                 {% if item.size == "small" %}
-                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.small_stock + item.quantity }}" step="1" value="{{ item.quantity }}">
+                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.small_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% elif item.size == "medium" %}
-                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.medium_stock + item.quantity }}" step="1" value="{{ item.quantity }}">
                                 {% elif item.size == "large" %}
-                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.large_stock + item.quantity }}" step="1" value="{{ item.quantity }}">
+                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.large_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% else %}
-                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.one_size_stock + item.quantity }}" step="1" value="{{ item.quantity }}">
+                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.one_size_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% endif %}
                             </form>
                         </td>
-                        <td class="change_quantity">
-                            <a href="#" onclick="submitQuantityForm({{ item.id }})">Change Quantity</a>
+                        <td class="remove">
+                            <a href="{{ url_for('remove_from_basket',
+                            line_id = item.id, quantity = item.quantity) }}">Remove Item</a>
                         </td>
                     </tr>
                     {% if item.product.product_category == "tshirt" %}
@@ -54,10 +54,6 @@
                         </td>
                         <td>
 
-                        </td>
-                        <td class="remove">
-                            <a href="{{ url_for('remove_from_basket',
-                            line_id = item.id, quantity = item.quantity) }}">Remove Item</a>
                         </td>
                     </tr>
                 </table>

@@ -129,7 +129,7 @@ class Product(BaseModel):
 
     @classmethod
     def create_product(cls, product_category, product_name, product_price, product_description, one_size_stock,
-                            small_stock, medium_stock, large_stock):
+                       small_stock, medium_stock, large_stock):
         try:
             cls.create(
                 product_category=product_category,
@@ -145,23 +145,6 @@ class Product(BaseModel):
             raise ValueError("T-Shirt with this name exists")
 
     @classmethod
-    def reduce_tshirt_stock(cls, product_id, quantity, size):
-        product = Product.get(Product.id == product_id)
-        if size == "small":
-            product.small_stock -= quantity
-        elif size == "medium":
-            product.medium_stock -= quantity
-        elif size == "large":
-            product.large_stock -= quantity
-        product.save()
-
-    @classmethod
-    def reduce_other_stock(cls, product_id, quantity):
-        product = Product.get(Product.id == product_id)
-        product.one_size_stock -= quantity
-        product.save()
-
-    @classmethod
     def increase_tshirt_stock(cls, product_id, quantity, size):
         product = Product.get(Product.id == product_id)
         if size == "small":
@@ -173,9 +156,26 @@ class Product(BaseModel):
         product.save()
 
     @classmethod
+    def reduce_tshirt_stock(cls, product_id, quantity, size):
+        product = Product.get(Product.id == product_id)
+        if size == "small":
+            product.small_stock -= quantity
+        elif size == "medium":
+            product.medium_stock -= quantity
+        elif size == "large":
+            product.large_stock -= quantity
+        product.save()
+
+    @classmethod
     def increase_other_stock(cls, product_id, quantity):
         product = Product.get(Product.id == product_id)
         product.one_size_stock += quantity
+        product.save()
+
+    @classmethod
+    def reduce_other_stock(cls, product_id, quantity):
+        product = Product.get(Product.id == product_id)
+        product.one_size_stock -= quantity
         product.save()
 
     @classmethod
@@ -206,10 +206,24 @@ class Product(BaseModel):
             return True
 
 
+class ShippingOption(BaseModel):
+    id = PrimaryKeyField()
+    name = CharField()
+    cost = DecimalField()
+
+    @classmethod
+    def create_shipping_option(cls, name, cost):
+        cls.create(
+            name=name,
+            cost=cost
+        )
+
+
 class Order(BaseModel):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='orders')
     address = ForeignKeyField(AddressDetails, related_name='address', null=True)
+    shipping = ForeignKeyField(ShippingOption, related_name='shipping', null=True, default=1)
     order_date = DateField(default=datetime.datetime.now)
     order_complete = BooleanField(default=False)
     order_total = DecimalField(default=0)
@@ -218,10 +232,11 @@ class Order(BaseModel):
     def update_order_total(cls, order_id):
         total = 0
         order_lines = OrderLine.select().where(OrderLine.order == order_id)
+        order = cls.get(cls.id == order_id)
         for line in order_lines:
             product = Product.get(Product.id == line.product_id)
-            temp = product.product_price*line.quantity
-            total += temp
+            price = product.product_price*line.quantity
+            total += price
         order = Order.get(Order.id == order_id)
         order.order_total = total
         order.save()
@@ -246,7 +261,7 @@ class Order(BaseModel):
     @classmethod
     def find_current_order(cls, user):
         if user.is_authenticated:
-            orders = user.orders.select()
+            orders = user.orders.select().where(cls.user == user.id)
             for order in orders:
                 if not order.order_complete:
                     return order
@@ -254,6 +269,12 @@ class Order(BaseModel):
                     return None
         else:
             return None
+
+    @classmethod
+    def complete_order(cls, order_id):
+        order = cls.get(cls.id == order_id)
+        order.order_complete = True
+        order.save()
 
     @classmethod
     def get_current_basket(cls, order, user):
@@ -264,6 +285,12 @@ class Order(BaseModel):
             return current_basket
         else:
             return None
+
+    @classmethod
+    def change_shipping(cls, shipping_id, order_id):
+        order = cls.get(cls.id == order_id)
+        order.shipping_id = shipping_id
+        order.save()
 
 
 class OrderLine(Model):
@@ -304,6 +331,6 @@ class OrderLine(Model):
 
 def initialize():
     db.connect()
-    db.create_tables([User, AddressDetails, Product, Order, OrderLine], safe=True)
+    db.create_tables([User, AddressDetails, ShippingOption, Product, Order, OrderLine], safe=True)
     db.close()
 

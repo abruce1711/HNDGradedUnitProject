@@ -71,3 +71,7 @@ function alterTotal(option, total) {
 function submitQuantityForm(item_id) {
     document.getElementById(item_id).submit();
 }
+
+function submitShippingForm() {
+    document.getElementById("shipping_form").submit();
+}

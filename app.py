@@ -3,8 +3,14 @@ from flask import (Flask, g, render_template, flash, redirect, url_for, abort, r
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
 
+import stripe
 import forms
 import models
+import os
+
+stripe_pub_key = 'pk_test_Op2Ai5uZRamkkQdqqsGsxp3U'
+stripe_secret_key = 'sk_test_n42BvnIUUzGPasQnkJr8fSnx'
+stripe.api_key = stripe_secret_key
 
 # creates instance of the flask class and if the script is run directly
 # it gets the name "__main__"
@@ -538,13 +544,42 @@ def remove_from_basket(line_id, quantity):
 @login_required
 def edit_quantity(line_id):
     if request.method == "POST":
+        order_line = models.OrderLine.get(models.OrderLine.id == line_id)
         new_quantity = int(request.form.get('quantity'))
+        old_quantity = order_line.quantity
+        product_id = order_line.product_id
+        size = order_line.size
+        if order_line.size == "one_size":
+            if old_quantity > new_quantity:
+                difference = old_quantity - new_quantity
+                models.Product.increase_other_stock(product_id, difference)
+            elif old_quantity < new_quantity:
+                difference = new_quantity - old_quantity
+                models.Product.reduce_other_stock(product_id, difference)
+            else:
+                flash("Quantity not changed", "error")
+        else:
+            if old_quantity > new_quantity:
+                difference = old_quantity - new_quantity
+                models.Product.increase_tshirt_stock(product_id, difference, size)
+            elif old_quantity < new_quantity:
+                difference = new_quantity - old_quantity
+                models.Product.reduce_tshirt_stock(product_id, difference, size)
+            else:
+                flash("Quantity not changed", "error")
         models.OrderLine.edit_line_quantity(line_id, new_quantity)
-        flash("Quantity Altered", "success")
+        models.Order.update_order_total(g.current_order.id)
     return redirect(url_for('basket', user_id=current_user.id))
 
 
-@app.route('/checkout')
+@app.route('/change_shipping', methods=['POST'])
+def change_shipping():
+    shipping_id = int(request.form.get('shipping'))
+    models.Order.change_shipping(shipping_id, g.current_order.id)
+    return redirect(url_for('checkout'))
+
+
+@app.route('/checkout', methods=('GET', 'POST'))
 @login_required
 def checkout():
     if g.current_order.order_lines.count() == 0:
@@ -552,11 +587,32 @@ def checkout():
         return redirect(url_for('products'))
     elif g.default_address is not None:
         return render_template("checkout.html", current_basket=g.current_basket,
-                               current_order=g.current_order, default_address=g.default_address)
+                               current_order=g.current_order, default_address=g.default_address,
+                               stripe_pub_key=stripe_pub_key)
     else:
         flash("Please add delivery address", "error")
         session["checking out"] = True
         return redirect(url_for("add_address"))
+
+
+@app.route('/pay', methods=['GET', 'POST'])
+def pay():
+    shipping_option = models.ShippingOption.get(models.ShippingOption.id == g.current_order.shipping_id)
+    total = g.current_order.order_total + shipping_option.cost
+    customer = stripe.Customer.create(
+        email=current_user.email_address,
+        source=request.form.get('stripeToken')
+    )
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=total * 100,
+        currency='gbp'
+    )
+
+    models.Order.complete_order(g.current_order.id)
+    flash("Order Complete", "success")
+    return redirect(url_for('index'))
 
 
 @app.route('/')
@@ -585,6 +641,17 @@ if __name__ == '__main__':
             password="password",
             user_role="admin"
         )
+
+        models.ShippingOption.create_shipping_option(
+            name="first_class",
+            cost=2
+        )
+
+        models.ShippingOption.create_shipping_option(
+            name="second_class",
+            cost=1
+        )
+
     except ValueError:
         pass
 

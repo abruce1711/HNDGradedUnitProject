@@ -275,7 +275,18 @@ html, body {
     color: white;
     border-bottom: 1px solid white;
     padding-bottom: 5px;
+}
 
+.checkout_tables{
+    color: #303030;
+    background: white;
+    margin-top: 10px;
+    width: 100%;
+    padding: 200px;
+}
+
+.checkout_tables a {
+    text-decoration: none;
 }
 
 .delivery_address {

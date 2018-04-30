@@ -2,6 +2,84 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eb9db333-4b32-42df-92cf-2a6820580fbd" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/RECORD" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/DESCRIPTION.rst" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/INSTALLER" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/LICENSE.txt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/METADATA" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/RECORD" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/WHEEL" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/metadata.json" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe-1.80.0.dist-info/top_level.txt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/__init__.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_requestor.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/__init__.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/__init__.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/createable_api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/deletable_api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/listable_api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/nested_resource_class_methods.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/singleton_api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/updateable_api_resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/abstract/verify_mixin.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/account.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/alipay_account.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/apple_pay_domain.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/application_fee.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/application_fee_refund.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/balance.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/balance_transaction.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bank_account.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bitcoin_receiver.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/bitcoin_transaction.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/card.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/charge.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/country_spec.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/coupon.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/customer.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/dispute.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/ephemeral_key.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/event.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/exchange_rate.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/file_upload.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/invoice.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/invoice_item.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/list_object.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/login_link.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/order.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/order_return.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/payout.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/plan.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/product.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/recipient.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/recipient_transfer.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/refund.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/reversal.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/sku.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/source.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/source_transaction.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/subscription.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/subscription_item.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/three_d_secure.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/token.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/topup.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/transfer.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/api_resources/usage_record.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/data/ca-certificates.crt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/error.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/http_client.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/importer.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/multipart_data_generator.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/oauth.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/oauth_error.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/resource.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/six.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/stripe_object.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/stripe_response.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/util.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/version.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/stripe/webhook.py" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/ee49ac9d-28cd-4b73-9b94-8c953f2e1e33.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/ee49ac9d-28cd-4b73-9b94-8c953f2e1e33.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
@@ -11,14 +89,14 @@
       <change beforePath="$PROJECT_DIR$/static/js/scripts.js" afterPath="$PROJECT_DIR$/static/js/scripts.js" />
       <change beforePath="$PROJECT_DIR$/templates/basket.html" afterPath="$PROJECT_DIR$/templates/basket.html" />
       <change beforePath="$PROJECT_DIR$/templates/checkout.html" afterPath="$PROJECT_DIR$/templates/checkout.html" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/DESCRIPTION.rst" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/INSTALLER" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/LICENSE.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/METADATA" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/DESCRIPTION.rst" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/DESCRIPTION.rst" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/INSTALLER" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/INSTALLER" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/LICENSE.txt" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/LICENSE.txt" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/METADATA" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/METADATA" />
       <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/RECORD" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/WHEEL" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/metadata.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/top_level.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/WHEEL" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/WHEEL" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/metadata.json" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/metadata.json" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.1.18.dist-info/top_level.txt" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi-2018.4.16.dist-info/top_level.txt" />
       <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi/__init__.py" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi/__init__.py" />
       <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/certifi/cacert.pem" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/certifi/cacert.pem" />
       <change beforePath="$PROJECT_DIR$/venv/pip-selfcheck.json" afterPath="$PROJECT_DIR$/venv/pip-selfcheck.json" />
@@ -64,7 +142,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="490">
@@ -84,7 +162,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="checkout.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="checkout.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/checkout.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="355">
@@ -772,14 +850,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/checkout.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="68" column="62" lean-forward="false" selection-start-line="68" selection-start-column="62" selection-end-line="68" selection-end-column="62" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="464">
@@ -799,6 +869,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="490">
           <caret line="613" column="38" lean-forward="true" selection-start-line="613" selection-start-column="38" selection-end-line="613" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/checkout.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="68" column="62" lean-forward="false" selection-start-line="68" selection-start-column="62" selection-end-line="68" selection-end-column="62" />
           <folding />
         </state>
       </provider>

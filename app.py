@@ -610,7 +610,7 @@ def pay():
         currency='gbp'
     )
 
-    models.Order.complete_order(g.current_order.id)
+    models.Order.place_order(g.current_order.id)
     flash("Order Complete", "success")
     return redirect(url_for('index'))
 

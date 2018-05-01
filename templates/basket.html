@@ -18,7 +18,7 @@
                             <h3>{{ item.product.product_name }}</h3>
                         </td>
                         <td class="price">
-                            £{{ item.product.product_price }}
+                            £{{ item.product.product_price * item.quantity}}
                         </td>
                         <td class="quantity">
                             <form id="{{ item.id }}" class="edit_quantity_input" action="{{ url_for('edit_quantity', line_id = item.id) }}" method="POST">
@@ -26,6 +26,7 @@
                                 {% if item.size == "small" %}
                                     <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.small_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% elif item.size == "medium" %}
+                                    <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.medium_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% elif item.size == "large" %}
                                     <input title = "quantity" name="quantity" type="number" min="1" max="{{ item.product.large_stock + item.quantity }}" step="1" value="{{ item.quantity }}" onchange="submitQuantityForm({{ item.id }})">
                                 {% else %}

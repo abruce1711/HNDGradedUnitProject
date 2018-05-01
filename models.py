@@ -224,15 +224,16 @@ class Order(BaseModel):
     user = ForeignKeyField(User, related_name='orders')
     address = ForeignKeyField(AddressDetails, related_name='address', null=True)
     shipping = ForeignKeyField(ShippingOption, related_name='shipping', null=True, default=1)
-    order_date = DateField(default=datetime.datetime.now)
-    order_complete = BooleanField(default=False)
+    order_status = CharField(default="open")
+    order_placed = DateField(null=True)
+    order_dispatched = DateField(null=True)
+    order_complete = DateField(null=True)
     order_total = DecimalField(default=0)
 
     @classmethod
     def update_order_total(cls, order_id):
         total = 0
         order_lines = OrderLine.select().where(OrderLine.order == order_id)
-        order = cls.get(cls.id == order_id)
         for line in order_lines:
             product = Product.get(Product.id == line.product_id)
             price = product.product_price*line.quantity
@@ -263,7 +264,7 @@ class Order(BaseModel):
         if user.is_authenticated:
             orders = user.orders.select().where(cls.user == user.id)
             for order in orders:
-                if not order.order_complete:
+                if order.order_status == "open":
                     return order
                 else:
                     return None
@@ -271,14 +272,29 @@ class Order(BaseModel):
             return None
 
     @classmethod
+    def place_order(cls, order_id):
+        order = cls.get(cls.id == order_id)
+        order.order_status = "order_placed"
+        order.order_placed = datetime.datetime.now()
+        order.save()
+
+    @classmethod
+    def dispatch_order(cls, order_id):
+        order = cls.get(cls.id == order_id)
+        order.order_status = "dispatched"
+        order.order_dispatched = datetime.datetime.now()
+        order.save()
+
+    @classmethod
     def complete_order(cls, order_id):
         order = cls.get(cls.id == order_id)
-        order.order_complete = True
+        order.order_status = "complete"
+        order.order_complete = datetime.datetime.now()
         order.save()
 
     @classmethod
     def get_current_basket(cls, order, user):
-        if user.is_authenticated and order != None:
+        if user.is_authenticated and order is not None:
             current_basket = 0
             for line in order.order_lines:
                 current_basket += line.quantity

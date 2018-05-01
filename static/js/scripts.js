@@ -75,3 +75,7 @@ function submitQuantityForm(item_id) {
 function submitShippingForm() {
     document.getElementById("shipping_form").submit();
 }
+
+function test() {
+    alert("test")
+}

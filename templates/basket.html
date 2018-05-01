@@ -41,7 +41,7 @@
                     </tr>
                     {% if item.product.product_category == "tshirt" %}
                         <tr>
-                            <td>
+                            <td class="size">
                              {{ item.size|title }}
                             </td>
                         </tr>
@@ -50,22 +50,18 @@
                         <td class="description">
                             {{ item.product.product_description }}
                         </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
                     </tr>
                 </table>
                 </div>
             {% endfor %}
-            <div class="row">
-                <h3 class="order_total col-10 mx-auto">Total: £{{ current_order.order_total }}</h3>
-            </div>
-            <div class="row">
-                <div class="complete_order col-10 mx-auto">
-                    <a href="{{ url_for('checkout') }}"><button type="button" class="btn complete_order_btn">Proceed to Checkout</button></a>
+            <div class="total_wrapper col-md-10 mx-auto">
+                <div class="row">
+                    <h3 class="order_total col-10 mx-auto">Total: £{{ current_order.order_total }}</h3>
+                </div>
+                <div class="row">
+                    <div class="complete_order col-10 mx-auto">
+                        <a href="{{ url_for('checkout') }}"><button type="button" class="btn complete_order_btn">Proceed to Checkout</button></a>
+                    </div>
                 </div>
             </div>
         </div>

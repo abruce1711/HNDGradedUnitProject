@@ -8,7 +8,7 @@ html, body {
 
 .nav {
     position: relative;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.9);
     display: inline-block;
     height: 50px;
     padding-top: 10px;
@@ -140,6 +140,7 @@ html, body {
     position: absolute;
     left: 0;
     top: 5%;
+    background-color: rgba(0,0,0,0.8);
 }
 
 .sorting_form select {
@@ -215,26 +216,34 @@ html, body {
 .empty_basket {
     color: white;
     text-align: center;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 3px;
 }
-.edit_quantity_input input {
-    width: 50px;
-}
+
 .empty_basket a {
     color: white;
     text-decoration: none;
+    transition: .2s all;
 }
 
 .empty_basket a:hover {
     color: cornflowerblue;
 }
 
+.edit_quantity_input input {
+    width: 50px;
+}
+
 .basket_item {
     color: #303030;
     background: white;
     margin-top: 10px;
+    border-radius: 4px;
+    border-collapse:separate;
+    border: 1px solid rgba(0,0,0,0.8);
 }
 
-.remove, .change_quantity {
+.remove {
     text-align: center;
 }
 
@@ -243,13 +252,19 @@ html, body {
     transition: .2s all;
 }
 
-
 .price {
     width: 10%;
 }
 
 .name {
     width: 50%;
+}
+
+.total_wrapper {
+    background-color: rgba(0,0,0,0.5);
+    margin-top: 5px;
+    border-radius: 5px;
+    padding-bottom: 8px;
 }
 
 .order_total {
@@ -282,11 +297,31 @@ html, body {
     background: white;
     margin-top: 10px;
     width: 100%;
-    padding: 200px;
+    border: 1px solid rgba(0,0,0,0.8);
+    border-collapse:separate;
+    border-radius: 4px;
+    -moz-border-radius:6px;
+
 }
 
 .checkout_tables a {
     text-decoration: none;
+}
+
+.checkout h3 {
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 2px;
+}
+
+.stripe-button-el, .stripe-button-el span {
+    background: #70DA8B none !important;
+    color: #343a40 !important;
+    text-shadow: none !important;
+    width: 100%;
+}
+
+.shipping_radio {
+    background-color: #70DA8B;
 }
 
 .delivery_address {

@@ -48,9 +48,11 @@ def before_request():
     g.user = current_user
 
     g.current_order = models.Order.find_current_order(current_user)
+    print(g.current_order)
     g.current_basket = models.Order.get_current_basket(g.current_order, current_user)
     try:
         g.default_address = models.AddressDetails.get_default_address(current_user.id)
+        models.Order.check_order_status(current_user.id)
     except AttributeError:
         g.default_address = None
 
@@ -180,6 +182,15 @@ def account(user_id):
     else:
         # renders the template
         return render_template('account.html', current_basket=g.current_basket)
+
+
+@app.route('/orders/<int:user_id>')
+def orders(user_id):
+    if current_user.id != user_id:
+        abort(404)
+    else:
+        models.Order.check_order_status(current_user.id)
+        return render_template('orders.html', current_basket=g.current_basket)
 
 
 @app.route('/addresses/<int:user_id>')
@@ -452,7 +463,8 @@ def add_to_order(product_id, product_category):
     if request.method == 'POST':
         quantity = int(request.form.get('quantity'))
         size = request.form.get('size')
-        if g.current_order:
+        test = g.current_order
+        if g.current_order is not None:
             for line in g.current_order.order_lines:
                 if product_category == "tshirt":
                     if product_id == line.product_id and size == line.size:

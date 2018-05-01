@@ -225,9 +225,9 @@ class Order(BaseModel):
     address = ForeignKeyField(AddressDetails, related_name='address', null=True)
     shipping = ForeignKeyField(ShippingOption, related_name='shipping', null=True, default=1)
     order_status = CharField(default="open")
-    order_placed = DateField(null=True)
-    order_dispatched = DateField(null=True)
-    order_complete = DateField(null=True)
+    order_placed = DateTimeField(null=True)
+    order_dispatched = DateTimeField(null=True)
+    order_complete = DateTimeField(null=True)
     order_total = DecimalField(default=0)
 
     @classmethod
@@ -266,15 +266,15 @@ class Order(BaseModel):
             for order in orders:
                 if order.order_status == "open":
                     return order
-                else:
-                    return None
+            else:
+                return None
         else:
             return None
 
     @classmethod
     def place_order(cls, order_id):
         order = cls.get(cls.id == order_id)
-        order.order_status = "order_placed"
+        order.order_status = "placed"
         order.order_placed = datetime.datetime.now()
         order.save()
 
@@ -301,6 +301,17 @@ class Order(BaseModel):
             return current_basket
         else:
             return None
+
+    @classmethod
+    def check_order_status(cls, user_id):
+        orders = cls.select().where(cls.user == user_id)
+        for order in orders:
+            if order.order_status == "placed":
+                if order.order_placed + datetime.timedelta(minutes=15) < datetime.datetime.now():
+                    cls.dispatch_order(order.id)
+            if order.order_status == "dispatched":
+                if order.order_placed + datetime.timedelta(minutes=30) < datetime.datetime.now():
+                    cls.complete_order(order.id)
 
     @classmethod
     def change_shipping(cls, shipping_id, order_id):

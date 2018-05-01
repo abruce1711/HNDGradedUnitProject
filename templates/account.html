@@ -24,7 +24,7 @@
             </div><br>
         </a>
 
-        <a href="#">
+        <a href="{{ url_for('orders', user_id = current_user.id) }}">
             <div class="card account_item_bottom">
                 <img class="card-img-top" src="/static/img/orders.png" alt="Card image cap">
                 <div class="card-body">

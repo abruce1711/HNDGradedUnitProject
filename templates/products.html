@@ -8,9 +8,8 @@
         {{ sorting_form.hidden_tag() }}
         <div class="form-content">
             {% for field in sorting_form %}
-                {{ render_field(field) }}
+                {{ field(placeholder=field.label.text, class="field", id=field.label.text, onchange="test()") }}
             {% endfor %}
-            <button type="submit" class="submit">Sort</button>
         </div>
     </form>
     <div class="container ">

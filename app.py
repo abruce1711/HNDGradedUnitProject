@@ -189,8 +189,13 @@ def orders(user_id):
     if current_user.id != user_id:
         abort(404)
     else:
+        current_orders = models.Order.select()\
+            .where((models.Order.order_status == "placed") |
+                   (models.Order.order_status == "dispatched"))
+        complete_orders = models.Order.select().where(models.Order.order_status == "complete")
         models.Order.check_order_status(current_user.id)
-        return render_template('orders.html', current_basket=g.current_basket)
+        return render_template('orders.html', current_basket=g.current_basket,
+                               current_orders=current_orders, complete_orders=complete_orders)
 
 
 @app.route('/addresses/<int:user_id>')

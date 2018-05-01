@@ -5,7 +5,7 @@
     <div class="container checkout">
         <div class="row justify-content-between">
             <div class="delivery_address col-md-6">
-            <h3>Delivery Address</h3>
+            <h3 class="table_headings">Delivery Address</h3>
             <table class="checkout_tables">
                 <tr>
                     <td>
@@ -39,7 +39,7 @@
             </div>
 
         <div class="purchase col-md-4">
-            <h3>Purchase Information</h3>
+            <h3 class="table_headings">Purchase Information</h3>
             <table class="checkout_tables">
                     <tr>
                         <td class="first_column">
@@ -91,7 +91,7 @@
 
         <div class="row justify-content-between">
             <div class="order_summary col-md-6">
-            <h3>Order Summary</h3>
+            <h3 class="table_headings">Order Summary</h3>
                 {% for item in current_order.order_lines %}
                     <table class="checkout_tables">
                         <tr>
@@ -114,7 +114,7 @@
             </div>
 
             <div class="shipping col-md-4">
-            <h3>Shipping Options</h3>
+            <h3 class="table_headings">Shipping Options</h3>
             <form id="shipping_form" action="{{ url_for('change_shipping') }}" method="POST">
                 <table class="checkout_tables">
                     <tr>

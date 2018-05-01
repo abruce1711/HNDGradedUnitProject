@@ -129,7 +129,7 @@ html, body {
 }
 
 .products {
-    margin-top: 10%;
+    margin-top: 5%;
 }
 
 .product {
@@ -137,10 +137,15 @@ html, body {
 }
 
 .sorting_form {
-    position: absolute;
-    left: 0;
-    top: 5%;
     background-color: rgba(0,0,0,0.8);
+}
+
+select:focus {
+outline: none;
+}
+
+.product_sorters {
+    margin-top: -10%;
 }
 
 .sorting_form select {
@@ -151,12 +156,7 @@ html, body {
 
 .sorting_form select option {
     color: black;
-}
-
-.sorting_form button {
-    background-color: #70DA8B;
     border: none;
-    width: 100%;
 }
 
 .product_btngroup {
@@ -286,16 +286,17 @@ html, body {
     margin-top: 5%;
 }
 
-.checkout h3 {
+.table_headings {
     color: white;
-    border-bottom: 1px solid white;
     padding-bottom: 5px;
+    background-color: rgba(0,0,0,0.7);
+    border-radius: 2px;
+    margin-bottom: -1px;
 }
 
 .checkout_tables{
     color: #303030;
     background: white;
-    margin-top: 10px;
     width: 100%;
     border: 1px solid rgba(0,0,0,0.8);
     border-collapse:separate;
@@ -306,11 +307,6 @@ html, body {
 
 .checkout_tables a {
     text-decoration: none;
-}
-
-.checkout h3 {
-    background-color: rgba(0,0,0,0.6);
-    border-radius: 2px;
 }
 
 .stripe-button-el, .stripe-button-el span {
@@ -452,4 +448,34 @@ html, body {
 
 .purchase_form input {
     transition: .2s all;
+}
+
+.current_orders {
+    margin-top: 10%;
+}
+
+.orders_tables{
+    color: #303030;
+    background: white;
+    margin-bottom: 10px;
+    width: 100%;
+    border-radius: 4px;
+    -moz-border-radius:6px;
+}
+
+.orders_tables a {
+    text-decoration: none;
+}
+
+.order_top_row {
+    background-color: #f6f6f6;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.order_item {
+    border-top: 1px solid #e2e2e2;
+}
+
+.complete_order_heading {
+    margin-top: 30px;
 }

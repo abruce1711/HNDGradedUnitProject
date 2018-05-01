@@ -2,5 +2,121 @@
 {% block title %}Orders {{ super() }}{% endblock %}
 
 {% block body %}
+    <div class="container orders">
+        <div class="current_orders">
+            {% if current_orders %}
+                <h3 class="table_headings">Current Orders</h3>
+            {% endif %}
+            {% for order in current_orders %}
+                <table class="orders_tables">
+                    <tr class="order_top_row">
+                        <td>
+                            {% set status = order.order_status|title %}
+                            <h6>
+                                Order Placed: {{ order.order_placed.strftime('%d/%m/%Y') }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                {% if order.order_status == "placed" %}
+                                    {% set status = "Awaiting Dispatch" %}
+                                {% else %}
+                                    {% set status = order.order_status|title %}
+                                {% endif %}
+                                Status: {{ status }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                Total: £{{ order.order_total + order.shipping.cost }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                Order No: #{{ order.id }}
+                            </h6>
+                        </td>
+                        <td>
+                            <a href="#">View Details</a>
+                        </td>
+                    </tr>
+                    {% for item in order.order_lines %}
+                        <tbody class="order_item">
+                        <tr>
+                            <td>
+                                <strong>{{ item.product.product_name }}</strong>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ item.product.product_description }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            {% endfor %}
 
+            {% if complete_orders %}
+                <h3 class="table_headings complete_order_heading">Completed Orders</h3>
+            {% endif %}
+            {% for order in complete_orders %}
+                <table class="orders_tables">
+                    <tr class="order_top_row">
+                        <td>
+                            {% set status = order.order_status|title %}
+                            <h6>
+                                Order Placed: {{ order.order_placed.strftime('%d/%m/%Y') }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                {% if order.order_status == "placed" %}
+                                    {% set status = "Awaiting Dispatch" %}
+                                {% else %}
+                                    {% set status = order.order_status|title %}
+                                {% endif %}
+                                Status: {{ status }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                Total: £{{ order.order_total + order.shipping.cost }}
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                Order No: #{{ order.id }}
+                            </h6>
+                        </td>
+                        <td>
+                            <a href="#">View Details</a>
+                        </td>
+                    </tr>
+                    {% for item in order.order_lines %}
+                        <tbody class="order_item">
+                        <tr>
+                            <td>
+                                <strong>{{ item.product.product_name }}</strong>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ item.product.product_description }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

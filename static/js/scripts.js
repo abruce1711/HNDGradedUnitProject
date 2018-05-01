@@ -76,6 +76,6 @@ function submitShippingForm() {
     document.getElementById("shipping_form").submit();
 }
 
-function test() {
-    alert("test")
+function submitSortingForm() {
+    document.getElementById("sorting_form").submit();
 }

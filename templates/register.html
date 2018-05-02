@@ -1,9 +1,7 @@
 {% extends 'layout.html' %}
 {% from 'macros.html' import render_field %}
-{% block html %}<html class="home" lang="en">{% endblock %}
 {% block title %}Registration{{ super() }}{% endblock %}
 {% block body %}
-    {{ super() }}
     <form class="forms register col-md-3" method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="form-content">

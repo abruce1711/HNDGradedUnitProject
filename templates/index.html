@@ -1,11 +1,5 @@
 {% extends 'layout.html' %}
-{% block html %}<html class="background_image" lang="en">{% endblock %}
 {% block title %}Home{{ super() }}{% endblock %}
 {% block body %}
-    {% if current_user.is_authenticated %}
-        <h1 style="color: white;">LOGGED IN</h1>
-    {% endif %}
-
-
-
+    
 {% endblock %}

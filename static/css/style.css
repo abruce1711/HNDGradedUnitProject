@@ -1,13 +1,13 @@
-html, body {
+html, body{
     margin: 0;
-    background: url("/static/img/home.jpg") no-repeat center;
+    background: url("/static/img/home.jpg") no-repeat center center fixed;
     height: 100%;
     background-size: cover;
-    overflow: hidden;
 }
 
 .nav {
-    position: relative;
+    position: absolute;
+    top: 0;
     background-color: rgba(0, 0, 0, 0.9);
     display: inline-block;
     height: 50px;
@@ -26,12 +26,12 @@ html, body {
 }
 
 .left-nav {
-    float: left;
     width: 70%;
 }
 
 .right-nav {
-    float: right;
+    position: absolute;
+    right: 0;
     width: 30%;
     text-align: right;
 }
@@ -129,7 +129,7 @@ html, body {
 }
 
 .products {
-    margin-top: 5%;
+    margin-top: 10%;
 }
 
 .product {
@@ -145,7 +145,8 @@ outline: none;
 }
 
 .product_sorters {
-    margin-top: -10%;
+    position: absolute;
+    top: 35px;
 }
 
 .sorting_form select {
@@ -211,6 +212,7 @@ outline: none;
 
 .basket {
     margin-top: 5%;
+
 }
 
 .empty_basket {

@@ -6,7 +6,7 @@ from flask_bcrypt import check_password_hash
 import stripe
 import forms
 import models
-import os
+import datetime
 
 stripe_pub_key = 'pk_test_Op2Ai5uZRamkkQdqqsGsxp3U'
 stripe_secret_key = 'sk_test_n42BvnIUUzGPasQnkJr8fSnx'
@@ -52,9 +52,13 @@ def before_request():
     g.current_basket = models.Order.get_current_basket(g.current_order, current_user)
     try:
         g.default_address = models.AddressDetails.get_default_address(current_user.id)
-        models.Order.check_order_status(current_user.id)
     except AttributeError:
         g.default_address = None
+
+    try:
+        models.Order.check_order_status(current_user.id)
+    except AttributeError:
+        pass
 
 
 @app.after_request
@@ -191,8 +195,8 @@ def orders(user_id):
     else:
         current_orders = models.Order.select()\
             .where((models.Order.order_status == "placed") |
-                   (models.Order.order_status == "dispatched"))
-        complete_orders = models.Order.select().where(models.Order.order_status == "complete")
+                   (models.Order.order_status == "dispatched"), models.Order.user == current_user.id)
+        complete_orders = models.Order.select().where(models.Order.order_status == "complete", models.Order.user == current_user.id)
         models.Order.check_order_status(current_user.id)
         return render_template('orders.html', current_basket=g.current_basket,
                                current_orders=current_orders, complete_orders=complete_orders)
@@ -468,7 +472,6 @@ def add_to_order(product_id, product_category):
     if request.method == 'POST':
         quantity = int(request.form.get('quantity'))
         size = request.form.get('size')
-        test = g.current_order
         if g.current_order is not None:
             for line in g.current_order.order_lines:
                 if product_category == "tshirt":
@@ -605,7 +608,7 @@ def checkout():
     elif g.default_address is not None:
         return render_template("checkout.html", current_basket=g.current_basket,
                                current_order=g.current_order, default_address=g.default_address,
-                               stripe_pub_key=stripe_pub_key)
+                               stripe_pub_key=stripe_pub_key, date=datetime.datetime.now)
     else:
         flash("Please add delivery address", "error")
         session["checking out"] = True

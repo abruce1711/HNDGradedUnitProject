@@ -189,6 +189,7 @@ def account(user_id):
 
 
 @app.route('/orders/<int:user_id>')
+@login_required
 def orders(user_id):
     if current_user.id != user_id:
         abort(404)
@@ -196,10 +197,36 @@ def orders(user_id):
         current_orders = models.Order.select()\
             .where((models.Order.order_status == "placed") |
                    (models.Order.order_status == "dispatched"), models.Order.user == current_user.id)
-        complete_orders = models.Order.select().where(models.Order.order_status == "complete", models.Order.user == current_user.id)
+        complete_orders = models.Order.select()\
+            .where(models.Order.order_status == "complete", models.Order.user == current_user.id)
+        cancelled_orders = models.Order.select()\
+            .where(models.Order.order_status == "cancelled", models.Order.user == current_user.id)
         models.Order.check_order_status(current_user.id)
         return render_template('orders.html', current_basket=g.current_basket,
-                               current_orders=current_orders, complete_orders=complete_orders)
+                               current_orders=current_orders, complete_orders=complete_orders,
+                               cancelled_orders=cancelled_orders)
+
+
+@app.route('/cancel_order/<int:order_id>')
+@login_required
+def cancel_order(order_id):
+    order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
+    elif order.order_status != "placed":
+        flash("Order has been dispatched and can not be cancelled")
+        return redirect(url_for('orders', user_id=current_user.id))
+    else:
+        models.Order.cancel_order(order_id)
+        return redirect(url_for('orders', user_id=current_user.id))
+
+
+@app.route('/continue_order/<int:order_id>')
+@login_required
+def continue_order(order_id):
+    models.Order.place_order(order_id)
+    flash("Re-Placed Order")
+    return redirect(url_for('orders', user_id=current_user.id))
 
 
 @app.route('/addresses/<int:user_id>')

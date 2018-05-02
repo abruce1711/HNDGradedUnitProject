@@ -225,9 +225,10 @@ class Order(BaseModel):
     address = ForeignKeyField(AddressDetails, related_name='address', null=True)
     shipping = ForeignKeyField(ShippingOption, related_name='shipping', null=True, default=1)
     order_status = CharField(default="open")
-    order_placed = DateTimeField(null=True)
-    order_dispatched = DateTimeField(null=True)
-    order_complete = DateTimeField(null=True)
+    order_placed_on = DateTimeField(null=True)
+    order_dispatched_on = DateTimeField(null=True)
+    order_completed_on = DateTimeField(null=True)
+    order_cancelled_on = DateTimeField(null=True)
     order_total = DecimalField(default=0)
 
     @classmethod
@@ -275,21 +276,29 @@ class Order(BaseModel):
     def place_order(cls, order_id):
         order = cls.get(cls.id == order_id)
         order.order_status = "placed"
-        order.order_placed = datetime.datetime.now()
+        order.order_placed_on = datetime.datetime.now()
         order.save()
 
     @classmethod
     def dispatch_order(cls, order_id):
         order = cls.get(cls.id == order_id)
         order.order_status = "dispatched"
-        order.order_dispatched = datetime.datetime.now()
+        order.order_dispatched_on = datetime.datetime.now()
         order.save()
 
     @classmethod
     def complete_order(cls, order_id):
         order = cls.get(cls.id == order_id)
         order.order_status = "complete"
-        order.order_complete = datetime.datetime.now()
+        order.order_completed_on = datetime.datetime.now()
+        order.save()
+
+    @classmethod
+    def cancel_order(cls, order_id):
+        order = cls.get(cls.id == order_id)
+        order.order_status = "cancelled"
+        order.order_placed_on = None
+        order.order_cancelled_on = datetime.datetime.now()
         order.save()
 
     @classmethod
@@ -307,10 +316,10 @@ class Order(BaseModel):
         orders = cls.select().where(cls.user == user_id)
         for order in orders:
             if order.order_status == "placed":
-                if order.order_placed + datetime.timedelta(minutes=15) < datetime.datetime.now():
+                if order.order_placed_on + datetime.timedelta(minutes=15) < datetime.datetime.now():
                     cls.dispatch_order(order.id)
             if order.order_status == "dispatched":
-                if order.order_placed + datetime.timedelta(minutes=30) < datetime.datetime.now():
+                if order.order_placed_on + datetime.timedelta(minutes=30) < datetime.datetime.now():
                     cls.complete_order(order.id)
 
     @classmethod

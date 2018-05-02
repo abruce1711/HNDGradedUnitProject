@@ -619,6 +619,7 @@ def checkout():
 def pay():
     shipping_option = models.ShippingOption.get(models.ShippingOption.id == g.current_order.shipping_id)
     total = g.current_order.order_total + shipping_option.cost
+    total = round(total * 100)
     customer = stripe.Customer.create(
         email=current_user.email_address,
         source=request.form.get('stripeToken')
@@ -626,7 +627,7 @@ def pay():
 
     charge = stripe.Charge.create(
         customer=customer.id,
-        amount=total * 100,
+        amount=total,
         currency='gbp'
     )
 

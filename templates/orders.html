@@ -2,6 +2,12 @@
 {% block title %}Orders {{ super() }}{% endblock %}
 
 {% block body %}
+    {% if not current_orders and not complete_orders %}
+        <div class="empty_basket">
+            <h2 class="page_heading">Hi {{ current_user.first_name }}, you haven't made any orders :(</h2>
+            <a href="{{ url_for('products') }}">Return to products</a>
+        </div>
+    {% else %}
     <div class="container orders">
         <div class="current_orders">
             {% if current_orders %}
@@ -119,4 +125,5 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
 {% endblock %}

@@ -227,6 +227,9 @@ def cancel_order(order_id):
 @app.route('/continue_order/<int:order_id>')
 @login_required
 def continue_order(order_id):
+    order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
     models.Order.place_order(order_id)
     flash("Re-Placed Order")
     return redirect(url_for('orders', user_id=current_user.id))
@@ -236,6 +239,8 @@ def continue_order(order_id):
 @login_required
 def view_order_details(order_id):
     order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
     address = models.AddressDetails.get(models.AddressDetails.id == order.address)
     if order.user_id != current_user.id:
         abort(404)
@@ -248,6 +253,8 @@ def view_order_details(order_id):
 @login_required
 def change_order_address(user_id, order_id):
     order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
     if order.order_status != "placed":
         flash("Order has been dispatched and can no longer be changed", "error")
         return redirect(url_for('view_order_details', order_id=order_id))
@@ -262,6 +269,9 @@ def change_order_address(user_id, order_id):
 @app.route('/view_order_details/change_address/add_address/<int:order_id>', methods=('POST', 'GET'))
 @login_required
 def change_order_add_address(order_id):
+    order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
     form = forms.AddAddress()
     if form.validate_on_submit():
         models.AddressDetails.add_address(
@@ -281,6 +291,9 @@ def change_order_add_address(order_id):
 @app.route('/set_order_address/<int:order_id>/<int:address_id>')
 @login_required
 def set_order_address(order_id, address_id):
+    order = models.Order.get(models.Order.id == order_id)
+    if order.user_id != current_user.id:
+        abort(404)
     models.Order.add_address_to_order(order_id, address_id)
     return redirect(url_for('view_order_details', order_id=order_id))
 
@@ -305,6 +318,7 @@ def remove_from_order(line_id, quantity):
         models.Order.update_order_total(order.id)
         flash("Item removed", "success")
         return redirect(url_for('view_order_details', order_id=order.id))
+
 
 @app.route('/addresses/<int:user_id>')
 # redirects user to login page if they're not logged in

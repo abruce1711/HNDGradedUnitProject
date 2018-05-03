@@ -491,3 +491,7 @@ outline: none;
 .complete_order_heading {
     margin-top: 30px;
 }
+
+.change_order_address_item {
+    font-size: 18px !important;
+}

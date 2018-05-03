@@ -48,7 +48,6 @@ def before_request():
     g.user = current_user
 
     g.current_order = models.Order.find_current_order(current_user)
-    print(g.current_order)
     g.current_basket = models.Order.get_current_basket(g.current_order, current_user)
     try:
         g.default_address = models.AddressDetails.get_default_address(current_user.id)
@@ -196,11 +195,14 @@ def orders(user_id):
     else:
         current_orders = models.Order.select()\
             .where((models.Order.order_status == "placed") |
-                   (models.Order.order_status == "dispatched"), models.Order.user == current_user.id)
+                   (models.Order.order_status == "dispatched"), models.Order.user == current_user.id)\
+            .order_by(models.Order.order_placed_on.desc())
         complete_orders = models.Order.select()\
-            .where(models.Order.order_status == "complete", models.Order.user == current_user.id)
+            .where(models.Order.order_status == "complete", models.Order.user == current_user.id) \
+            .order_by(models.Order.order_placed_on.desc())
         cancelled_orders = models.Order.select()\
-            .where(models.Order.order_status == "cancelled", models.Order.user == current_user.id)
+            .where(models.Order.order_status == "cancelled", models.Order.user == current_user.id) \
+            .order_by(models.Order.order_placed_on.desc())
         models.Order.check_order_status(current_user.id)
         return render_template('orders.html', current_basket=g.current_basket,
                                current_orders=current_orders, complete_orders=complete_orders,
@@ -218,6 +220,7 @@ def cancel_order(order_id):
         return redirect(url_for('orders', user_id=current_user.id))
     else:
         models.Order.cancel_order(order_id)
+        flash("Order cancelled", "success")
         return redirect(url_for('orders', user_id=current_user.id))
 
 
@@ -228,6 +231,80 @@ def continue_order(order_id):
     flash("Re-Placed Order")
     return redirect(url_for('orders', user_id=current_user.id))
 
+
+@app.route('/view_order_details/<int:order_id>')
+@login_required
+def view_order_details(order_id):
+    order = models.Order.get(models.Order.id == order_id)
+    address = models.AddressDetails.get(models.AddressDetails.id == order.address)
+    if order.user_id != current_user.id:
+        abort(404)
+    else:
+        return render_template("view_order_details.html", current_basket=g.current_basket,
+                               order=order, address=address)
+
+
+@app.route('/view_order_details/change_address/<int:user_id>/<int:order_id>')
+@login_required
+def change_order_address(user_id, order_id):
+    order = models.Order.get(models.Order.id == order_id)
+    if order.order_status != "placed":
+        flash("Order has been dispatched and can no longer be changed", "error")
+        return redirect(url_for('view_order_details', order_id=order_id))
+    address_list = models.AddressDetails \
+        .select() \
+        .where(models.AddressDetails.user_id == current_user.id) \
+        .order_by(models.AddressDetails.default.desc())
+    return render_template("change_order_address.html", current_basket=g.current_basket,
+                           address_list=address_list, order=order)
+
+
+@app.route('/view_order_details/change_address/add_address/<int:order_id>', methods=('POST', 'GET'))
+@login_required
+def change_order_add_address(order_id):
+    form = forms.AddAddress()
+    if form.validate_on_submit():
+        models.AddressDetails.add_address(
+            user_id=current_user.id,
+            address_line_1=form.address_line_1.data,
+            address_line_2=form.address_line_2.data,
+            town=form.town.data,
+            city=form.city.data,
+            postcode=form.postcode.data
+        )
+        address = models.AddressDetails.select().order_by(models.AddressDetails.id.desc()).get()
+        models.Order.add_address_to_order(order_id, address.id)
+        return redirect(url_for('view_order_details', order_id=order_id))
+    return render_template('add_address.html', form=form, current_basket=g.current_basket)
+
+
+@app.route('/set_order_address/<int:order_id>/<int:address_id>')
+@login_required
+def set_order_address(order_id, address_id):
+    models.Order.add_address_to_order(order_id, address_id)
+    return redirect(url_for('view_order_details', order_id=order_id))
+
+
+@app.route('/remove_from_order/<int:line_id>/<int:quantity>')
+@login_required
+def remove_from_order(line_id, quantity):
+    line = models.OrderLine.get(models.OrderLine.id == line_id)
+    product = models.Product.get(models.Product.id == line.product_id)
+    order = models.Order.get(models.Order.id == line.order_id)
+    lines = models.OrderLine.select().where(models.OrderLine.order == order.id)
+    if order.user_id != current_user.id:
+        abort(404)
+    else:
+        if product.product_category == "tshirt":
+            models.Product.increase_tshirt_stock(product.id, quantity, line.size)
+        else:
+            models.Product.increase_other_stock(product.id, quantity)
+        if len(list(lines)) == 1:
+            return redirect(url_for('cancel_order', order_id=order.id))
+        models.OrderLine.remove_order_line(line_id)
+        models.Order.update_order_total(order.id)
+        flash("Item removed", "success")
+        return redirect(url_for('view_order_details', order_id=order.id))
 
 @app.route('/addresses/<int:user_id>')
 # redirects user to login page if they're not logged in
@@ -620,6 +697,7 @@ def edit_quantity(line_id):
 
 
 @app.route('/change_shipping', methods=['POST'])
+@login_required
 def change_shipping():
     shipping_id = int(request.form.get('shipping'))
     models.Order.change_shipping(shipping_id, g.current_order.id)
@@ -635,7 +713,7 @@ def checkout():
     elif g.default_address is not None:
         return render_template("checkout.html", current_basket=g.current_basket,
                                current_order=g.current_order, default_address=g.default_address,
-                               stripe_pub_key=stripe_pub_key, date=datetime.datetime.now)
+                               stripe_pub_key=stripe_pub_key)
     else:
         flash("Please add delivery address", "error")
         session["checking out"] = True

@@ -2,7 +2,7 @@
 {% from 'macros.html' import render_field %}
 {% block title %}Registration{{ super() }}{% endblock %}
 {% block body %}
-    <form class="forms register col-md-3" method="POST" action="">
+    <form class="forms register col-md-3 col-12" method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="form-content">
             {% for field in form %}

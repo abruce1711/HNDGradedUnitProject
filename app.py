@@ -2,11 +2,13 @@
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request, session)
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
+from flask_mail import Mail, Message
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+import os
 
 import stripe
 import forms
 import models
-import datetime
 
 stripe_pub_key = 'pk_test_Op2Ai5uZRamkkQdqqsGsxp3U'
 stripe_secret_key = 'sk_test_n42BvnIUUzGPasQnkJr8fSnx'
@@ -19,6 +21,34 @@ app = Flask(__name__)
 # Flask needs a secret key to create session objects, this one is randomly generated
 # and is used to cryptographically sign user cookies to prevent them being modified
 app.secret_key = "dvapvhsdfbvasoifjsfobmskdfnv394t5e943i-4"
+
+
+UPLOAD_FOLDER = 'static\\img\\product_img'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.config.update(dict(
+    MAIL_SERVER='smtp.cix.uk',
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USERNAME='contact@nativesins.com',
+    MAIL_PASSWORD='NativeSins'
+))
+
+mail = Mail(app)
+
+
+def send_email(subject, recipient, body, html):
+    msg = Message(
+        subject,
+        sender='contact@nativesins.com',
+        recipients=[recipient])
+    msg.body = body
+    msg.html = html
+    try:
+        mail.send(msg)
+    except ConnectionRefusedError as e:
+        flash(e, "error")
+
 
 # creates an instance of the LoginManager class and passes
 # in the Flask object from above
@@ -58,6 +88,29 @@ def before_request():
         models.Order.check_order_status(current_user.id)
     except AttributeError:
         pass
+
+
+@app.route('/send')
+def send():
+    send_email(
+        "Order Confirmation",
+        current_user.email_address,
+        render_template("order_confirmation.html"),
+        render_template("order_confirmation.html"))
+    return 'sent'
+
+
+@app.route('/upload-file/<file_name>', methods=['POST'])
+def upload_file(file_name):
+    file = request.files['image']
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+    file.save(file_path)
+    return redirect(url_for('index'))
+
+
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
 
 
 @app.after_request
@@ -736,21 +789,30 @@ def checkout():
 
 @app.route('/pay', methods=['GET', 'POST'])
 def pay():
-    shipping_option = models.ShippingOption.get(models.ShippingOption.id == g.current_order.shipping_id)
-    total = g.current_order.order_total + shipping_option.cost
+    order = models.Order.get(models.Order.id == g.current_order)
+    shipping_option = models.ShippingOption.get(models.ShippingOption.id == order.shipping_id)
+    total = order.order_total + shipping_option.cost
     total = round(total * 100)
     customer = stripe.Customer.create(
         email=current_user.email_address,
-        source=request.form.get('stripeToken')
+        source=request.form.get('stripeToken'),
     )
 
     charge = stripe.Charge.create(
         customer=customer.id,
         amount=total,
-        currency='gbp'
+        currency='gbp',
+        description='Native Sins',
+        receipt_email="abruce1711@gmail.com",
     )
 
-    models.Order.place_order(g.current_order.id)
+    send_email(
+        "Order Confirmation",
+        current_user.email_address,
+        render_template("order_confirmation.html"),
+        render_template("order_confirmation.html"))
+
+    models.Order.place_order(order.id)
     flash("Order Complete", "success")
     return redirect(url_for('index'))
 

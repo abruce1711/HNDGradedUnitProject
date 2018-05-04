@@ -495,3 +495,8 @@ outline: none;
 .change_order_address_item {
     font-size: 18px !important;
 }
+
+.change_order_address_item button {
+    background-color: #70DA8B;
+    width: 100%;
+}

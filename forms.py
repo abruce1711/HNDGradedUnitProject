@@ -1,7 +1,9 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, TextAreaField, BooleanField, DecimalField, SelectField, IntegerField, RadioField
+from wtforms import (StringField, PasswordField, TextAreaField,
+                     DecimalField, SelectField, IntegerField, RadioField)
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                 Length, EqualTo)
+from flask_wtf.file import FileField, FileRequired
 
 from models import User, Product
 
@@ -107,6 +109,10 @@ class OrderProducts(Form):
             ('', 'Sort Products'), ('alphabet', 'Alphabetical Order'), ('price_lth', 'Price lowest first'), ('price_htl', 'Price highest first')
         ]
     )
+
+
+class TestUploadForm(Form):
+    product_image = FileField(validators=[FileRequired()])
 
 
 class AddAddress(Form):

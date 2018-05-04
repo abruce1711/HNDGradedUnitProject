@@ -100,10 +100,13 @@ def send():
     return 'sent'
 
 
-@app.route('/upload-file/<file_name>', methods=['POST'])
-def upload_file(file_name):
+@app.route('/upload_image/', methods=['POST'])
+def upload_image():
     file = request.files['image']
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+    test = request.files['image'].filename
+    parts = test.split('.')
+    print(parts[1])
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'test.jpg')
     file.save(file_path)
     return redirect(url_for('index'))
 
@@ -602,6 +605,14 @@ def create_product():
                 medium_stock=form.medium_stock.data,
                 large_stock=form.large_stock.data
             )
+            new_product = models.Product.select().order_by(models.Product.id.desc()).get()
+            file = request.files['image']
+            name = request.files['image'].filename
+            parts = name.split('.')
+            ext = parts[1]
+            file_name = str(new_product.id) + "_" + new_product.product_name + "." + ext
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+            file.save(file_path)
             flash("Product added", "success")
             return redirect(url_for('create_product'))
         # returns the create_product template

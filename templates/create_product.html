@@ -11,7 +11,7 @@
     </script>
     {{ super() }}
     <!--to do: check t-shirt and remove no_size on page load-->
-    <form class="forms create_product col-md-3" method="POST" action="">
+    <form class="forms create_product col-md-3" method="POST" enctype="multipart/form-data" action="{{ url_for('create_product') }}">
         {{ form.hidden_tag() }}
         <div class="form-content">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -32,6 +32,7 @@
                     {{ render_field(field) }}
                 {% endif %}
             {% endfor %}
+            <input type="file" name="image">
             <button type="submit" class="submit">Create Product</button>
         </div>
     </form>

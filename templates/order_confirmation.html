@@ -14,6 +14,8 @@
         h1, h2, h3 {color: #303030}
         table {border-collapse: collapse; color: #303030}
         td {padding: 20px; border-top: 1px solid #303030}
+        a {text-decoration: none; transition: .2s all; color: cornflowerblue}
+        a:hover {color: #4173ce}
     </style>
 
 </head>
@@ -58,14 +60,14 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td></td>
+                <td><a href="http://localhost:5000/orders/{{ current_user.id }}">Track your order</a></td>
                 <td class="total">
                     <h2>Total: £{{ g.current_order.order_total }}</h2>
                 </td>
             </tr>
         </table>
-    <h2>Kind Regards,</h2>
-    <h2>The Native Sins Team</h2>
+    <h4>Kind Regards,</h4>
+    <h4>The Native Sins Team</h4>
     </div>
 </body>
 </html>

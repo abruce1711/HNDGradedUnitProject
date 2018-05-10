@@ -32,7 +32,8 @@
                     {{ render_field(field) }}
                 {% endif %}
             {% endfor %}
-            <input type="file" name="image">
+            <label class="image_upload">Choose image to upload:</label>
+            <input class="image_upload" type="file" name="image">
             <button type="submit" class="submit">Create Product</button>
         </div>
     </form>

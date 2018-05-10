@@ -1,10 +1,11 @@
 # all imports for the app to work
-from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request, session)
+from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request, session, send_file)
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
 from flask_mail import Mail, Message
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os
+import time
 
 import stripe
 import forms
@@ -90,36 +91,9 @@ def before_request():
         pass
 
 
-@app.route('/send')
-def send():
-    send_email(
-        "Order Confirmation",
-        current_user.email_address,
-        render_template("order_confirmation.html"),
-        render_template("order_confirmation.html"))
-    return 'sent'
-
-
-@app.route('/upload_image/', methods=['POST'])
-def upload_image():
-    file = request.files['image']
-    test = request.files['image'].filename
-    parts = test.split('.')
-    print(parts[1])
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'test.jpg')
-    file.save(file_path)
-    return redirect(url_for('index'))
-
-
-@app.route('/upload')
-def upload():
-    return render_template('upload.html')
-
-
 @app.after_request
 def after_request(response):
     """Close database connection after each request"""
-
     g.db.close()
     return response
 
@@ -610,9 +584,10 @@ def create_product():
             name = request.files['image'].filename
             parts = name.split('.')
             ext = parts[1]
-            file_name = str(new_product.id) + "_" + new_product.product_name + "." + ext
+            file_name = str(new_product.id) + "." + ext
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
             file.save(file_path)
+            models.Product.add_image(new_product.id, file_path)
             flash("Product added", "success")
             return redirect(url_for('create_product'))
         # returns the create_product template
@@ -813,8 +788,7 @@ def pay():
         customer=customer.id,
         amount=total,
         currency='gbp',
-        description='Native Sins',
-        receipt_email="abruce1711@gmail.com",
+        description='Native Sins'
     )
 
     send_email(
@@ -826,6 +800,18 @@ def pay():
     models.Order.place_order(order.id)
     flash("Order Complete", "success")
     return redirect(url_for('index'))
+
+
+@app.route('/reports', methods=['POST', 'GET'])
+@login_required
+def reports():
+    if current_user.user_role == "customer":
+        abort(404)
+    if request.method == "POST":
+        file_path = 'static\\tmp_reports\\' + models.User.generate_user_report()
+        session['tmp_report'] = file_path
+        return send_file(file_path, attachment_filename='user_report.csv', as_attachment=True)
+    return render_template('reports.html')
 
 
 @app.route('/')

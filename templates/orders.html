@@ -16,7 +16,7 @@
             {% for order in current_orders %}
                 <table class="orders_tables">
                     <tr class="order_top_row">
-                        <td>
+                        <td class="top_row_first_cell">
                             {% set status = order.order_status|title %}
                             <h6>
                                 Order Placed: {{ order.order_placed_on.strftime('%d/%m/%Y') }}
@@ -65,6 +65,11 @@
                                 {{ item.product.product_description }}
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <img src="/{{ item.product.product_image_path }}">
+                            </td>
+                        </tr>
                         </tbody>
                     {% endfor %}
                 </table>
@@ -76,7 +81,7 @@
             {% for order in complete_orders %}
                 <table class="orders_tables">
                     <tr class="order_top_row">
-                        <td>
+                        <td class="top_row_first_cell">
                             {% set status = order.order_status|title %}
                             <h6>
                                 Order Placed: {{ order.order_placed_on.strftime('%d/%m/%Y') }}
@@ -122,6 +127,11 @@
                                 {{ item.product.product_description }}
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <img src="/{{ item.product.product_image_path }}">
+                            </td>
+                        </tr>
                         </tbody>
                     {% endfor %}
                 </table>
@@ -133,7 +143,8 @@
             {% for order in cancelled_orders %}
                 <table class="orders_tables">
                     <tr class="order_top_row">
-                        <td>
+                        <td class="top_row_first_cell">
+                        <td class="top_row_first_cell">
                             {% set status = order.order_status|title %}
                             <h6>
                                 Cancelled On: {{ order.order_cancelled_on.strftime('%d/%m/%Y') }}
@@ -174,6 +185,11 @@
                         <tr>
                             <td>
                                 {{ item.product.product_description }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="/{{ item.product.product_image_path }}">
                             </td>
                         </tr>
                         </tbody>

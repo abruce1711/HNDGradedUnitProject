@@ -2,7 +2,8 @@ import datetime
 from peewee import *
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
-
+import csv
+import uuid
 
 db = SqliteDatabase('nativesins.db')
 
@@ -51,6 +52,23 @@ class User(UserMixin, BaseModel):
             password=generate_password_hash(password)
         ).where(cls.id == user_id)
         query.execute()
+
+    @classmethod
+    def generate_user_report(cls):
+        users = cls.select()
+        fieldnames = []
+        file_name = uuid.uuid4().hex + '.csv'
+        for key in users[0].__data__:
+            if key != 'password':
+                fieldnames.append(key)
+        with open('static\\tmp_reports\\' + file_name, 'w+', newline='') as report:
+            writer = csv.DictWriter(report, fieldnames=fieldnames)
+            writer.writeheader()
+            for user in users:
+                user_dict = dict(user.__data__.items())
+                user_dict.pop('password', None)
+                writer.writerow(user_dict)
+        return file_name
 
 
 class AddressDetails(BaseModel):
@@ -121,6 +139,7 @@ class Product(BaseModel):
     product_name = CharField()
     product_price = DecimalField(default=0)
     product_description = CharField()
+    product_image_path = CharField(null=True)
     one_size_stock = IntegerField(default=0)
     small_stock = IntegerField(default=0)
     medium_stock = IntegerField(default=0)
@@ -143,6 +162,12 @@ class Product(BaseModel):
             )
         except IntegrityError:
             raise ValueError("T-Shirt with this name exists")
+
+    @classmethod
+    def add_image(cls, id, product_image_path):
+        product = cls.get(cls.id == id)
+        product.product_image_path = product_image_path
+        product.save()
 
     @classmethod
     def increase_tshirt_stock(cls, product_id, quantity, size):

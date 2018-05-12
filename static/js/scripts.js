@@ -79,3 +79,22 @@ function submitShippingForm() {
 function submitSortingForm() {
     document.getElementById("sorting_form").submit();
 }
+
+function reportsForm(tab) {
+    var users = document.getElementById("users");
+    var orders = document.getElementById("orders");
+    var stock = document.getElementById("stock");
+    if (tab === "user") {
+        users.style.display = ("inline");
+        orders.style.display = ("none");
+        stock.style.display = ("none");
+    } else if (tab === "order") {
+        users.style.display = ("none");
+        orders.style.display = ("inline");
+        stock.style.display = ("none");
+    } else if (tab === "stock") {
+        users.style.display = ("none");
+        orders.style.display = ("none");
+        stock.style.display = ("inline");
+    }
+}

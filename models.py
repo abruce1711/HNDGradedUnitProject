@@ -20,6 +20,7 @@ class User(UserMixin, BaseModel):
     email_address = CharField(unique=True)
     password = CharField(max_length=100)
     user_role = CharField(default='customer')
+    date_created = DateTimeField(default=datetime.datetime.now)
 
     @classmethod
     def create_user(cls, first_name, last_name, email_address, password, user_role):
@@ -54,8 +55,8 @@ class User(UserMixin, BaseModel):
         query.execute()
 
     @classmethod
-    def generate_user_report(cls):
-        users = cls.select()
+    def generate_user_report(cls, start_date, end_date):
+        users = cls.select().where(cls.date_created >= start_date, cls.date_created <= end_date)
         fieldnames = []
         file_name = uuid.uuid4().hex + '.csv'
         for key in users[0].__data__:
@@ -144,6 +145,7 @@ class Product(BaseModel):
     small_stock = IntegerField(default=0)
     medium_stock = IntegerField(default=0)
     large_stock = IntegerField(default=0)
+    date_created = DateTimeField(default=datetime.datetime.now)
     # create attribute to contain uploaded image location
 
     @classmethod

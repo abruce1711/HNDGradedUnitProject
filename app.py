@@ -805,13 +805,15 @@ def pay():
 @app.route('/reports', methods=['POST', 'GET'])
 @login_required
 def reports():
+    form = forms.CreateReport()
     if current_user.user_role == "customer":
         abort(404)
-    if request.method == "POST":
-        file_path = 'static\\tmp_reports\\' + models.User.generate_user_report()
-        session['tmp_report'] = file_path
+    if form.validate_on_submit():
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        file_path = 'static\\tmp_reports\\' + models.User.generate_user_report(start_date, end_date)
         return send_file(file_path, attachment_filename='user_report.csv', as_attachment=True)
-    return render_template('reports.html')
+    return render_template('reports.html', form=form, current_basket=g.current_basket)
 
 
 @app.route('/')

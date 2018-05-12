@@ -50,12 +50,12 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                {% if current_user.user_role != "customer" %}
                    <a class="dropdown-item" href="{{ url_for('create_product') }}">Create Product</a>
+                   <a class="dropdown-item" href="{{ url_for('reports') }}">Reports</a>
                {% endif %}
                {% if current_user.user_role == "admin" %}
                    <a class="dropdown-item" href="{{ url_for('create_user') }}">Create User</a>
                {% endif %}
                 <a class="dropdown-item" href="{{ url_for('account', user_id = current_user.id) }}">My account</a>
-                <a class="dropdown-item" href="#">Something else here</a>
             </div>
         </div>
         <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>

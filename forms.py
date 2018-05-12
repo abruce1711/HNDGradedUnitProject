@@ -4,14 +4,30 @@ from wtforms import (StringField, PasswordField, TextAreaField,
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                 Length, EqualTo)
 from flask_wtf.file import FileField, FileRequired
+from wtforms.fields.html5 import DateField
 
 from models import User, Product
+from flask import flash
 
 
 # custom validator
 def email_exists(form, field):
     if User.select().where(User.email_address == field.data).exists():
-        raise ValidationError('User with that email already exists')
+        flash('User with that email already exists', 'error')
+
+
+def start_date_check(form, field):
+    users = User.select()
+    for user in users:
+        if field.data < user.date_created.date():
+            flash('No users created before that date', 'error')
+
+
+def end_date_check(form, field):
+    users = User.select()
+    for user in users:
+        if field.data > user.date_created.date():
+            raise ValidationError('No users created after that date')
 
 
 class LoginForm(Form):
@@ -111,10 +127,6 @@ class OrderProducts(Form):
     )
 
 
-class TestUploadForm(Form):
-    product_image = FileField(validators=[FileRequired()])
-
-
 class AddAddress(Form):
     address_line_1 = StringField(
         'Address Line 1',
@@ -180,4 +192,22 @@ class ResetPassword(Form):
             Length(min=8, max=100),
             EqualTo('new_password', message="New passwords do not match"),
         ]
+    )
+
+
+class CreateReport(Form):
+    report_type = RadioField(
+        'Type',
+        validators=[DataRequired()],
+        choices=[('user', 'User'), ('order', 'Order'), ('stock', 'Stock')]
+    )
+
+    start_date = DateField(
+        'Start Date',
+        validators=[start_date_check]
+    )
+
+    end_date = DateField(
+        'End Date',
+        validators=[end_date_check]
     )

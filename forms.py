@@ -3,10 +3,9 @@ from wtforms import (StringField, PasswordField, TextAreaField,
                      DecimalField, SelectField, IntegerField, RadioField)
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                 Length, EqualTo)
-from flask_wtf.file import FileField, FileRequired
 from wtforms.fields.html5 import DateField
 
-from models import User, Product
+from models import User
 from flask import flash
 
 
@@ -204,10 +203,10 @@ class CreateReport(Form):
 
     start_date = DateField(
         'Start Date',
-        validators=[start_date_check]
+       # validators=[start_date_check]
     )
 
     end_date = DateField(
         'End Date',
-        validators=[end_date_check]
+        #validators=[end_date_check]
     )

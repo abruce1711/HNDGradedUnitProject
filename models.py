@@ -56,7 +56,11 @@ class User(UserMixin, BaseModel):
 
     @classmethod
     def generate_user_report(cls, start_date, end_date):
+        start_date = datetime.datetime.combine(start_date, datetime.time())
+        end_date = datetime.datetime.combine(end_date, datetime.time())
         users = cls.select().where(cls.date_created >= start_date, cls.date_created <= end_date)
+        for user in users:
+            print(user.first_name)
         fieldnames = []
         file_name = uuid.uuid4().hex + '.csv'
         for key in users[0].__data__:

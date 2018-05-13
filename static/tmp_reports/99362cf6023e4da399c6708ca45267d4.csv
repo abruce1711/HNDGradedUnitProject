@@ -1,0 +1,4 @@
+id,first_name,last_name,email_address,user_role,date_created
+1,Admin,User,contact@nativesins.com,admin,2018-05-13 00:11:29.709226
+2,Andrew,Bruce,abruce1711@gmail.com,customer,2018-05-13 10:18:43.563723
+5,Bla Bla,Test,bla@test.com,customer,2018-05-18 10:24:52.237535

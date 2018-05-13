@@ -203,10 +203,28 @@ class CreateReport(Form):
 
     start_date = DateField(
         'Start Date',
-       # validators=[start_date_check]
     )
 
     end_date = DateField(
         'End Date',
-        #validators=[end_date_check]
+    )
+
+
+class Contact(Form):
+    name = StringField(
+         'Name',
+         validators=[DataRequired()]
+    )
+
+    email = StringField(
+        'Email Address',
+        validators=[
+            DataRequired(),
+            Email()
+        ]
+    )
+
+    message = TextAreaField(
+        'Message',
+        validators=[DataRequired()]
     )

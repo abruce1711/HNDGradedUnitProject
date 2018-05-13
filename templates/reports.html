@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% from 'macros.html' import render_field %}
 {% block html %}<html class="home" lang="en">{% endblock %}
-{% block title %}Add Product{{ super() }}{% endblock %}
+{% block title %}Reports{{ super() }}{% endblock %}
 {% block body %}
     <script>
         window.onload = function() {
@@ -10,23 +10,18 @@
         };
     </script>
     {{ super() }}
-    <!--to do: check t-shirt and remove no_size on page load-->
     <div class="reports_form">
-    <form class="forms create_product col-md-3" method="POST" enctype="multipart/form-data" action="#">
+    <form class="forms create_product col-md-3" method="POST" enctype="multipart/form-data" action="">
         {{ form.hidden_tag() }}
         <div class="form-content">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 {% for field in form.report_type %}
                     {% if field.label.text == "User" %}
-                        <label class="btn toggles btn-secondary active" onclick="reportsForm('user')">
+                        <label class="btn report-toggles btn-secondary active" onclick="reportsForm('user')">
                             {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
                         </label>
                     {% elif field.label.text == "Order" %}
-                        <label class="btn toggles btn-secondary" onclick="reportsForm('order')">
-                            {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
-                        </label>
-                    {% elif field.label.text == "Stock" %}
-                        <label class="btn toggles btn-secondary" onclick="reportsForm('stock')">
+                        <label class="btn report-toggles btn-secondary" onclick="reportsForm('order')">
                             {{ field(placeholder=field.label.text, class="field", id=field.label.text) }}{{ field.label }}
                         </label>
                     {% endif %}
@@ -34,11 +29,10 @@
             </div>
             <h5 id="users">Download a report of users created</h5>
             <h5 id="orders">Download a report of orders placed</h5>
-            <h5 id="stock">Download a report of products created</h5>
             <br><br>
-            <label class="report_label">Starting:</label>
+            <label class="report_label">Between:</label>
             {{ form.start_date(class="field report_date", id=form.start_date.label.text) }}<br>
-            <label class="report_label">Ending:</label>
+            <label class="report_label">And:</label>
             {{ form.end_date(class="field report_date", id=form.end_date.label.text) }}
             <button type="submit" class="submit">Generate Report</button>
         </div>

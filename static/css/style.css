@@ -537,3 +537,27 @@ outline: none;
     position: absolute;
     padding-top: 12px;
 }
+
+#orders {
+    display: none;
+}
+
+.report-toggles {
+    width: 50%;
+}
+
+.about {
+    color: white;
+    background-color: rgba(0,0,0,0.8);
+    margin-top: 7%;
+    font-size: 20px;
+    line-height: 1.8;
+}
+
+.contact {
+    margin-top: 10%;
+}
+
+.contact form {
+
+}

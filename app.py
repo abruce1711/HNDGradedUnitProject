@@ -38,10 +38,11 @@ app.config.update(dict(
 mail = Mail(app)
 
 
-def send_email(subject, recipient, body, html):
+def send_email(subject, reply_to, recipient, body, html):
     msg = Message(
         subject,
         sender='contact@nativesins.com',
+        reply_to=reply_to,
         recipients=[recipient])
     msg.body = body
     msg.html = html
@@ -793,6 +794,7 @@ def pay():
 
     send_email(
         "Order Confirmation",
+        'contact@nativesins.com',
         current_user.email_address,
         render_template("order_confirmation.html"),
         render_template("order_confirmation.html"))
@@ -806,14 +808,50 @@ def pay():
 @login_required
 def reports():
     form = forms.CreateReport()
+    file_name = None
     if current_user.user_role == "customer":
         abort(404)
     if form.validate_on_submit():
         start_date = form.start_date.data
         end_date = form.end_date.data
-        file_path = 'static\\tmp_reports\\' + models.User.generate_user_report(start_date, end_date)
-        return send_file(file_path, attachment_filename='user_report.csv', as_attachment=True)
+        test = form.report_type.data
+        if form.report_type.data == "user":
+            file_name = models.User.generate_user_report(start_date, end_date)
+        elif form.report_type.data == "order":
+            file_name = models.Order.generate_order_report(start_date, end_date)
+
+        if file_name is None:
+            flash("No data found between those dates", "error")
+        else:
+            file_path = 'static\\tmp_reports\\' + file_name
+            return send_file(file_path, attachment_filename='report.csv', as_attachment=True)
     return render_template('reports.html', form=form, current_basket=g.current_basket)
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html', current_basket=g.current_basket)
+
+
+@app.route('/contact', methods=('GET', 'POST'))
+def contact():
+    form = forms.Contact()
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        message = form.message.data
+
+        send_email(
+            "Contact Form",
+            email,
+            'contact@nativesins.com',
+            render_template("contact_email.html", name=name, message=message),
+            render_template("contact_email.html", name=name, message=message))
+
+        flash('Email sent, we will reply as soon as possible', 'success')
+        return redirect(url_for('contact'))
+
+    return render_template('contact.html', current_basket=g.current_basket, form=form)
 
 
 @app.route('/')

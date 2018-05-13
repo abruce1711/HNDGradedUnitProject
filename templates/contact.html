@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% from 'macros.html' import render_field %}
+{% block title %}Contact {{ super() }}{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="contact">
+        <form class="forms col-md-6 mx-auto" method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-content">
+            {% for field in form %}
+                {% if current_user.is_authenticated and field.label.text == 'Name' %}
+                    {{ field(placeholder=field.label.text,
+                        class="field", id=field.label.text,
+                        value=current_user.first_name + ' ' + current_user.last_name) }}
+                {% elif current_user.is_authenticated and field.label.text == 'Email Address' %}
+                    {{ field(placeholder=field.label.text,
+                        class="field", id=field.label.text,
+                        value=current_user.email_address) }}
+                {% else %}
+                    {{ render_field(field) }}
+                {% endif %}
+            {% endfor %}
+            <!--<div class="g-recaptcha mx-auto" data-sitekey="6Ldf_1gUAAAAAAmpr8_X6rztx7OwEag-UJiW0PJi"></div>-->
+            <button type="submit" class="submit">Create User</button>
+        </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

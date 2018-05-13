@@ -59,21 +59,23 @@ class User(UserMixin, BaseModel):
         start_date = datetime.datetime.combine(start_date, datetime.time())
         end_date = datetime.datetime.combine(end_date, datetime.time())
         users = cls.select().where(cls.date_created >= start_date, cls.date_created <= end_date)
-        for user in users:
-            print(user.first_name)
-        fieldnames = []
-        file_name = uuid.uuid4().hex + '.csv'
-        for key in users[0].__data__:
-            if key != 'password':
-                fieldnames.append(key)
-        with open('static\\tmp_reports\\' + file_name, 'w+', newline='') as report:
-            writer = csv.DictWriter(report, fieldnames=fieldnames)
-            writer.writeheader()
-            for user in users:
-                user_dict = dict(user.__data__.items())
-                user_dict.pop('password', None)
-                writer.writerow(user_dict)
-        return file_name
+        if not users.exists():
+            return None
+        else:
+            fieldnames = []
+            file_name = uuid.uuid4().hex + '.csv'
+            for key in users[0].__data__:
+                if key != 'password':
+                    fieldnames.append(key)
+            with open('static\\tmp_reports\\' + file_name, 'w+', newline='') as report:
+                writer = csv.DictWriter(report, fieldnames=fieldnames)
+                writer.writeheader()
+                for user in users:
+                    user_dict = dict(user.__data__.items())
+                    user_dict.pop('password', None)
+                    user_dict.update({'date_created':user.date_created.strftime('%d/%m/%y %H:%M:%S')})
+                    writer.writerow(user_dict)
+            return file_name
 
 
 class AddressDetails(BaseModel):
@@ -358,6 +360,50 @@ class Order(BaseModel):
         order = cls.get(cls.id == order_id)
         order.shipping_id = shipping_id
         order.save()
+
+    @classmethod
+    def generate_order_report(cls, start_date, end_date):
+        start_date = datetime.datetime.combine(start_date, datetime.time())
+        end_date = datetime.datetime.combine(end_date, datetime.time())
+        orders = cls.select().where(cls.order_placed_on >= start_date, cls.order_placed_on <= end_date)
+        if not orders.exists():
+            return None
+        else:
+            fieldnames = []
+            file_name = uuid.uuid4().hex + '.csv'
+            for key in orders[0].__data__:
+                if key != 'order_cancelled_on':
+                    if key == 'address':
+                        fieldnames.extend(['shipping_address_line_1', 'shipping_address_line_2',
+                                           'shipping_address_city', 'shipping_address_postcode'])
+                    elif key == 'shipping':
+                        fieldnames.append('shipping_option')
+                    else:
+                        fieldnames.append(key)
+            with open('static\\tmp_reports\\' + file_name, 'w+', newline='') as report:
+                writer = csv.DictWriter(report, fieldnames=fieldnames)
+                writer.writeheader()
+                for order in orders:
+                    order_dict = dict(order.__data__.items())
+                    address = AddressDetails.get(AddressDetails.id == order.address)
+                    shipping = ShippingOption.get(ShippingOption.id == order.shipping)
+                    user = User.get(User.id == order.user)
+                    order_dict.pop('order_cancelled_on', None)
+                    order_dict.pop('address', None)
+                    order_dict.pop('shipping', None)
+                    order_dict.update({
+                        'user': user.email_address,
+                        'shipping_address_line_1': address.address_line_1,
+                        'shipping_address_line_2': address.address_line_2,
+                        'shipping_address_city': address.city,
+                        'shipping_address_postcode': address.postcode,
+                        'shipping_option': shipping.name
+                    })
+                    order_dict.update({'order_placed_on': order.order_placed_on.strftime('%d/%m/%y %H:%M:%S')})
+                    order_dict.update({'order_dispatched_on': order.order_placed_on.strftime('%d/%m/%y %H:%M:%S')})
+                    order_dict.update({'order_completed_on': order.order_placed_on.strftime('%d/%m/%y %H:%M:%S')})
+                    writer.writerow(order_dict)
+            return file_name
 
 
 class OrderLine(Model):

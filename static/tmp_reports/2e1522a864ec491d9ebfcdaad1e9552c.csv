@@ -1,0 +1,5 @@
+id,user,shipping_address_line_1,shipping_address_line_2,shipping_address_city,shipping_address_postcode,shipping_option,order_status,order_placed_on,order_dispatched_on,order_completed_on,order_total
+1,contact@nativesins.com,38 LETHAM WAY,DALGETY BAY,DUNFERMLINE,KY119FQ,first_class,complete,13/05/18 20:16:15,13/05/18 20:16:15,13/05/18 20:16:15,10
+2,contact@nativesins.com,38 LETHAM WAY,DALGETY BAY,DUNFERMLINE,KY119FQ,second_class,dispatched,14/05/18 09:26:08,14/05/18 09:26:08,14/05/18 09:26:08,20
+3,contact@nativesins.com,38 LETHAM WAY,DALGETY BAY,DUNFERMLINE,KY119FQ,first_class,placed,14/05/18 09:34:17,14/05/18 09:34:17,14/05/18 09:34:17,15
+4,contact@nativesins.com,38 LETHAM WAY,DALGETY BAY,DUNFERMLINE,KY119FQ,first_class,placed,14/05/18 09:35:54,14/05/18 09:35:54,14/05/18 09:35:54,20

@@ -55,7 +55,7 @@
                             <div class = "product_btngroup">
                                 <button type="submit" class="btn add_to_basket">Add to basket</button>
                                 {% if current_user.user_role != "customer" and current_user.is_authenticated %}
-                                    <a href="#"><button type="button" class="btn alter_product">Edit</button></a>
+                                    <!--<a href="#"><button type="button" class="btn alter_product">Edit</button></a>-->
                                     <a href="{{ url_for('remove_product', product_id = product.id) }}"><button type="button" class="btn remove_product">Remove</button></a>
                                 {% endif %}
                             </div>

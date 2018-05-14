@@ -27,6 +27,10 @@ app.secret_key = "dvapvhsdfbvasoifjsfobmskdfnv394t5e943i-4"
 UPLOAD_FOLDER = 'static\\img\\product_img'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6Ldf_1gUAAAAAAmpr8_X6rztx7OwEag-UJiW0PJi'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6Ldf_1gUAAAAAAyAg_l2pE0K4o0qO1iVlUtdWzOG'
+app.config['TESTING'] = True
+
 app.config.update(dict(
     MAIL_SERVER='smtp.cix.uk',
     MAIL_PORT=587,
@@ -607,6 +611,12 @@ def products():
             product_list = models.Product.select().order_by(models.Product.product_price.desc())
         elif sort_by == 'alphabet':
             product_list = models.Product.select().order_by(models.Product.product_name)
+        elif sort_by == 'tshirt':
+            product_list = models.Product.select().where(models.Product.product_category == "tshirt")
+        elif sort_by == 'hat':
+            product_list = models.Product.select().where(models.Product.product_category == "hat")
+        elif sort_by == 'cd':
+            product_list = models.Product.select().where(models.Product.product_category == "cd")
     return render_template('products.html', products=product_list,
                            current_basket=g.current_basket, sorting_form=sorting_form)
 

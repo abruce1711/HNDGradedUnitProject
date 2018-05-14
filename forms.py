@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import Form, RecaptchaField
 from wtforms import (StringField, PasswordField, TextAreaField,
                      DecimalField, SelectField, IntegerField, RadioField)
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
@@ -121,7 +121,13 @@ class OrderProducts(Form):
     order_by = SelectField(
         'Order By',
         choices=[
-            ('', 'Sort Products'), ('alphabet', 'Alphabetical Order'), ('price_lth', 'Price lowest first'), ('price_htl', 'Price highest first')
+            ('', 'Sort Products'),
+            ('alphabet', 'Alphabetical Order'),
+            ('price_lth', 'Price lowest first'),
+            ('price_htl', 'Price highest first'),
+            ('tshirt', 'T-Shirts'),
+            ('hat', 'Hats'),
+            ('cd', 'Albums')
         ]
     )
 
@@ -228,3 +234,5 @@ class Contact(Form):
         'Message',
         validators=[DataRequired()]
     )
+
+    recaptcha = RecaptchaField()

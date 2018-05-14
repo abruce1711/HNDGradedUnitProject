@@ -6,7 +6,8 @@
     <div class="contact">
         <form class="forms col-md-6 mx-auto" method="POST" action="">
         {{ form.hidden_tag() }}
-        <div class="form-content">
+        <h5>Send us a message!</h5>
+        <div class="form-content contact_form">
             {% for field in form %}
                 {% if current_user.is_authenticated and field.label.text == 'Name' %}
                     {{ field(placeholder=field.label.text,
@@ -20,8 +21,7 @@
                     {{ render_field(field) }}
                 {% endif %}
             {% endfor %}
-            <!--<div class="g-recaptcha mx-auto" data-sitekey="6Ldf_1gUAAAAAAmpr8_X6rztx7OwEag-UJiW0PJi"></div>-->
-            <button type="submit" class="submit">Create User</button>
+            <button type="submit" class="submit">Send Message</button>
         </div>
     </form>
     </div>

@@ -1,11 +1,17 @@
+"""
+    app.py is the main app document for the web app. It contains
+    all of the routes and handles all requests between the server and client.
+
+    :author: Andrew Bruce
+    :year: 2018
+"""
+
 # all imports for the app to work
 from flask import (Flask, g, render_template, flash, redirect, url_for, abort, request, session, send_file)
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
 from flask_mail import Mail, Message
-from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os
-import time
 
 import stripe
 import forms
@@ -23,14 +29,16 @@ app = Flask(__name__)
 # and is used to cryptographically sign user cookies to prevent them being modified
 app.secret_key = "dvapvhsdfbvasoifjsfobmskdfnv394t5e943i-4"
 
-
+# constant to store the file path for the product images
 UPLOAD_FOLDER = 'static\\img\\product_img'
+
+# tells the app that the constant is the upload folder
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6Ldf_1gUAAAAAAmpr8_X6rztx7OwEag-UJiW0PJi'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6Ldf_1gUAAAAAAyAg_l2pE0K4o0qO1iVlUtdWzOG'
-app.config['TESTING'] = True
 
+# dictionary containing the SMTP settings for outgoing mail
 app.config.update(dict(
     MAIL_SERVER='smtp.cix.uk',
     MAIL_PORT=587,
@@ -39,10 +47,24 @@ app.config.update(dict(
     MAIL_PASSWORD='NativeSins'
 ))
 
+# associates the mail module with the app
 mail = Mail(app)
 
 
 def send_email(subject, reply_to, recipient, body, html):
+    """
+     **Function for sending emails.**
+
+     Takes the parameters mentioned below and uses them to send an
+     email using the outgoing SMTP settings I have declared in the app.
+
+    :param subject: email subject
+    :param reply_to: reply address
+    :param recipient: email recipient
+    :param body: email body
+    :param html: html file to style body
+    :return: sends an email with the html file
+    """
     msg = Message(
         subject,
         sender='contact@nativesins.com',
@@ -67,7 +89,15 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(userid):
-    """Loads a user from the user id stored in the cookies."""
+    """
+    **Loads the user between sessions.**
+
+    Takes in the user id stored in the cookies and uses it to pull
+    the user from the database.
+
+    :param userid: users primary key id
+    :return: the user object
+    """
 
     try:
         return models.User.get(models.User.id == userid)
@@ -77,7 +107,18 @@ def load_user(userid):
 
 @app.before_request
 def before_request():
-    """Connect to the database before each request."""
+    """
+    **Handles all actions before request.**
+
+    This is a built in Flask function that fires before each server request.
+    I use this to do a number of things -
+
+    1. Establishes a connection to the database.
+    2. Assigns the current user to a global variable
+    3. Finds the current users open order and assigns to a global variable
+    4. Find the current users basket amount and assigns to a global variable
+    5. Checks the status of all orders under the current user for tracking.
+    """
 
     g.db = models.db
     g.db.connect()
@@ -98,7 +139,15 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    """Close database connection after each request"""
+    """
+    **Handles all actions after server request.**
+
+    This is a built in Flask function that fires after each server request.
+    I use it to close the database connection, then it returns the response from the browser.
+
+    :param response: browser response
+    :return: any response from the browser
+    """
     g.db.close()
     return response
 
@@ -107,9 +156,15 @@ def after_request(response):
 # methods is if data will be POST, GOT, or both
 @app.route('/login', methods=('GET', 'POST'))
 def login():
-    """Compares credentials to details in the database and logs the user in if they match.
+    """
+    **Login route.**
 
-    Creates a cookie in the browser to tell the webapp that the user is authenticated."""
+    Handles POST data from the login form then validates credentials against hashed credentials
+    in database. If login is correct then it calls Flasks :func:`~login_user` method which creates an authentication cookie.
+    If not it gives an error.
+
+    :return: A html template containing the login form
+    """
 
     # instance of LoginForm in forms.py
     form = forms.LoginForm()
@@ -139,10 +194,14 @@ def login():
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
-    """Route that returns registration page
+    """
+    **Registration route.**
 
-    On this route it uses a User method to create a user in the database
-    using details given by the user.
+    Takes POST data from html form and calls :func:`~models.User.create_user`
+    which creates a user in the database, with the default user role of "customer". It then calls Flasks :func:`~login_user` method
+    and redirects the user home.
+
+    :return: html template containing registration form
     """
 
     form = forms.RegisterForm()
@@ -165,7 +224,15 @@ def register():
 @app.route('/logout')
 @login_required
 def logout():
-    """Removes user cookies to log user out of web app"""
+    """
+    **Logout route.**
+
+    *This route requires authentication*
+
+    Calls Flasks :func:`~flask.logout_user` method which removes authentication cookies.
+    Then redirects user to the login page.
+    :return: a redirect for the login page
+    """
 
     logout_user()
     flash("Logged out", "success")
@@ -176,11 +243,15 @@ def logout():
 # redirects to login if the user isn't authenticated
 @login_required
 def create_user():
-    """Route that returns the page for administrators to create user accounts.
+    """
+    **Create user route.**
 
-    On this route it uses a User method to create a user in the database
-    using details given by the administrator, unlike the registration, this one
-    includes user role.
+    *Route can only be accessed if user role is "admin"*
+
+    Takes in POST data from html form and calls :func:`~models.User.create_user`.
+    Unlike the :func:`~register` route it takes in a user role and assigns it to the created user.
+
+    :return: html template with create user form
     """
 
     form = forms.CreateUser()
@@ -209,9 +280,15 @@ def create_user():
 # redirects user to login page if they're not logged in
 @login_required
 def account(user_id):
-    """This route returns the account options for the user that requests it.
+    """
+    **Account route**
 
-    This route takes the user ID as a parameter as it needs it for the url
+    *This route requires authentication*
+
+    Takes in a user id and returns that users account page.
+
+    :param user_id: current users id (primary key)
+    :return: html template for account page
     """
     if current_user.id != user_id:
         # tests if a user is trying to access another accounts details
@@ -225,19 +302,43 @@ def account(user_id):
 @app.route('/orders/<int:user_id>')
 @login_required
 def orders(user_id):
+    """
+    **Orders route**
+
+    *This route requires authentication*
+
+    Pulls the current users placed, dispatched, complete, and canelled orders
+    and assigns them to variables. It then returns a html template and passes
+    the lists of orders in.
+
+    :param user_id: current users id (primary key)
+    :return: html template displaying passed in user orders
+    """
+    # checks the user is accessing their own orders page
     if current_user.id != user_id:
         abort(404)
     else:
+
+        # gets all placed and dispatched orders belonging to the current user
+        # orders them by order_placed_on and assigns to current_orders
         current_orders = models.Order.select()\
             .where((models.Order.order_status == "placed") |
                    (models.Order.order_status == "dispatched"), models.Order.user == current_user.id)\
             .order_by(models.Order.order_placed_on.desc())
+
+        # gets all complete orders belonging to the current user
+        # orders them by order_placed_on and assigns to complete_orders
         complete_orders = models.Order.select()\
             .where(models.Order.order_status == "complete", models.Order.user == current_user.id) \
             .order_by(models.Order.order_placed_on.desc())
+
+        # gets all cancelled orders belonging to the current user
+        # orders them by order_placed_on and assigns to cancelled_orders
         cancelled_orders = models.Order.select()\
             .where(models.Order.order_status == "cancelled", models.Order.user == current_user.id) \
             .order_by(models.Order.order_placed_on.desc())
+
+        # checks current order status
         models.Order.check_order_status(current_user.id)
         return render_template('orders.html', current_basket=g.current_basket,
                                current_orders=current_orders, complete_orders=complete_orders,
@@ -850,16 +951,18 @@ def contact():
         name = form.name.data
         email = form.email.data
         message = form.message.data
+        try:
+            send_email(
+                "Contact Form",
+                email,
+                'contact@nativesins.com',
+                render_template("contact_email.html", name=name, message=message),
+                render_template("contact_email.html", name=name, message=message))
 
-        send_email(
-            "Contact Form",
-            email,
-            'contact@nativesins.com',
-            render_template("contact_email.html", name=name, message=message),
-            render_template("contact_email.html", name=name, message=message))
-
-        flash('Email sent, we will reply as soon as possible', 'success')
-        return redirect(url_for('contact'))
+            flash('Email sent, we will reply as soon as possible', 'success')
+            return redirect(url_for('contact'))
+        except ConnectionRefusedError:
+            flash("connection Refused", "error")
 
     return render_template('contact.html', current_basket=g.current_basket, form=form)
 

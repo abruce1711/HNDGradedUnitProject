@@ -14,6 +14,11 @@ class BaseModel(Model):
 
 
 class User(UserMixin, BaseModel):
+    """
+    **User class.**
+
+    Used as a model for the database, containing methods to be performed on user objects.
+    """
     id = PrimaryKeyField()
     first_name = CharField()
     last_name = CharField()
@@ -24,6 +29,19 @@ class User(UserMixin, BaseModel):
 
     @classmethod
     def create_user(cls, first_name, last_name, email_address, password, user_role):
+        """
+        **Creates user.**
+
+        Takes in parameters and uses them to create a row in the user table of the database.
+        It takes in a plain text password but hashes it before inputting to the database.
+
+        :param first_name: users first name
+        :param last_name: user last name
+        :param email_address: users email address
+        :param password: users password (plain text)
+        :param user_role: the role of the user (determines permissions)
+        :return:
+        """
         try:
             cls.create(
                 first_name=first_name,

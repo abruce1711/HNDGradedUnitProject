@@ -235,4 +235,6 @@ class Contact(Form):
         validators=[DataRequired()]
     )
 
-    recaptcha = RecaptchaField()
+    recaptcha = RecaptchaField(
+        'Recaptcha'
+    )

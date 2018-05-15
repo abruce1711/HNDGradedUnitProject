@@ -1,0 +1,1218 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>app &mdash; Native Sins 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Native Sins
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forms.html">Forms</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Native Sins</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>app</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for app</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    app.py is the main app document for the web app. It contains</span>
+<span class="sd">    all of the routes and handles all requests between the server and client.</span>
+
+<span class="sd">    :author: Andrew Bruce</span>
+<span class="sd">    :year: 2018</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># all imports for the app to work</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="p">(</span><span class="n">Flask</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">send_file</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="k">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">flask_bcrypt</span> <span class="k">import</span> <span class="n">check_password_hash</span>
+<span class="kn">from</span> <span class="nn">flask_mail</span> <span class="k">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">stripe</span>
+<span class="kn">import</span> <span class="nn">forms</span>
+<span class="kn">import</span> <span class="nn">models</span>
+
+<span class="n">stripe_pub_key</span> <span class="o">=</span> <span class="s1">&#39;pk_test_Op2Ai5uZRamkkQdqqsGsxp3U&#39;</span>
+<span class="n">stripe_secret_key</span> <span class="o">=</span> <span class="s1">&#39;sk_test_n42BvnIUUzGPasQnkJr8fSnx&#39;</span>
+<span class="n">stripe</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">stripe_secret_key</span>
+
+<span class="c1"># creates instance of the flask class and if the script is run directly</span>
+<span class="c1"># it gets the name &quot;__main__&quot;</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Flask needs a secret key to create session objects, this one is randomly generated</span>
+<span class="c1"># and is used to cryptographically sign user cookies to prevent them being modified</span>
+<span class="n">app</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="s2">&quot;dvapvhsdfbvasoifjsfobmskdfnv394t5e943i-4&quot;</span>
+
+<span class="c1"># constant to store the file path for the product images</span>
+<span class="n">UPLOAD_FOLDER</span> <span class="o">=</span> <span class="s1">&#39;static</span><span class="se">\\</span><span class="s1">img</span><span class="se">\\</span><span class="s1">product_img&#39;</span>
+
+<span class="c1"># tells the app that the constant is the upload folder</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;UPLOAD_FOLDER&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UPLOAD_FOLDER</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;RECAPTCHA_PUBLIC_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6Ldf_1gUAAAAAAmpr8_X6rztx7OwEag-UJiW0PJi&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;RECAPTCHA_PRIVATE_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6Ldf_1gUAAAAAAyAg_l2pE0K4o0qO1iVlUtdWzOG&#39;</span>
+
+<span class="c1"># dictionary containing the SMTP settings for outgoing mail</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">MAIL_SERVER</span><span class="o">=</span><span class="s1">&#39;smtp.cix.uk&#39;</span><span class="p">,</span>
+    <span class="n">MAIL_PORT</span><span class="o">=</span><span class="mi">587</span><span class="p">,</span>
+    <span class="n">MAIL_USE_TLS</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">MAIL_USERNAME</span><span class="o">=</span><span class="s1">&#39;contact@nativesins.com&#39;</span><span class="p">,</span>
+    <span class="n">MAIL_PASSWORD</span><span class="o">=</span><span class="s1">&#39;NativeSins&#39;</span>
+<span class="p">))</span>
+
+<span class="c1"># associates the mail module with the app</span>
+<span class="n">mail</span> <span class="o">=</span> <span class="n">Mail</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="send_email"><a class="viewcode-back" href="../app.html#app.send_email">[docs]</a><span class="k">def</span> <span class="nf">send_email</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">reply_to</span><span class="p">,</span> <span class="n">recipient</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">html</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     **Function for sending emails.**</span>
+
+<span class="sd">     Takes the parameters mentioned below and uses them to send an</span>
+<span class="sd">     email using the outgoing SMTP settings I have declared in the app.</span>
+
+<span class="sd">    :param subject: email subject</span>
+<span class="sd">    :param reply_to: reply address</span>
+<span class="sd">    :param recipient: email recipient</span>
+<span class="sd">    :param body: email body</span>
+<span class="sd">    :param html: html file to style body</span>
+<span class="sd">    :return: sends an email with the html file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span>
+        <span class="n">subject</span><span class="p">,</span>
+        <span class="n">sender</span><span class="o">=</span><span class="s1">&#39;contact@nativesins.com&#39;</span><span class="p">,</span>
+        <span class="n">reply_to</span><span class="o">=</span><span class="n">reply_to</span><span class="p">,</span>
+        <span class="n">recipients</span><span class="o">=</span><span class="p">[</span><span class="n">recipient</span><span class="p">])</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">html</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ConnectionRefusedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># creates an instance of the LoginManager class and passes</span>
+<span class="c1"># in the Flask object from above</span>
+<span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="c1"># the login view is where the app will redirect non_authenticated users</span>
+<span class="c1"># if @login_required is set</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">login_view</span> <span class="o">=</span> <span class="s1">&#39;login&#39;</span>
+
+
+<div class="viewcode-block" id="load_user"><a class="viewcode-back" href="../app.html#app.load_user">[docs]</a><span class="nd">@login_manager</span><span class="o">.</span><span class="n">user_loader</span>
+<span class="k">def</span> <span class="nf">load_user</span><span class="p">(</span><span class="n">userid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Loads the user between sessions.**</span>
+
+<span class="sd">    Takes in the user id stored in the cookies and uses it to pull</span>
+<span class="sd">    the user from the database.</span>
+
+<span class="sd">    :param userid: users primary key id</span>
+<span class="sd">    :return: the user object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">userid</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">models</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="before_request"><a class="viewcode-back" href="../app.html#app.before_request">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">before_request</span>
+<span class="k">def</span> <span class="nf">before_request</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Handles all actions before request.**</span>
+
+<span class="sd">    This is a built in Flask function that fires before each server request.</span>
+<span class="sd">    I use this to do a number of things -</span>
+
+<span class="sd">    1. Establishes a connection to the database.</span>
+<span class="sd">    2. Assigns the current user to a global variable</span>
+<span class="sd">    3. Finds the current users open order and assigns to a global variable</span>
+<span class="sd">    4. Find the current users basket amount and assigns to a global variable</span>
+<span class="sd">    5. Checks the status of all orders under the current user for tracking.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">db</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">current_user</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">current_order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">find_current_order</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">current_basket</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get_current_basket</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="p">,</span> <span class="n">current_user</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">default_address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">get_default_address</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">default_address</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">check_order_status</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="after_request"><a class="viewcode-back" href="../app.html#app.after_request">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">after_request</span>
+<span class="k">def</span> <span class="nf">after_request</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Handles all actions after server request.**</span>
+
+<span class="sd">    This is a built in Flask function that fires after each server request.</span>
+<span class="sd">    I use it to close the database connection, then it returns the response from the browser.</span>
+
+<span class="sd">    :param response: browser response</span>
+<span class="sd">    :return: any response from the browser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+
+
+<span class="c1"># app.route is the path after the domain in the URL</span>
+<span class="c1"># methods is if data will be POST, GOT, or both</span>
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../app.html#app.login">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Login route.**</span>
+
+<span class="sd">    Handles POST data from the login form then validates credentials against hashed credentials</span>
+<span class="sd">    in database. If login is correct then it calls Flasks :func:`~login_user` method which creates an authentication cookie.</span>
+<span class="sd">    If not it gives an error.</span>
+
+<span class="sd">    :return: A html template containing the login form</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># instance of LoginForm in forms.py</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">LoginForm</span><span class="p">()</span>
+    <span class="c1"># if the form is submitted without errors</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># query the db to find a user email address equal to the one given</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">email_address</span> <span class="o">==</span> <span class="n">form</span><span class="o">.</span><span class="n">email_address</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">models</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="c1"># errors if not found</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Email or password incorrect&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check password hash is a method from the bcrypt library imported</span>
+            <span class="c1"># it compares the password given to the encrypted password in the db</span>
+            <span class="c1"># and returns true or false</span>
+            <span class="k">if</span> <span class="n">check_password_hash</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Log in successful&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># flash messaging appears at the top of the screen</span>
+                <span class="c1"># the category given second is used to style the message</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Email or password incorrect&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+    <span class="c1"># render_template returns one of the page templates</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../app.html#app.register">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Registration route.**</span>
+
+<span class="sd">    Takes POST data from html form and calls :func:`~models.User.create_user`</span>
+<span class="sd">    which creates a user in the database, with the default user role of &quot;customer&quot;. It then calls Flasks :func:`~login_user` method</span>
+<span class="sd">    and redirects the user home.</span>
+
+<span class="sd">    :return: html template containing registration form</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">RegisterForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="c1"># method from the User model that creates user in db</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span>
+            <span class="n">first_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
+            <span class="n">last_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
+            <span class="n">email_address</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">user_role</span><span class="o">=</span><span class="s2">&quot;customer&quot;</span>
+        <span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Account Created&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">email_address</span> <span class="o">==</span> <span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../app.html#app.logout">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Logout route.**</span>
+
+<span class="sd">    *This route requires authentication*</span>
+
+<span class="sd">    Calls Flasks :func:`~flask.logout_user` method which removes authentication cookies.</span>
+<span class="sd">    Then redirects user to the login page.</span>
+<span class="sd">    :return: a redirect for the login page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Logged out&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="create_user"><a class="viewcode-back" href="../app.html#app.create_user">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/create_user&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="c1"># redirects to login if the user isn&#39;t authenticated</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">create_user</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Create user route.**</span>
+
+<span class="sd">    *Route can only be accessed if user role is &quot;admin&quot;*</span>
+
+<span class="sd">    Takes in POST data from html form and calls :func:`~models.User.create_user`.</span>
+<span class="sd">    Unlike the :func:`~register` route it takes in a user role and assigns it to the created user.</span>
+
+<span class="sd">    :return: html template with create user form</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CreateUser</span><span class="p">()</span>
+    <span class="c1"># if the user isn&#39;t an admin</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">user_role</span> <span class="o">!=</span> <span class="s2">&quot;admin&quot;</span><span class="p">:</span>
+        <span class="c1"># return a 404 error</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">user_role</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s2">&quot;blank&quot;</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Must select user role&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span>
+                    <span class="n">first_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
+                    <span class="n">last_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
+                    <span class="n">email_address</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                    <span class="n">password</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                    <span class="n">user_role</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">user_role</span><span class="o">.</span><span class="n">data</span>
+                <span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;User created&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;create_user&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;create_user.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="account"><a class="viewcode-back" href="../app.html#app.account">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/account/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">account</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Account route**</span>
+
+<span class="sd">    *This route requires authentication*</span>
+
+<span class="sd">    Takes in a user id and returns that users account page.</span>
+
+<span class="sd">    :param user_id: current users id (primary key)</span>
+<span class="sd">    :return: html template for account page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="c1"># tests if a user is trying to access another accounts details</span>
+        <span class="c1"># if they are it returns a 404 error</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># renders the template</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;account.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="orders"><a class="viewcode-back" href="../app.html#app.orders">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/orders/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">orders</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Orders route**</span>
+
+<span class="sd">    *This route requires authentication*</span>
+
+<span class="sd">    Pulls the current users placed, dispatched, complete, and canelled orders</span>
+<span class="sd">    and assigns them to variables. It then returns a html template and passes</span>
+<span class="sd">    the lists of orders in.</span>
+
+<span class="sd">    :param user_id: current users id (primary key)</span>
+<span class="sd">    :return: html template displaying passed in user orders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># checks the user is accessing their own orders page</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># gets all placed and dispatched orders belonging to the current user</span>
+        <span class="c1"># orders them by order_placed_on and assigns to current_orders</span>
+        <span class="n">current_orders</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>\
+            <span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;placed&quot;</span><span class="p">)</span> <span class="o">|</span>
+                   <span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;dispatched&quot;</span><span class="p">),</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+
+        <span class="c1"># gets all complete orders belonging to the current user</span>
+        <span class="c1"># orders them by order_placed_on and assigns to complete_orders</span>
+        <span class="n">complete_orders</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>\
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+
+        <span class="c1"># gets all cancelled orders belonging to the current user</span>
+        <span class="c1"># orders them by order_placed_on and assigns to cancelled_orders</span>
+        <span class="n">cancelled_orders</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>\
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;cancelled&quot;</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+
+        <span class="c1"># checks current order status</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">check_order_status</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;orders.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span>
+                               <span class="n">current_orders</span><span class="o">=</span><span class="n">current_orders</span><span class="p">,</span> <span class="n">complete_orders</span><span class="o">=</span><span class="n">complete_orders</span><span class="p">,</span>
+                               <span class="n">cancelled_orders</span><span class="o">=</span><span class="n">cancelled_orders</span><span class="p">)</span></div>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/cancel_order/&lt;int:order_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">!=</span> <span class="s2">&quot;placed&quot;</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Order has been dispatched and can not be cancelled&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Order cancelled&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/continue_order/&lt;int:order_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">continue_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">place_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Re-Placed Order&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/view_order_details/&lt;int:order_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">view_order_details</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;view_order_details.html&quot;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span>
+                               <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/view_order_details/change_address/&lt;int:user_id&gt;/&lt;int:order_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">change_order_address</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">!=</span> <span class="s2">&quot;placed&quot;</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Order has been dispatched and can no longer be changed&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;view_order_details&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">))</span>
+    <span class="n">address_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span> \
+        <span class="o">.</span><span class="n">select</span><span class="p">()</span> \
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;change_order_address.html&quot;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span>
+                           <span class="n">address_list</span><span class="o">=</span><span class="n">address_list</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/view_order_details/change_address/add_address/&lt;int:order_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">))</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">change_order_add_address</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">AddAddress</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">add_address</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">address_line_1</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">address_line_2</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_2</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">town</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">town</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">city</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">postcode</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">postcode</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">add_address_to_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">address</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;view_order_details&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;add_address.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/set_order_address/&lt;int:order_id&gt;/&lt;int:address_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">set_order_address</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">address_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">add_address_to_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">address_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;view_order_details&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/remove_from_order/&lt;int:line_id&gt;/&lt;int:quantity&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">remove_from_order</span><span class="p">(</span><span class="n">line_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line_id</span><span class="p">)</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">order_id</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">order</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">:</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_tshirt_stock</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_other_stock</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;cancel_order&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">remove_order_line</span><span class="p">(</span><span class="n">line_id</span><span class="p">)</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">update_order_total</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Item removed&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;view_order_details&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="addresses"><a class="viewcode-back" href="../app.html#app.addresses">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/addresses/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">addresses</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This route returns the addresses for the user that requests it.</span>
+
+<span class="sd">    This route takes the user ID as a parameter as it needs it for the url</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="c1"># tests if a user is trying to access another accounts details</span>
+        <span class="c1"># if they are it returns a 404 error</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># pulls all addresses of the current user out of the database and assigns them to address_list</span>
+        <span class="c1"># It orders them by the default attribute so the default address always appears first</span>
+        <span class="n">address_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span>\
+            <span class="o">.</span><span class="n">select</span><span class="p">()</span>\
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;addresses.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">address_list</span><span class="o">=</span><span class="n">address_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_address"><a class="viewcode-back" href="../app.html#app.add_address">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add_address&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">))</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">add_address</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This route returns a template to allow a user to add a new address&quot;&quot;&quot;</span>
+    <span class="c1"># assigns the add address form to the form variable</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">AddAddress</span><span class="p">()</span>
+    <span class="c1"># if the form is posted and valid</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="c1"># add address to the database</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">add_address</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">address_line_1</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">address_line_2</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_2</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">town</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">town</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">city</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">postcode</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">postcode</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+        <span class="c1"># gets the last added address out of the database, which will be the one created above</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># uses my change_default_address method to make the new address default</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">change_default</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="c1"># if there is an open order assigned to this users account</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># uses my add_address_to_order to add the new default address to the order</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">add_address_to_order</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">address</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Address added&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="c1"># checks for a session variable created if the user was redirected here during the checkout process</span>
+        <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checking out&#39;</span><span class="p">):</span>
+            <span class="c1"># deletes the session variable</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;checking out&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># return the user to the checkout</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;checkout&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise it just returns them to the addresses page</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;addresses&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="c1"># renders the add address template</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;add_address.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_address_default"><a class="viewcode-back" href="../app.html#app.set_address_default">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/set_address_default/&lt;int:address_id&gt;&#39;</span><span class="p">)</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">set_address_default</span><span class="p">(</span><span class="n">address_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This route is used to change the default address</span>
+
+<span class="sd">    It is fired when the Set Default link is clicked on the address.</span>
+<span class="sd">    It takes the new address Id in as a parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># uses my change_default method under AddressDetails to change the default to the one passed in</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">change_default</span><span class="p">(</span><span class="n">address_id</span><span class="p">,</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="c1"># success message</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;New default set&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+
+    <span class="c1"># redirects user back to addresses</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;addresses&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="edit_address"><a class="viewcode-back" href="../app.html#app.edit_address">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/edit_address/&lt;int:address_id&gt;/&lt;int:user_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">))</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">edit_address</span><span class="p">(</span><span class="n">address_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This route returns a template to allow a user to edit an address&quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">AddAddress</span><span class="p">()</span>
+    <span class="c1"># gets address from db and assigns it to address</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">address_id</span><span class="p">)</span>
+    <span class="c1"># creates empty list called address_items</span>
+    <span class="n">address_items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># if the address bering edited does not belong to the current user</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="c1"># give a 404 error</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># if the form is submitted and is valid</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="c1"># call my edit_address method and pass in the form details</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">edit_address</span><span class="p">(</span>
+                <span class="n">address_id</span><span class="o">=</span><span class="n">address_id</span><span class="p">,</span>
+                <span class="n">address_line_1</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">address_line_2</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">address_line_2</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">town</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">town</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">city</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">city</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">postcode</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">postcode</span><span class="o">.</span><span class="n">data</span>
+            <span class="p">)</span>
+            <span class="c1"># success message</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Address updated&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+            <span class="c1"># redirect user to addresses</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;addresses&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="c1"># when it gets the address it returns it as a dictionary, which has key (column name) and value(the data)</span>
+        <span class="c1"># this loops through the dictionary assigning the key to key, and the value to value</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">address</span><span class="o">.</span><span class="n">__data__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># if the key isn&#39;t id, user_id, and default (we don&#39;t need these)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;id&#39;</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;user_id&#39;</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+                <span class="c1"># add the value (cell data) to the address_items list</span>
+                <span class="n">address_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># render the template passing in the address_items so they can pre-populate the form</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;edit_address.html&#39;</span><span class="p">,</span> <span class="n">address_items</span><span class="o">=</span><span class="n">address_items</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_address"><a class="viewcode-back" href="../app.html#app.delete_address">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/delete_address/&lt;int:address_id&gt;/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="c1"># redirects user to login page if they&#39;re not logged in</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">delete_address</span><span class="p">(</span><span class="n">address_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This route removes an address</span>
+
+<span class="sd">    An address id is passed in from the link, it then calls methods</span>
+<span class="sd">    in the model to remove the address</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if the address doesn&#39;t belong to the current user</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="c1"># give 404 error</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># calls delete_address method and passes in the address id</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">delete_address</span><span class="p">(</span><span class="n">address_id</span><span class="p">)</span>
+        <span class="c1"># gets the most recently added address</span>
+        <span class="n">new_default</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>\
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>\
+            <span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># uses the change_default method to set that to default</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">change_default</span><span class="p">(</span><span class="n">new_default</span><span class="p">,</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="c1"># success message</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Address Removed&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="c1"># redirects the user to addresses</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;addresses&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login_details/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">login_details</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;login_details.html&quot;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">current_user</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/edit_login_details/&lt;int:user_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">edit_login_details</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">EditLoginDetails</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">edit_details</span><span class="p">(</span>
+                    <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="n">first_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                    <span class="n">last_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                    <span class="n">email_address</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">email_address</span><span class="o">.</span><span class="n">data</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login_details&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="n">detail_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">current_user</span><span class="o">.</span><span class="n">__data__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;first_name&quot;</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;last_name&quot;</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;email_address&quot;</span><span class="p">:</span>
+                <span class="n">detail_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;edit_login_details.html&quot;</span><span class="p">,</span>
+                               <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">detail_list</span><span class="o">=</span><span class="n">detail_list</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reset_password/&lt;int:user_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ResetPassword</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">check_password_hash</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">current_password</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Current Password Incorrect&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">reset_password</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">new_password</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Password Reset&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login_details&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;reset_password.html&quot;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_product"><a class="viewcode-back" href="../app.html#app.create_product">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/create_product&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">create_product</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Route that returns the page for administrators to create products.</span>
+
+<span class="sd">    On this route it takes input from the create product form and</span>
+<span class="sd">    uses a method inside the Product class to create a product</span>
+<span class="sd">    in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CreateProduct</span><span class="p">()</span>
+
+    <span class="c1"># if the user is a customer, give them a 404 page</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">user_role</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># if the form is validated</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">product_category</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">product_category</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">product_name</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">product_name</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">product_price</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">product_price</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">product_description</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">product_description</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">one_size_stock</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">one_size_stock</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">small_stock</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">small_stock</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">medium_stock</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">medium_stock</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">large_stock</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">large_stock</span><span class="o">.</span><span class="n">data</span>
+            <span class="p">)</span>
+            <span class="n">new_product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">ext</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;UPLOAD_FOLDER&#39;</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">new_product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Product added&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;create_product&#39;</span><span class="p">))</span>
+        <span class="c1"># returns the create_product template</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;create_product.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span></div>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/products&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">products</span><span class="p">():</span>
+    <span class="n">sorting_form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">OrderProducts</span><span class="p">()</span>
+    <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sorting_form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">sort_by</span> <span class="o">=</span> <span class="n">sorting_form</span><span class="o">.</span><span class="n">order_by</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s2">&quot;price_lth&quot;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_price</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s2">&quot;price_htl&quot;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_price</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s1">&#39;alphabet&#39;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s1">&#39;tshirt&#39;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s1">&#39;hat&#39;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;hat&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sort_by</span> <span class="o">==</span> <span class="s1">&#39;cd&#39;</span><span class="p">:</span>
+            <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;cd&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;products.html&#39;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="n">product_list</span><span class="p">,</span>
+                           <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">sorting_form</span><span class="o">=</span><span class="n">sorting_form</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/remove_product/&lt;int:product_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">remove_product</span><span class="p">(</span><span class="n">product_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">user_role</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">product_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Product deleted&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="n">product_list</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add_to_order/&lt;int:product_id&gt;/&lt;product_category&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">))</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">add_to_order</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">product_category</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">))</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">order_lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">product_id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">product_id</span> <span class="ow">and</span> <span class="n">size</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">tshirt__in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                            <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">increase_line_quantity</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_tshirt_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">product_id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">product_id</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">other_in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">):</span>
+                            <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">increase_line_quantity</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_other_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">tshirt__in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                        <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">create_order_line</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+                        <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_tshirt_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">other_in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">):</span>
+                        <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">create_order_line</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;one_size&quot;</span><span class="p">)</span>
+                        <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_other_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">update_order_total</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">default_address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">create_order_with_address</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">default_address</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">create_order</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">current_order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">find_current_order</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">tshirt__in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                    <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">create_order_line</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+                    <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_tshirt_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">other_in_stock</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">):</span>
+                    <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">create_order_line</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;one_size&quot;</span><span class="p">)</span>
+                    <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_other_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Added to basket&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please enter a quantity less than the stock&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">update_order_total</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/basket/&lt;int:user_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">basket</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;basket.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">current_order</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/remove_from_basket/&lt;int:line_id&gt;/&lt;int:quantity&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">remove_from_basket</span><span class="p">(</span><span class="n">line_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line_id</span><span class="p">)</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">product_category</span> <span class="o">==</span> <span class="s2">&quot;tshirt&quot;</span><span class="p">:</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_tshirt_stock</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_other_stock</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">remove_order_line</span><span class="p">(</span><span class="n">line_id</span><span class="p">)</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">update_order_total</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Item removed&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;basket&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/edit_quantity/&lt;int:line_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">edit_quantity</span><span class="p">(</span><span class="n">line_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">order_line</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line_id</span><span class="p">)</span>
+        <span class="n">new_quantity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">))</span>
+        <span class="n">old_quantity</span> <span class="o">=</span> <span class="n">order_line</span><span class="o">.</span><span class="n">quantity</span>
+        <span class="n">product_id</span> <span class="o">=</span> <span class="n">order_line</span><span class="o">.</span><span class="n">product_id</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">order_line</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">order_line</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;one_size&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">old_quantity</span> <span class="o">&gt;</span> <span class="n">new_quantity</span><span class="p">:</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="n">old_quantity</span> <span class="o">-</span> <span class="n">new_quantity</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_other_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">difference</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">old_quantity</span> <span class="o">&lt;</span> <span class="n">new_quantity</span><span class="p">:</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="n">new_quantity</span> <span class="o">-</span> <span class="n">old_quantity</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_other_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">difference</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Quantity not changed&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">old_quantity</span> <span class="o">&gt;</span> <span class="n">new_quantity</span><span class="p">:</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="n">old_quantity</span> <span class="o">-</span> <span class="n">new_quantity</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">increase_tshirt_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">difference</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">old_quantity</span> <span class="o">&lt;</span> <span class="n">new_quantity</span><span class="p">:</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="n">new_quantity</span> <span class="o">-</span> <span class="n">old_quantity</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">Product</span><span class="o">.</span><span class="n">reduce_tshirt_stock</span><span class="p">(</span><span class="n">product_id</span><span class="p">,</span> <span class="n">difference</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Quantity not changed&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">edit_line_quantity</span><span class="p">(</span><span class="n">line_id</span><span class="p">,</span> <span class="n">new_quantity</span><span class="p">)</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">update_order_total</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;basket&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/change_shipping&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">change_shipping</span><span class="p">():</span>
+    <span class="n">shipping_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shipping&#39;</span><span class="p">))</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">change_shipping</span><span class="p">(</span><span class="n">shipping_id</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;checkout&#39;</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/checkout&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">checkout</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="o">.</span><span class="n">order_lines</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;No items to checkout&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">default_address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;checkout.html&quot;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span>
+                               <span class="n">current_order</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="p">,</span> <span class="n">default_address</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">default_address</span><span class="p">,</span>
+                               <span class="n">stripe_pub_key</span><span class="o">=</span><span class="n">stripe_pub_key</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Please add delivery address&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="n">session</span><span class="p">[</span><span class="s2">&quot;checking out&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;add_address&quot;</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/pay&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">pay</span><span class="p">():</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="p">)</span>
+    <span class="n">shipping_option</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ShippingOption</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">ShippingOption</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">shipping_id</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">order_total</span> <span class="o">+</span> <span class="n">shipping_option</span><span class="o">.</span><span class="n">cost</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">total</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">stripe</span><span class="o">.</span><span class="n">Customer</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">email</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">email_address</span><span class="p">,</span>
+        <span class="n">source</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stripeToken&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">charge</span> <span class="o">=</span> <span class="n">stripe</span><span class="o">.</span><span class="n">Charge</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">customer</span><span class="o">=</span><span class="n">customer</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">amount</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+        <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;gbp&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Native Sins&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">send_email</span><span class="p">(</span>
+        <span class="s2">&quot;Order Confirmation&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;contact@nativesins.com&#39;</span><span class="p">,</span>
+        <span class="n">current_user</span><span class="o">.</span><span class="n">email_address</span><span class="p">,</span>
+        <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;order_confirmation.html&quot;</span><span class="p">),</span>
+        <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;order_confirmation.html&quot;</span><span class="p">))</span>
+
+    <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">place_order</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Order Complete&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reports&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">reports</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CreateReport</span><span class="p">()</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">user_role</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">start_date</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">end_date</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">report_type</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">report_type</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">generate_user_report</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">form</span><span class="o">.</span><span class="n">report_type</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s2">&quot;order&quot;</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">generate_order_report</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;No data found between those dates&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="s1">&#39;static</span><span class="se">\\</span><span class="s1">tmp_reports</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">file_name</span>
+            <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">attachment_filename</span><span class="o">=</span><span class="s1">&#39;report.csv&#39;</span><span class="p">,</span> <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;reports.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/about&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">about</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;about.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/contact&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">contact</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">Contact</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">send_email</span><span class="p">(</span>
+                <span class="s2">&quot;Contact Form&quot;</span><span class="p">,</span>
+                <span class="n">email</span><span class="p">,</span>
+                <span class="s1">&#39;contact@nativesins.com&#39;</span><span class="p">,</span>
+                <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;contact_email.html&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">),</span>
+                <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;contact_email.html&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">))</span>
+
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Email sent, we will reply as soon as possible&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;contact&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;connection Refused&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;contact.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="index"><a class="viewcode-back" href="../app.html#app.index">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Route that returns the index(home) page&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">current_user</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="not_found"><a class="viewcode-back" href="../app.html#app.not_found">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">not_found</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Route that returns a custom 404 page if the user encounters that error&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;404.html&#39;</span><span class="p">,</span> <span class="n">current_basket</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_basket</span><span class="p">,</span> <span class="n">current_order</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_order</span><span class="p">)</span></div>
+
+
+<span class="c1"># if the app is being run directly, rather than imported</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># run the initialize method in models to create tables if they don&#39;t exist</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+    <span class="c1"># creates base admin user</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span>
+            <span class="n">first_name</span><span class="o">=</span><span class="s2">&quot;Admin&quot;</span><span class="p">,</span>
+            <span class="n">last_name</span><span class="o">=</span><span class="s2">&quot;User&quot;</span><span class="p">,</span>
+            <span class="n">email_address</span><span class="o">=</span><span class="s2">&quot;contact@nativesins.com&quot;</span><span class="p">,</span>
+            <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+            <span class="n">user_role</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">models</span><span class="o">.</span><span class="n">ShippingOption</span><span class="o">.</span><span class="n">create_shipping_option</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;first_class&quot;</span><span class="p">,</span>
+            <span class="n">cost</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="n">models</span><span class="o">.</span><span class="n">ShippingOption</span><span class="o">.</span><span class="n">create_shipping_option</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;second_class&quot;</span><span class="p">,</span>
+            <span class="n">cost</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Andrew Bruce.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

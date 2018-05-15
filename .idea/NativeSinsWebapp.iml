@@ -7,6 +7,13 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="" />
+  </component>
+  <component name="ReSTService">
+    <option name="workdir" value="C:\Users\ab1\Dropbox\_HND_Software_Dev\Graded Unit\2) Development\NativeSinsWebapp\docs" />
+    <option name="DOC_DIR" value="C:\Users\ab1\Dropbox\_HND_Software_Dev\Graded Unit\2) Development\NativeSinsWebapp\docs" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
     <option name="TEMPLATE_FOLDERS">

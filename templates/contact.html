@@ -10,10 +10,27 @@
         <div class="form-content contact_form">
             {% for field in form %}
                 {% if current_user.is_authenticated and field.label.text == 'Name' %}
+                    {%  if form.name.errors %}
+                        {% for error in form.name.errors %}
+                            <div class="notification error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                     {{ field(placeholder=field.label.text,
                         class="field", id=field.label.text,
                         value=current_user.first_name + ' ' + current_user.last_name) }}
                 {% elif current_user.is_authenticated and field.label.text == 'Email Address' %}
+                    {%  if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <div class="notification error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {{ field(placeholder=field.label.text,
+                        class="field", id=field.label.text,
+                        value=current_user.email_address) }}
+                {% elif field.label.text == 'Recaptcha' %}
+                    {%  if form.recaptcha.errors %}
+                        <div class="notification error">Please enter captcha</div>
+                    {% endif %}
                     {{ field(placeholder=field.label.text,
                         class="field", id=field.label.text,
                         value=current_user.email_address) }}
@@ -21,7 +38,7 @@
                     {{ render_field(field) }}
                 {% endif %}
             {% endfor %}
-            <button type="submit" class="submit">Send Message</button>
+            <button type="submit" class="submit send_message">Send Message</button>
         </div>
     </form>
     </div>

@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>models &mdash; Native Sins 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Native Sins
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forms.html">Forms</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Native Sins</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">peewee</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="k">import</span> <span class="n">UserMixin</span>
+<span class="kn">from</span> <span class="nn">flask_bcrypt</span> <span class="k">import</span> <span class="n">generate_password_hash</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteDatabase</span><span class="p">(</span><span class="s1">&#39;nativesins.db&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="n">db</span>
+
+
+<div class="viewcode-block" id="User"><a class="viewcode-back" href="../models.html#models.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">UserMixin</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **User class.**</span>
+
+<span class="sd">    Used as a model for the database, containing methods to be performed on user objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">email_address</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">user_role</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
+    <span class="n">date_created</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+
+<div class="viewcode-block" id="User.create_user"><a class="viewcode-back" href="../models.html#models.User.create_user">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_user</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">email_address</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">user_role</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        **Creates user.**</span>
+
+<span class="sd">        Takes in parameters and uses them to create a row in the user table of the database.</span>
+<span class="sd">        It takes in a plain text password but hashes it before inputting to the database.</span>
+
+<span class="sd">        :param first_name: users first name</span>
+<span class="sd">        :param last_name: user last name</span>
+<span class="sd">        :param email_address: users email address</span>
+<span class="sd">        :param password: users password (plain text)</span>
+<span class="sd">        :param user_role: the role of the user (determines permissions)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span><span class="p">,</span>
+                <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span><span class="p">,</span>
+                <span class="n">email_address</span><span class="o">=</span><span class="n">email_address</span><span class="p">,</span>
+                <span class="n">password</span><span class="o">=</span><span class="n">generate_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">),</span>
+                <span class="n">user_role</span><span class="o">=</span><span class="n">user_role</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;User already exists&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">edit_details</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">email_address</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span><span class="p">,</span>
+                <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span><span class="p">,</span>
+                <span class="n">email_address</span><span class="o">=</span><span class="n">email_address</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;User with that email address already exists&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">generate_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">generate_user_report</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">date_created</span> <span class="o">&gt;=</span> <span class="n">start_date</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">date_created</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">users</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__data__</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span>
+                    <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;static</span><span class="se">\\</span><span class="s1">tmp_reports</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">report</span><span class="p">:</span>
+                <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+                    <span class="n">user_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">__data__</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                    <span class="n">user_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">user_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;date_created&#39;</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">date_created</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%y %H:%M:%S&#39;</span><span class="p">)})</span>
+                    <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">user_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">file_name</span></div>
+
+
+<span class="k">class</span> <span class="nc">AddressDetails</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;address&#39;</span><span class="p">)</span>
+    <span class="n">address_line_1</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">address_line_2</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">town</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">postcode</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">default</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_address</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">address_line_1</span><span class="p">,</span> <span class="n">address_line_2</span><span class="p">,</span> <span class="n">town</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">postcode</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="n">address_line_1</span><span class="o">=</span><span class="n">address_line_1</span><span class="p">,</span>
+            <span class="n">address_line_2</span><span class="o">=</span><span class="n">address_line_2</span><span class="p">,</span>
+            <span class="n">town</span><span class="o">=</span><span class="n">town</span><span class="p">,</span>
+            <span class="n">city</span><span class="o">=</span><span class="n">city</span><span class="p">,</span>
+            <span class="n">postcode</span><span class="o">=</span><span class="n">postcode</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">edit_address</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">address_id</span><span class="p">,</span> <span class="n">address_line_1</span><span class="p">,</span> <span class="n">address_line_2</span><span class="p">,</span> <span class="n">town</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">postcode</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">address_line_1</span><span class="o">=</span><span class="n">address_line_1</span><span class="p">,</span>
+            <span class="n">address_line_2</span><span class="o">=</span><span class="n">address_line_2</span><span class="p">,</span>
+            <span class="n">town</span><span class="o">=</span><span class="n">town</span><span class="p">,</span>
+            <span class="n">city</span><span class="o">=</span><span class="n">city</span><span class="p">,</span>
+            <span class="n">postcode</span><span class="o">=</span><span class="n">postcode</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">address_id</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">delete_address</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">address_id</span><span class="p">):</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">address_id</span><span class="p">)</span>
+        <span class="n">address</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_default_address</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">default_address</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">address_query</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">address_query</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">address_query</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">address_query</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">default_address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="k">return</span> <span class="n">default_address</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">change_default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">new_default_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">old_default</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_default_address</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">new_default</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">new_default_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">old_default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_default</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">new_default</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">old_default</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">new_default</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">old_default</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">new_default</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Product</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">product_category</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">product_name</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">product_price</span> <span class="o">=</span> <span class="n">DecimalField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">product_description</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">product_image_path</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">one_size_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">small_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">medium_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">large_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">date_created</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="c1"># create attribute to contain uploaded image location</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_product</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product_category</span><span class="p">,</span> <span class="n">product_name</span><span class="p">,</span> <span class="n">product_price</span><span class="p">,</span> <span class="n">product_description</span><span class="p">,</span> <span class="n">one_size_stock</span><span class="p">,</span>
+                       <span class="n">small_stock</span><span class="p">,</span> <span class="n">medium_stock</span><span class="p">,</span> <span class="n">large_stock</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">product_category</span><span class="o">=</span><span class="n">product_category</span><span class="p">,</span>
+                <span class="n">product_name</span><span class="o">=</span><span class="n">product_name</span><span class="p">,</span>
+                <span class="n">product_price</span><span class="o">=</span><span class="n">product_price</span><span class="p">,</span>
+                <span class="n">product_description</span><span class="o">=</span><span class="n">product_description</span><span class="p">,</span>
+                <span class="n">one_size_stock</span><span class="o">=</span><span class="n">one_size_stock</span><span class="p">,</span>
+                <span class="n">small_stock</span><span class="o">=</span><span class="n">small_stock</span><span class="p">,</span>
+                <span class="n">medium_stock</span><span class="o">=</span><span class="n">medium_stock</span><span class="p">,</span>
+                <span class="n">large_stock</span><span class="o">=</span><span class="n">large_stock</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;T-Shirt with this name exists&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">product_image_path</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">product_image_path</span> <span class="o">=</span> <span class="n">product_image_path</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">increase_tshirt_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">small_stock</span> <span class="o">+=</span> <span class="n">quantity</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;medium&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">medium_stock</span> <span class="o">+=</span> <span class="n">quantity</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;large&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">large_stock</span> <span class="o">+=</span> <span class="n">quantity</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reduce_tshirt_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">small_stock</span> <span class="o">-=</span> <span class="n">quantity</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;medium&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">medium_stock</span> <span class="o">-=</span> <span class="n">quantity</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;large&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">large_stock</span> <span class="o">-=</span> <span class="n">quantity</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">increase_other_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">one_size_stock</span> <span class="o">+=</span> <span class="n">quantity</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reduce_other_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">one_size_stock</span> <span class="o">-=</span> <span class="n">quantity</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tshirt__in_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">quantity</span> <span class="o">&gt;</span> <span class="n">product</span><span class="o">.</span><span class="n">small_stock</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;medium&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">quantity</span> <span class="o">&gt;</span> <span class="n">product</span><span class="o">.</span><span class="n">medium_stock</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="s2">&quot;large&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">quantity</span> <span class="o">&gt;</span> <span class="n">product</span><span class="o">.</span><span class="n">large_stock</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">other_in_stock</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">product_id</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">quantity</span> <span class="o">&gt;</span> <span class="n">product</span><span class="o">.</span><span class="n">one_size_stock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">class</span> <span class="nc">ShippingOption</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">DecimalField</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_shipping_option</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cost</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">cost</span><span class="o">=</span><span class="n">cost</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;orders&#39;</span><span class="p">)</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">AddressDetails</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">shipping</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">ShippingOption</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;shipping&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">order_status</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;open&quot;</span><span class="p">)</span>
+    <span class="n">order_placed_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">order_dispatched_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">order_completed_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">order_cancelled_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">order_total</span> <span class="o">=</span> <span class="n">DecimalField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">update_order_total</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">order_lines</span> <span class="o">=</span> <span class="n">OrderLine</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderLine</span><span class="o">.</span><span class="n">order</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">order_lines</span><span class="p">:</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">product_price</span><span class="o">*</span><span class="n">line</span><span class="o">.</span><span class="n">quantity</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">price</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_total</span> <span class="o">=</span> <span class="n">total</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_order_with_address</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+            <span class="n">address</span><span class="o">=</span><span class="n">address</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_address_to_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">find_current_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">orders</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;open&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">order</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">place_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">=</span> <span class="s2">&quot;placed&quot;</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">dispatch_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">=</span> <span class="s2">&quot;dispatched&quot;</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_dispatched_on</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">complete_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">=</span> <span class="s2">&quot;complete&quot;</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_completed_on</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">cancel_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">=</span> <span class="s2">&quot;cancelled&quot;</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">order_cancelled_on</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_current_basket</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="ow">and</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current_basket</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">order</span><span class="o">.</span><span class="n">order_lines</span><span class="p">:</span>
+                <span class="n">current_basket</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">quantity</span>
+            <span class="k">return</span> <span class="n">current_basket</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">check_order_status</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;placed&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">():</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">dispatch_order</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_status</span> <span class="o">==</span> <span class="s2">&quot;dispatched&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">():</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">complete_order</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">change_shipping</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">shipping_id</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">shipping_id</span> <span class="o">=</span> <span class="n">shipping_id</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">generate_order_report</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">&gt;=</span> <span class="n">start_date</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">order_placed_on</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">orders</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__data__</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;order_cancelled_on&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;address&#39;</span><span class="p">:</span>
+                        <span class="n">fieldnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;shipping_address_line_1&#39;</span><span class="p">,</span> <span class="s1">&#39;shipping_address_line_2&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;shipping_address_city&#39;</span><span class="p">,</span> <span class="s1">&#39;shipping_address_postcode&#39;</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;shipping&#39;</span><span class="p">:</span>
+                        <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;shipping_option&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;static</span><span class="se">\\</span><span class="s1">tmp_reports</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">report</span><span class="p">:</span>
+                <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+                    <span class="n">order_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">__data__</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                    <span class="n">address</span> <span class="o">=</span> <span class="n">AddressDetails</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">AddressDetails</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+                    <span class="n">shipping</span> <span class="o">=</span> <span class="n">ShippingOption</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ShippingOption</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">shipping</span><span class="p">)</span>
+                    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;order_cancelled_on&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;shipping&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                        <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email_address</span><span class="p">,</span>
+                        <span class="s1">&#39;shipping_address_line_1&#39;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">address_line_1</span><span class="p">,</span>
+                        <span class="s1">&#39;shipping_address_line_2&#39;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">address_line_2</span><span class="p">,</span>
+                        <span class="s1">&#39;shipping_address_city&#39;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">city</span><span class="p">,</span>
+                        <span class="s1">&#39;shipping_address_postcode&#39;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">postcode</span><span class="p">,</span>
+                        <span class="s1">&#39;shipping_option&#39;</span><span class="p">:</span> <span class="n">shipping</span><span class="o">.</span><span class="n">name</span>
+                    <span class="p">})</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;order_placed_on&#39;</span><span class="p">:</span> <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%y %H:%M:%S&#39;</span><span class="p">)})</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;order_dispatched_on&#39;</span><span class="p">:</span> <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%y %H:%M:%S&#39;</span><span class="p">)})</span>
+                    <span class="n">order_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;order_completed_on&#39;</span><span class="p">:</span> <span class="n">order</span><span class="o">.</span><span class="n">order_placed_on</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%y %H:%M:%S&#39;</span><span class="p">)})</span>
+                    <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">order_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">file_name</span>
+
+
+<span class="k">class</span> <span class="nc">OrderLine</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">PrimaryKeyField</span><span class="p">()</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;order_line&#39;</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">Order</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;order_lines&#39;</span><span class="p">)</span>
+    <span class="n">quantity</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="n">db</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_order_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+            <span class="n">quantity</span><span class="o">=</span><span class="n">quantity</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">size</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">remove_order_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_line_id</span><span class="p">):</span>
+        <span class="n">order_line</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order_line_id</span><span class="p">)</span>
+        <span class="n">order_line</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">increase_line_quantity</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_line_id</span><span class="p">,</span> <span class="n">quantity_to_add</span><span class="p">):</span>
+        <span class="n">new_quantity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">quantity</span> <span class="o">+</span> <span class="n">quantity_to_add</span>
+        <span class="n">order_line</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order_line_id</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">new_quantity</span><span class="p">)</span>
+        <span class="n">order_line</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">edit_line_quantity</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">order_line_id</span><span class="p">,</span> <span class="n">new_quantity</span><span class="p">):</span>
+        <span class="n">order_line</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order_line_id</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">new_quantity</span><span class="p">)</span>
+        <span class="n">order_line</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">initialize</span><span class="p">():</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">create_tables</span><span class="p">([</span><span class="n">User</span><span class="p">,</span> <span class="n">AddressDetails</span><span class="p">,</span> <span class="n">ShippingOption</span><span class="p">,</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderLine</span><span class="p">],</span> <span class="n">safe</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Andrew Bruce.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

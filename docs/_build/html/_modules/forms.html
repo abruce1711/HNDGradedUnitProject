@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>forms &mdash; Native Sins 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Native Sins
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forms.html">Forms</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Native Sins</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>forms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for forms</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="k">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">RecaptchaField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="k">import</span> <span class="p">(</span><span class="n">StringField</span><span class="p">,</span> <span class="n">PasswordField</span><span class="p">,</span> <span class="n">TextAreaField</span><span class="p">,</span>
+                     <span class="n">DecimalField</span><span class="p">,</span> <span class="n">SelectField</span><span class="p">,</span> <span class="n">IntegerField</span><span class="p">,</span> <span class="n">RadioField</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="k">import</span> <span class="p">(</span><span class="n">DataRequired</span><span class="p">,</span> <span class="n">Regexp</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span>
+                                <span class="n">Length</span><span class="p">,</span> <span class="n">EqualTo</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">wtforms.fields.html5</span> <span class="k">import</span> <span class="n">DateField</span>
+
+<span class="kn">from</span> <span class="nn">models</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">flash</span>
+
+
+<span class="c1"># custom validator</span>
+<span class="k">def</span> <span class="nf">email_exists</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">email_address</span> <span class="o">==</span> <span class="n">field</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;User with that email already exists&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">start_date_check</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">user</span><span class="o">.</span><span class="n">date_created</span><span class="o">.</span><span class="n">date</span><span class="p">():</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No users created before that date&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">end_date_check</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">date_created</span><span class="o">.</span><span class="n">date</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;No users created after that date&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LoginForm"><a class="viewcode-back" href="../forms.html#forms.LoginForm">[docs]</a><span class="k">class</span> <span class="nc">LoginForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">email_address</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Email&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">(),</span> <span class="n">Email</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegisterForm"><a class="viewcode-back" href="../forms.html#forms.RegisterForm">[docs]</a><span class="k">class</span> <span class="nc">RegisterForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;First Name&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">email</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Email&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Email</span><span class="p">(),</span>
+            <span class="n">email_exists</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Length</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span>
+            <span class="n">EqualTo</span><span class="p">(</span><span class="s1">&#39;password2&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Passwords must match&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">password2</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;Re-enter Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CreateUser"><a class="viewcode-back" href="../forms.html#forms.CreateUser">[docs]</a><span class="k">class</span> <span class="nc">CreateUser</span><span class="p">(</span><span class="n">RegisterForm</span><span class="p">,</span> <span class="n">Form</span><span class="p">):</span>
+    <span class="n">user_role</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;blank&#39;</span><span class="p">,</span> <span class="s1">&#39;Please select user role&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">,</span> <span class="s1">&#39;Customer&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;staff&#39;</span><span class="p">,</span> <span class="s1">&#39;Staff&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;Admin&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CreateProduct"><a class="viewcode-back" href="../forms.html#forms.CreateProduct">[docs]</a><span class="k">class</span> <span class="nc">CreateProduct</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">product_category</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span>
+        <span class="s1">&#39;Category&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()],</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;tshirt&#39;</span><span class="p">,</span> <span class="s1">&#39;T-Shirt&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;hat&#39;</span><span class="p">,</span> <span class="s1">&#39;Hat&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;CD&#39;</span><span class="p">)]</span>
+    <span class="p">)</span>
+
+    <span class="n">product_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Name&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">product_price</span> <span class="o">=</span> <span class="n">DecimalField</span><span class="p">(</span>
+        <span class="s1">&#39;Price&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">product_description</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span>
+        <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">one_size_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Stock&#39;</span><span class="p">)</span>
+
+    <span class="n">small_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Small Stock&#39;</span><span class="p">)</span>
+
+    <span class="n">medium_stock</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Medium Stock&#39;</span><span class="p">)</span>
+
+    <span class="n">large_stock</span><span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Large Stock&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderProducts"><a class="viewcode-back" href="../forms.html#forms.OrderProducts">[docs]</a><span class="k">class</span> <span class="nc">OrderProducts</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">order_by</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span>
+        <span class="s1">&#39;Order By&#39;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Sort Products&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;alphabet&#39;</span><span class="p">,</span> <span class="s1">&#39;Alphabetical Order&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;price_lth&#39;</span><span class="p">,</span> <span class="s1">&#39;Price lowest first&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;price_htl&#39;</span><span class="p">,</span> <span class="s1">&#39;Price highest first&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;tshirt&#39;</span><span class="p">,</span> <span class="s1">&#39;T-Shirts&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;hat&#39;</span><span class="p">,</span> <span class="s1">&#39;Hats&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;Albums&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AddAddress"><a class="viewcode-back" href="../forms.html#forms.AddAddress">[docs]</a><span class="k">class</span> <span class="nc">AddAddress</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">address_line_1</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Address Line 1&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">address_line_2</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Address Line 2&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">town</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Town&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">city</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;City&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">postcode</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Postcode&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EditLoginDetails"><a class="viewcode-back" href="../forms.html#forms.EditLoginDetails">[docs]</a><span class="k">class</span> <span class="nc">EditLoginDetails</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;First Name&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+    <span class="n">email_address</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Email Address&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResetPassword"><a class="viewcode-back" href="../forms.html#forms.ResetPassword">[docs]</a><span class="k">class</span> <span class="nc">ResetPassword</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">current_password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;Current Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Length</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">new_password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;New Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Length</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">reenter_password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span>
+        <span class="s1">&#39;Re-enter Password&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Length</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+            <span class="n">EqualTo</span><span class="p">(</span><span class="s1">&#39;new_password&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;New passwords do not match&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CreateReport"><a class="viewcode-back" href="../forms.html#forms.CreateReport">[docs]</a><span class="k">class</span> <span class="nc">CreateReport</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">report_type</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span>
+        <span class="s1">&#39;Type&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()],</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;stock&#39;</span><span class="p">,</span> <span class="s1">&#39;Stock&#39;</span><span class="p">)]</span>
+    <span class="p">)</span>
+
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">DateField</span><span class="p">(</span>
+        <span class="s1">&#39;Start Date&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">DateField</span><span class="p">(</span>
+        <span class="s1">&#39;End Date&#39;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Contact"><a class="viewcode-back" href="../forms.html#forms.Contact">[docs]</a><span class="k">class</span> <span class="nc">Contact</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+         <span class="s1">&#39;Name&#39;</span><span class="p">,</span>
+         <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">email</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span>
+        <span class="s1">&#39;Email Address&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DataRequired</span><span class="p">(),</span>
+            <span class="n">Email</span><span class="p">()</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span>
+        <span class="s1">&#39;Message&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()]</span>
+    <span class="p">)</span>
+
+    <span class="n">recaptcha</span> <span class="o">=</span> <span class="n">RecaptchaField</span><span class="p">(</span>
+        <span class="s1">&#39;Recaptcha&#39;</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Andrew Bruce.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

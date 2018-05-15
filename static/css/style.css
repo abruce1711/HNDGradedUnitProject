@@ -567,3 +567,11 @@ outline: none;
 .contact_form {
     margin-top: 3% !important;
 }
+
+iframe {
+    margin-top: 50px !important;
+}
+
+.send_message {
+    margin-top: 50px !important;
+}

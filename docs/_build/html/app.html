@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>App &mdash; Native Sins 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Models" href="models.html" />
+    <link rel="prev" title="Welcome to Native Sins’s documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Native Sins
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">Forms</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Native Sins</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>App</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/app.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-app">
+<span id="app"></span><h1>App<a class="headerlink" href="#module-app" title="Permalink to this headline">¶</a></h1>
+<p>app.py is the main app document for the web app. It contains
+all of the routes and handles all requests between the server and client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Andrew Bruce</td>
+</tr>
+<tr class="field-even field"><th class="field-name">year:</th><td class="field-body">2018</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="app.account">
+<code class="descclassname">app.</code><code class="descname">account</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.account" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Account route</strong></p>
+<p><em>This route requires authentication</em></p>
+<p>Takes in a user id and returns that users account page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> – current users id (primary key)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">html template for account page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.add_address">
+<code class="descclassname">app.</code><code class="descname">add_address</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#add_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.add_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>This route returns a template to allow a user to add a new address</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.addresses">
+<code class="descclassname">app.</code><code class="descname">addresses</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#addresses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.addresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>This route returns the addresses for the user that requests it.</p>
+<p>This route takes the user ID as a parameter as it needs it for the url</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.after_request">
+<code class="descclassname">app.</code><code class="descname">after_request</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#after_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.after_request" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Handles all actions after server request.</strong></p>
+<p>This is a built in Flask function that fires after each server request.
+I use it to close the database connection, then it returns the response from the browser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>response</strong> – browser response</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">any response from the browser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.before_request">
+<code class="descclassname">app.</code><code class="descname">before_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#before_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.before_request" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Handles all actions before request.</strong></p>
+<p>This is a built in Flask function that fires before each server request.
+I use this to do a number of things -</p>
+<ol class="arabic simple">
+<li>Establishes a connection to the database.</li>
+<li>Assigns the current user to a global variable</li>
+<li>Finds the current users open order and assigns to a global variable</li>
+<li>Find the current users basket amount and assigns to a global variable</li>
+<li>Checks the status of all orders under the current user for tracking.</li>
+</ol>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.create_product">
+<code class="descclassname">app.</code><code class="descname">create_product</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#create_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.create_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route that returns the page for administrators to create products.</p>
+<p>On this route it takes input from the create product form and
+uses a method inside the Product class to create a product
+in the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.create_user">
+<code class="descclassname">app.</code><code class="descname">create_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#create_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.create_user" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Create user route.</strong></p>
+<p><em>Route can only be accessed if user role is “admin”</em></p>
+<p>Takes in POST data from html form and calls <a class="reference internal" href="models.html#models.User.create_user" title="models.User.create_user"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_user()</span></code></a>.
+Unlike the <a class="reference internal" href="#app.register" title="app.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code></a> route it takes in a user role and assigns it to the created user.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">html template with create user form</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.delete_address">
+<code class="descclassname">app.</code><code class="descname">delete_address</code><span class="sig-paren">(</span><em>address_id</em>, <em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#delete_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.delete_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>This route removes an address</p>
+<p>An address id is passed in from the link, it then calls methods
+in the model to remove the address</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.edit_address">
+<code class="descclassname">app.</code><code class="descname">edit_address</code><span class="sig-paren">(</span><em>address_id</em>, <em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#edit_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.edit_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>This route returns a template to allow a user to edit an address</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.index">
+<code class="descclassname">app.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route that returns the index(home) page</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.load_user">
+<code class="descclassname">app.</code><code class="descname">load_user</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#load_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.load_user" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Loads the user between sessions.</strong></p>
+<p>Takes in the user id stored in the cookies and uses it to pull
+the user from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – users primary key id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the user object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.login">
+<code class="descclassname">app.</code><code class="descname">login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.login" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Login route.</strong></p>
+<p>Handles POST data from the login form then validates credentials against hashed credentials
+in database. If login is correct then it calls Flasks <code class="xref py py-func docutils literal notranslate"><span class="pre">login_user()</span></code> method which creates an authentication cookie.
+If not it gives an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A html template containing the login form</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.logout">
+<code class="descclassname">app.</code><code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Logout route.</strong></p>
+<p><em>This route requires authentication</em></p>
+<p>Calls Flasks <code class="xref py py-func docutils literal notranslate"><span class="pre">logout_user()</span></code> method which removes authentication cookies.
+Then redirects user to the login page.
+:return: a redirect for the login page</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.not_found">
+<code class="descclassname">app.</code><code class="descname">not_found</code><span class="sig-paren">(</span><em>error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.not_found" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route that returns a custom 404 page if the user encounters that error</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.orders">
+<code class="descclassname">app.</code><code class="descname">orders</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#orders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.orders" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Orders route</strong></p>
+<p><em>This route requires authentication</em></p>
+<p>Pulls the current users placed, dispatched, complete, and canelled orders
+and assigns them to variables. It then returns a html template and passes
+the lists of orders in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> – current users id (primary key)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">html template displaying passed in user orders</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.register">
+<code class="descclassname">app.</code><code class="descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.register" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Registration route.</strong></p>
+<p>Takes POST data from html form and calls <a class="reference internal" href="models.html#models.User.create_user" title="models.User.create_user"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_user()</span></code></a>
+which creates a user in the database, with the default user role of “customer”. It then calls Flasks <code class="xref py py-func docutils literal notranslate"><span class="pre">login_user()</span></code> method
+and redirects the user home.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">html template containing registration form</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.send_email">
+<code class="descclassname">app.</code><code class="descname">send_email</code><span class="sig-paren">(</span><em>subject</em>, <em>reply_to</em>, <em>recipient</em>, <em>body</em>, <em>html</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#send_email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.send_email" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p><strong>Function for sending emails.</strong></p>
+<p>Takes the parameters mentioned below and uses them to send an
+email using the outgoing SMTP settings I have declared in the app.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>subject</strong> – email subject</li>
+<li><strong>reply_to</strong> – reply address</li>
+<li><strong>recipient</strong> – email recipient</li>
+<li><strong>body</strong> – email body</li>
+<li><strong>html</strong> – html file to style body</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sends an email with the html file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.set_address_default">
+<code class="descclassname">app.</code><code class="descname">set_address_default</code><span class="sig-paren">(</span><em>address_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#set_address_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.set_address_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>This route is used to change the default address</p>
+<p>It is fired when the Set Default link is clicked on the address.
+It takes the new address Id in as a parameter</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models.html" class="btn btn-neutral float-right" title="Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to Native Sins’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Andrew Bruce.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

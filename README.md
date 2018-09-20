@@ -1,2 +1,2 @@
-# NativeSins
-Web app made in Python and Flask. My bands website and my HND graded unit project.
+# Graded Unit Project
+For my HND Graded Unit project I create an e-commerce web app for a band using Python and Flask for the backend.
